@@ -14,7 +14,7 @@ public class Transaction implements Serializable {
     private long timestamp;
 
     private String msg;
-
+    private boolean isCoinbaseTx;
     protected TxInput[] inputs;
     protected TxOutput[] outputs;
 
@@ -24,17 +24,23 @@ public class Transaction implements Serializable {
         this.outputs = outputs;
         this.msg = msg;
         this.timestamp = Instant.now().getEpochSecond();
+        this.isCoinbaseTx = false;
         this.hash = computeHash();
     }
 
     protected Transaction(String msg) {
         this.msg = msg;
         this.timestamp = Instant.now().getEpochSecond();
+        this.isCoinbaseTx = true;
     }
 
     public String computeHash() {
         String content = String.valueOf(timestamp);
         return DigestUtils.sha256Hex(content);
+    }
+
+    public boolean isCoinbaseTx() {
+        return isCoinbaseTx;
     }
 
     public String getHash() {
