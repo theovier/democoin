@@ -1,7 +1,10 @@
 package com.theovier.democoin.common;
 
-public class TxInput {
+import java.io.Serializable;
 
+public class TxInput implements Serializable {
+
+    private static final long serialVersionUID = 478420474849537539L;
     private String previousTransactionHash; //transaction identifier (previous to be used transaction)
     private int previousTxOutputIndex;
     private String signature; //signature of (UTXO owner)
