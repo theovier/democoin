@@ -2,3 +2,5 @@
 *.idea
 target
 /log.out
+/blockchain.dat
+/key.*
