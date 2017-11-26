@@ -9,6 +9,7 @@ import org.bouncycastle.util.encoders.Hex;
 public class Address {
 
     private static final Logger LOG = Logger.getLogger(Address.class);
+    public static final byte PREFIX = 0x00; //0x0F -> 7.
 
     /**
      * Using the same algorithms to generate addresses as Bitcoin.
@@ -33,8 +34,7 @@ public class Address {
     }
 
     private static byte[] addVersionPrefix(byte[] ripemd160) {
-        byte prefix = 0x00;
-        return Arrays.prepend(ripemd160, prefix);
+        return Arrays.prepend(ripemd160, PREFIX);
     }
 
     public static void main (String[] args) {
