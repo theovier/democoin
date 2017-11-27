@@ -21,7 +21,7 @@ public class TransactionValidator {
             return false;
         } else if (tx.outputs.length > 1) {
             return false;
-        } else if (tx.outputs[0].value != Config.COINBASE_REWARD) {
+        } else if (tx.outputs[0].getValue() != Config.COINBASE_REWARD) {
             return false;
         }
         return true;

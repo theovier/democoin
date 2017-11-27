@@ -17,6 +17,6 @@ public class CoinbaseTransaction extends Transaction {
         outputs = new TxOutput[]{
                 new TxOutput(Config.COINBASE_REWARD, recipientAddress)
         };
-        this.hash = computeHash();
+        this.txId = computeHash();
     }
 }

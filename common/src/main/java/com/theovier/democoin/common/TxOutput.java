@@ -9,12 +9,20 @@ public class TxOutput implements Serializable {
      */
 
     private static final long serialVersionUID = -4403978077387051602L;
-    long value;
-    String recipientPublicKey; //org: scriptPubKey; here: address
+    private long value;
+    private String recipientPublicKey; //org: scriptPubKey; here: address
 
     public TxOutput(final long value, String recipientPublicKey) {
         this.value = value;
         this.recipientPublicKey = recipientPublicKey;
+    }
+
+    public long getValue() {
+        return value;
+    }
+
+    public String getRecipientPublicKey() {
+        return recipientPublicKey;
     }
 
     @Override

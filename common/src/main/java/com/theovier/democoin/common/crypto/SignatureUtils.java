@@ -1,5 +1,6 @@
-package com.theovier.democoin.common;
+package com.theovier.democoin.common.crypto;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -23,6 +24,68 @@ public class SignatureUtils {
         return keyGen.generateKeyPair();
     }
 
+    public static KeyPair getKeyPair(byte[] x509pubKey, byte[] pkcs8privKey) throws GeneralSecurityException {
+        PublicKey publicKey = getPublicKey(x509pubKey);
+        PrivateKey privateKey = getPrivateKey(pkcs8privKey);
+        return new KeyPair(publicKey, privateKey);
+    }
+
+    public static byte[] sign(byte[] data, byte[] pkcs8key) throws GeneralSecurityException {
+        PrivateKey privateKey = getPrivateKey(pkcs8key);
+        Signature ecdsaSign = Signature.getInstance("SHA256withECDSA", "BC");
+        ecdsaSign.initSign(privateKey);
+        ecdsaSign.update(data);
+        return ecdsaSign.sign();
+    }
+
+    public static byte[] sign(byte[] data, PrivateKey privateKey) throws GeneralSecurityException {
+        Signature ecdsaSign = Signature.getInstance("SHA256withECDSA", "BC");
+        ecdsaSign.initSign(privateKey);
+        ecdsaSign.update(data);
+        return ecdsaSign.sign();
+    }
+
+    public static String signHex(byte[] data, PrivateKey privateKey) throws GeneralSecurityException {
+        Signature ecdsaSign = Signature.getInstance("SHA256withECDSA", "BC");
+        ecdsaSign.initSign(privateKey);
+        ecdsaSign.update(data);
+        byte[] signature = ecdsaSign.sign();
+        return Hex.toHexString(signature);
+    }
+
+    public static String signHex(Sha256Hash hash, PrivateKey privateKey) throws GeneralSecurityException {
+        Signature ecdsaSign = Signature.getInstance("SHA256withECDSA", "BC");
+        byte[] hashBytes = hash.getBytes();
+        ecdsaSign.initSign(privateKey);
+        ecdsaSign.update(hashBytes);
+        byte[] signature = ecdsaSign.sign();
+        return Hex.toHexString(signature);
+    }
+
+    public static boolean verify(byte[] signedData, byte[] x509key, byte[] unsignedData) throws GeneralSecurityException {
+        PublicKey publicKey = getPublicKey(x509key);
+        Signature ecdsaVerify = Signature.getInstance("SHA256withECDSA", "BC");
+        ecdsaVerify.initVerify(publicKey);
+        ecdsaVerify.update(unsignedData);
+        return ecdsaVerify.verify(signedData);
+    }
+
+    public static boolean verify(byte[] signedData, PublicKey publicKey, byte[] unsignedData) throws GeneralSecurityException {
+        Signature ecdsaVerify = Signature.getInstance("SHA256withECDSA", "BC");
+        ecdsaVerify.initVerify(publicKey);
+        ecdsaVerify.update(unsignedData);
+        return ecdsaVerify.verify(signedData);
+    }
+
+    public static boolean verify(String signedDataHex, PublicKey publicKey, Sha256Hash unsignedDataHash) throws GeneralSecurityException {
+        Signature ecdsaVerify = Signature.getInstance("SHA256withECDSA", "BC");
+        byte[] signedData = Hex.decode(signedDataHex);
+        byte[] unsignedData = unsignedDataHash.getBytes();
+        ecdsaVerify.initVerify(publicKey);
+        ecdsaVerify.update(unsignedData);
+        return ecdsaVerify.verify(signedData);
+    }
+
     private static PrivateKey getPrivateKey(byte[] pkcs8key) throws GeneralSecurityException {
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(pkcs8key);
         KeyFactory keyFactory = KeyFactory.getInstance("ECDSA", "BC");
@@ -35,21 +98,7 @@ public class SignatureUtils {
         return keyFactory.generatePublic(keySpec);
     }
 
-    public static byte[] sign(byte[] data, byte[] pkcs8key) throws GeneralSecurityException {
-        PrivateKey privateKey = getPrivateKey(pkcs8key);
-        Signature ecdsaSign = Signature.getInstance("SHA256withECDSA", "BC");
-        ecdsaSign.initSign(privateKey);
-        ecdsaSign.update(data);
-        return ecdsaSign.sign();
-    }
 
-    public static boolean verify(byte[] signedData, byte[] x509key, byte[] unsignedData) throws GeneralSecurityException {
-        PublicKey publicKey = getPublicKey(x509key);
-        Signature ecdsaVerify = Signature.getInstance("SHA256withECDSA", "BC");
-        ecdsaVerify.initVerify(publicKey);
-        ecdsaVerify.update(unsignedData);
-        return ecdsaVerify.verify(signedData);
-    }
 
     public static void main9(String[] args) throws Exception {
         Security.addProvider(new BouncyCastleProvider());
@@ -92,7 +141,7 @@ public class SignatureUtils {
     }
 
     //todo save hex string instead of bytes? for readability
-    public static void main(String[] args) throws Exception {
+    public static void main3(String[] args) throws Exception {
         Security.addProvider(new BouncyCastleProvider());
         byte[] privateKeyBytes = Files.readAllBytes(Paths.get("key.priv"));
         byte[] unsignedData = "SIGN ME".getBytes("UTF-8");
@@ -101,5 +150,28 @@ public class SignatureUtils {
         String x = "3059301306072a8648ce3d020106082a8648ce3d03010703420004a0ef13f6a3ce4f3950a5b09e2f78f8aa99b03e6da3420add5649ef2a73cf2c4fed51207cad7b1d13c3e014ff01f004fa31b4755df6d22470995d55ab7533ef7a";
         byte[] publicFromHex = Hex.decode(x);
         LOG.info(verify(signedData, publicFromHex, unsignedData));
+    }
+
+    public static void main(String[] args) throws Exception {
+        Security.addProvider(new BouncyCastleProvider());
+        byte[] privateKeyBytes = Files.readAllBytes(Paths.get("key.priv"));
+        byte[] publicKeyBytes = Files.readAllBytes(Paths.get("key.pub"));
+
+        KeyPair kp = getKeyPair(publicKeyBytes, privateKeyBytes);
+
+        Sha256Hash s = Sha256Hash.create("hi");
+
+
+        byte[] unsignedData = "SIGN ME".getBytes("UTF-8");
+        byte[] signedData = sign(unsignedData, privateKeyBytes);
+        LOG.info("signed data: " + Hex.toHexString(signedData));
+
+        String x = signHex(s, kp.getPrivate());
+
+
+        LOG.info(verify(signedData, kp.getPublic(), unsignedData));
+        LOG.info(verify(x, kp.getPublic(), s));
+
+
     }
 }

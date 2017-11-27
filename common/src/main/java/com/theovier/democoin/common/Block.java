@@ -1,6 +1,6 @@
 package com.theovier.democoin.common;
 
-import org.apache.commons.codec.digest.DigestUtils;
+import com.theovier.democoin.common.crypto.Sha256Hash;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
@@ -17,13 +17,13 @@ public class Block implements Serializable {
 
     private long index;
     private long timestamp;
-    private String previousBlockHash;
-    private String hash;
+    private Sha256Hash previousBlockHash;
+    private Sha256Hash hash;
 
     private long nonce;
 
     private List<Transaction> transactions;
-    private String merkleRoot;
+    private Sha256Hash merkleRoot;
 
     public Block(Block predecessor, List<Transaction> transactions, long nonce) {
         this.index = predecessor.getIndex() + 1;
@@ -40,7 +40,7 @@ public class Block implements Serializable {
     private Block() {
         this.index = 0;
         this.timestamp = Instant.now().getEpochSecond();
-        this.previousBlockHash = "0000000000000000000000000000000000000000000000000000000000000000";
+        this.previousBlockHash = Sha256Hash.ZERO_HASH;
         this.nonce = 9;
         this.transactions = new ArrayList<>();
         this.transactions.add(new CoinbaseTransaction("todo"));
@@ -48,21 +48,21 @@ public class Block implements Serializable {
         this.merkleRoot = computeMerkleRoot();
     }
 
-    private String computeHash() {
+    private Sha256Hash computeHash() {
         StringBuilder blockContent = new StringBuilder();
         blockContent.append(String.valueOf(index));
         blockContent.append(String.valueOf(timestamp));
         blockContent.append(String.valueOf(nonce));
         blockContent.append(previousBlockHash);
         blockContent.append(merkleRoot);
-        return DigestUtils.sha256Hex(blockContent.toString());
+        return Sha256Hash.create(blockContent.toString());
     }
 
-    private String computeMerkleRoot() {
-        Queue<String> hashQueue = new LinkedList<>(transactions.stream().map(Transaction::getHash).collect(Collectors.toList()));
+    private Sha256Hash computeMerkleRoot() {
+        Queue<Sha256Hash> hashQueue = new LinkedList<>(transactions.stream().map(Transaction::getTxId).collect(Collectors.toList()));
         while (hashQueue.size() > 1) {
-            String hashableData = hashQueue.poll() + hashQueue.poll();
-            hashQueue.add(DigestUtils.sha256Hex(hashableData));
+            String hashableData = hashQueue.poll().toString() + hashQueue.poll().toString();
+            hashQueue.add(Sha256Hash.create(hashableData));
         }
         return hashQueue.poll();
     }
@@ -75,15 +75,15 @@ public class Block implements Serializable {
         return index;
     }
 
-    public String getHash() {
+    public Sha256Hash getHash() {
         return hash;
     }
 
-    public String getPreviousBlockHash() {
+    public Sha256Hash getPreviousBlockHash() {
         return previousBlockHash;
     }
 
-    public String getMerkleRoot() {
+    public Sha256Hash getMerkleRoot() {
         return merkleRoot;
     }
 
@@ -93,7 +93,7 @@ public class Block implements Serializable {
                 "index=" + index +
                 ", timestamp=" + timestamp +
                 ", previousBlockHash='" + previousBlockHash + '\'' +
-                ", hash='" + hash + '\'' +
+                ", txId='" + hash + '\'' +
                 ", nonce='" + nonce + '\'' +
                 ", merkleRoot='" + merkleRoot + '\'' +
                 ", TX=" + StringUtils.join(transactions)  +

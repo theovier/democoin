@@ -1,24 +1,20 @@
 package com.theovier.democoin.common;
 
+import com.theovier.democoin.common.crypto.SignatureUtils;
 import org.apache.log4j.Logger;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.KeyPair;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 
-public class DemoMiner {
+public class Demo {
 
-    private static final Logger LOG = Logger.getLogger(DemoMiner.class);
+    private static final Logger LOG = Logger.getLogger(Demo.class);
     private Blockchain blockchain = new Blockchain();
-    private Queue<Transaction> transactionPool = new LinkedList<>();
-    private List<Transaction> orphanTransactions = new ArrayList<>(); //transactions who wait for 1 or more inputs to be confirmed.
-    private List<TxOutput> UTXO = new ArrayList<>(); //Unspent Transaction Output -> save as utxo.dat
 
     public void initBlockchain() {
         if (!loadBlockchain()) {
@@ -59,29 +55,11 @@ public class DemoMiner {
         saveBlockchain();
     }
 
-    private void fillTransactionPool() {
-        //simulate filled transaction pool
-        TxInput[] inputs = new TxInput[1];
-        TxInput input = new TxInput("prev_tx_hash", 0, "signature");
-        inputs[0] = input;
-        Transaction genericTx = new Transaction(inputs, new TxOutput[0],".");
-        transactionPool.add(genericTx);
-    }
 
-    public void demoTransactions() {
-        fillTransactionPool();
-        List<Transaction> txInBlock = new ArrayList<>();
-        Transaction coinbaseTx = new CoinbaseTransaction("todo");
-        txInBlock.add(coinbaseTx);
-        txInBlock.add(transactionPool.poll());
-        txInBlock.forEach((tx) -> LOG.info(tx));
-    }
 
     public Block createBlock() {
-        fillTransactionPool();
         Block previousBlock = blockchain.getLastBlock();
         List<Transaction> transactions = new ArrayList<>();
-        transactions.add(transactionPool.poll());
 
         Block block = new Block(previousBlock,  transactions, 0);
         return block;
@@ -92,9 +70,68 @@ public class DemoMiner {
             LOG.info("invalid index" + newBlock.getIndex());
             return false;
         } else if (!newBlock.getPreviousBlockHash().equals(previousBlock.getHash())) {
-            LOG.info("invalid previous hash");
+            LOG.info("invalid previous txId");
             return false;
         }
         return true;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public void demoTransactions() throws Exception {
+
+        Transaction coinbaseTx = new CoinbaseTransaction("3059301306072a8648ce3d020106082a8648ce3d03010703420004436c5599484474241b38df054af89fabbd48a5920c4e6f4af7372f72aefca08c2b72844252ddc7cbf37efe2e2d766b36d6121a3edc06a68065932f3fb3c8d308");
+
+        byte[] privateKeyBytes = Files.readAllBytes(Paths.get("key.priv"));
+        byte[] publicKeyBytes = Files.readAllBytes(Paths.get("key.pub"));
+        KeyPair keypair = SignatureUtils.getKeyPair(publicKeyBytes, privateKeyBytes);
+
+
+
+
+        TxInput[] inputs = new TxInput[1];
+        TxInput input = new TxInput(coinbaseTx.getTxId(), 0);
+        input.sign(keypair);
+        inputs[0] = input;
+        Transaction tx1 = new Transaction(inputs, new TxOutput[0],".");
+
+
+
+
+        List<Transaction> txInBlock = new ArrayList<>();
+
+
+
+        txInBlock.add(coinbaseTx);
+        txInBlock.add(tx1);
+        txInBlock.forEach((tx) -> LOG.info(tx));
+
+
+        //verify tx1
+
+
+
+        //get this somehow from the UTXOPool by txId
+     //   LOG.info(coinbaseTx.getOutputs()[0].recipientPublicKey.equals(Hex.toHexString(publicKeyBytes)));
+        LOG.info(SignatureUtils.verify(tx1.inputs[0].getSignature(), tx1.inputs[0].getPublicKey(), tx1.inputs[0].getUnsignedHash()));
+    }
+
+
 }

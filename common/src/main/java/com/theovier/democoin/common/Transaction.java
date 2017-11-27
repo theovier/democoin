@@ -1,6 +1,7 @@
 package com.theovier.democoin.common;
 
-import org.apache.commons.codec.digest.DigestUtils;
+
+import com.theovier.democoin.common.crypto.Sha256Hash;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -10,7 +11,7 @@ public class Transaction implements Serializable {
 
     private static final long serialVersionUID = -3564602822987321657L;
 
-    protected String hash; //identifier txid
+    protected Sha256Hash txId;
     private long timestamp;
 
     private String msg;
@@ -25,7 +26,7 @@ public class Transaction implements Serializable {
         this.msg = msg;
         this.timestamp = Instant.now().getEpochSecond();
         this.isCoinbaseTx = false;
-        this.hash = computeHash();
+        this.txId = computeHash();
     }
 
     protected Transaction(String msg) {
@@ -34,17 +35,22 @@ public class Transaction implements Serializable {
         this.isCoinbaseTx = true;
     }
 
-    public String computeHash() {
-        String content = String.valueOf(timestamp);
-        return DigestUtils.sha256Hex(content);
+    public Sha256Hash computeHash() {
+        StringBuilder txContent = new StringBuilder();
+        txContent.append(String.valueOf(timestamp));
+        txContent.append(msg);
+        txContent.append(String.valueOf(isCoinbaseTx));
+        txContent.append(String.valueOf(inputs));
+        txContent.append(String.valueOf(outputs));
+        return Sha256Hash.create(txContent.toString());
     }
 
     public boolean isCoinbaseTx() {
         return isCoinbaseTx;
     }
 
-    public String getHash() {
-        return hash;
+    public Sha256Hash getTxId() {
+        return txId;
     }
 
     @Override
@@ -53,7 +59,7 @@ public class Transaction implements Serializable {
                 "msg='" + msg + '\'' +
                 ", inputs=" + Arrays.toString(inputs) +
                 ", outputs=" + Arrays.toString(outputs) +
-                ", hash='" + hash + '\'' +
+                ", txId='" + txId + '\'' +
                 '}';
     }
 }
