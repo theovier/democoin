@@ -50,6 +50,21 @@ public class TxInput implements Serializable {
         return false;
     }
 
+    //todo throw new exception
+    public boolean verify(TxOutput output) {
+        Address myAddress = Address.generateAddress(publicKey);
+        if (!output.getRecipientAddress().equals(myAddress)) {
+            return false;
+        }
+        try {
+            SignatureUtils.verify(getSignature(), getPublicKey(), getUnsignedHash());
+            return true;
+        } catch (GeneralSecurityException e) {
+            LOG.error("failed to verify txInput", e);
+        }
+        return false;
+    }
+
     private Sha256Hash computeUnsignedHash() {
         StringBuilder content = new StringBuilder();
         content.append(prevTXHash);

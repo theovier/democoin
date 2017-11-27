@@ -84,6 +84,14 @@ public class Transaction implements Serializable {
         return outputs;
     }
 
+    public TxInput getFirstInput() {
+        return getInputs().get(0);
+    }
+
+    public TxOutput getFirstOutput() {
+        return getOutputs().get(0);
+    }
+
     @Override
     public String toString() {
         return "TX{" +

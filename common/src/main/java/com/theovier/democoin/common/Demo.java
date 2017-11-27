@@ -84,19 +84,12 @@ public class Demo {
         Transaction coinbaseTx = new CoinbaseTransaction(target);
 
         Transaction tx1 = new Transaction(".");
-        tx1.addInput(coinbaseTx.getOutputs().get(0));
+        tx1.addInput(coinbaseTx.getFirstOutput());
         tx1.signInput(0, keypair);
 
         LOG.info(coinbaseTx);
         LOG.info(tx1);
-
-        //verify tx1   //get this somehow from the UTXOPool by txId
-        LOG.info(coinbaseTx.getOutputs().get(0).getRecipientAddress().equals(Address.generateAddress(keypair.getPublic())));
-        LOG.info(SignatureUtils.verify(
-                tx1.getInputs().get(0).getSignature(),
-                tx1.getInputs().get(0).getPublicKey(),
-                tx1.getInputs().get(0).getUnsignedHash())
-        );
+        LOG.info(tx1.getFirstInput().verify(coinbaseTx.getFirstOutput()));
         TransactionValidator.validate(tx1);
     }
 
