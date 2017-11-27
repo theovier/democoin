@@ -13,29 +13,25 @@ public class TxInput implements Serializable {
 
     private static final Logger LOG = Logger.getLogger(TxInput.class);
     private static final long serialVersionUID = 478420474849537539L;
-    private Sha256Hash prevTXHash;
-    private int prevTxOutputIndex;
+    private TxOutputPointer prevOutputInfo;
     private Sha256Hash unsignedHash;
     private String signature;
     private PublicKey publicKey;
     private Transaction parentTransaction;
 
     public TxInput(TxOutput from) {
-        this.prevTXHash = from.getParentTransaction().getTxId();
-        this.prevTxOutputIndex = from.getIndex();
+        this.prevOutputInfo = new TxOutputPointer(from);
         this.unsignedHash = computeUnsignedHash();
     }
 
     public TxInput(Sha256Hash prevTXHash, int prevTxOutputIndex) {
-        this.prevTXHash = prevTXHash;
-        this.prevTxOutputIndex = prevTxOutputIndex;
+        this.prevOutputInfo = new TxOutputPointer(prevTXHash, prevTxOutputIndex);
         this.unsignedHash = computeUnsignedHash();
     }
 
     public TxInput(Transaction parentTransaction, Sha256Hash prevTXHash, int prevTxOutputIndex) {
         this.parentTransaction = parentTransaction;
-        this.prevTXHash = prevTXHash;
-        this.prevTxOutputIndex = prevTxOutputIndex;
+        this.prevOutputInfo = new TxOutputPointer(prevTXHash, prevTxOutputIndex);
         this.unsignedHash = computeUnsignedHash();
     }
 
@@ -69,10 +65,7 @@ public class TxInput implements Serializable {
     }
 
     private Sha256Hash computeUnsignedHash() {
-        StringBuilder content = new StringBuilder();
-        content.append(prevTXHash);
-        content.append(String.valueOf(prevTxOutputIndex));
-        return Sha256Hash.create(content.toString());
+        return Sha256Hash.create(prevOutputInfo.toString());
     }
 
     public void setParentTransaction(Transaction parentTransaction) {
@@ -95,11 +88,14 @@ public class TxInput implements Serializable {
         return parentTransaction;
     }
 
+    public TxOutputPointer getPrevOutputInfo() {
+        return prevOutputInfo;
+    }
+
     @Override
     public String toString() {
-        return "in{" +
-                "prevTXHash='" + prevTXHash + '\'' +
-                ", prevTxOutputIndex=" + prevTxOutputIndex +
+        return "TxInput{" +
+                "prevOutputInfo=" + prevOutputInfo +
                 ", signature='" + signature + '\'' +
                 '}';
     }
