@@ -18,7 +18,7 @@ public class TxInput implements Serializable {
 
     @Override
     public String toString() {
-        return "TxInput{" +
+        return "in{" +
                 "previousTransactionHash='" + previousTransactionHash + '\'' +
                 ", previousTxOutputIndex=" + previousTxOutputIndex +
                 ", signature='" + signature + '\'' +

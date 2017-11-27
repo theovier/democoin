@@ -19,7 +19,7 @@ public class TxOutput implements Serializable {
 
     @Override
     public String toString() {
-        return "TxOutput{" +
+        return "out{" +
                 "value=" + value +
                 ", recipientPublicKey='" + recipientPublicKey + '\'' +
                 '}';
