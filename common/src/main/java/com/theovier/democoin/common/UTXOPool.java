@@ -7,6 +7,10 @@ public class UTXOPool {
 
     private static List<TxOutput> unspentOutputs = new ArrayList<>();
 
+    public void compute(Blockchain blockchain) {
+        //todo just calculate it from scratch when starting -> won't have problems because we are so small.
+    }
+
     public boolean loadFromFile() {
         //Unspent Transaction Output -> save as utxo.dat
         return false;
