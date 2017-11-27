@@ -14,7 +14,7 @@ public class Transaction implements Serializable {
 
     private static final long serialVersionUID = -3564602822987321657L;
 
-    protected Sha256Hash txId;
+    private Sha256Hash txId;
     private long timestamp;
     private String msg;
     private boolean isCoinBase;
