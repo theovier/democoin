@@ -1,5 +1,6 @@
 package com.theovier.democoin.common;
 
+import com.theovier.democoin.common.codec.Base58Check;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import org.bouncycastle.crypto.digests.RIPEMD160Digest;

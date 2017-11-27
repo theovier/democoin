@@ -1,4 +1,4 @@
-package com.theovier.democoin.common;
+package com.theovier.democoin.common.codec;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
