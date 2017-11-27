@@ -51,7 +51,7 @@ public class SignatureUtils {
         return ecdsaVerify.verify(signedData);
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main9(String[] args) throws Exception {
         Security.addProvider(new BouncyCastleProvider());
 
         //generate and save keys.
@@ -73,5 +73,33 @@ public class SignatureUtils {
         publicKeyBytes = Files.readAllBytes(Paths.get("key.pub"));
         isValid = verify(signedData, publicKeyBytes, unsignedData);
         LOG.info(isValid);
+    }
+
+    public static void main2(String[] args) throws Exception {
+        Security.addProvider(new BouncyCastleProvider());
+
+        //generate and save keys.
+        KeyPair pair = generateKeyPair();
+        PublicKey pub = pair.getPublic();
+        PrivateKey priv = pair.getPrivate();
+        byte[] publicKeyBytes = pub.getEncoded();
+        byte[] privateKeyBytes = priv.getEncoded();
+        Files.write(Paths.get("key.priv"), privateKeyBytes);
+        Files.write(Paths.get("key.pub"), publicKeyBytes);
+
+        String publicKeyHex = Hex.toHexString(publicKeyBytes);
+        LOG.info(publicKeyHex);
+    }
+
+    //todo save hex string instead of bytes? for readability
+    public static void main(String[] args) throws Exception {
+        Security.addProvider(new BouncyCastleProvider());
+        byte[] privateKeyBytes = Files.readAllBytes(Paths.get("key.priv"));
+        byte[] unsignedData = "SIGN ME".getBytes("UTF-8");
+        byte[] signedData = sign(unsignedData, privateKeyBytes);
+
+        String x = "3059301306072a8648ce3d020106082a8648ce3d03010703420004a0ef13f6a3ce4f3950a5b09e2f78f8aa99b03e6da3420add5649ef2a73cf2c4fed51207cad7b1d13c3e014ff01f004fa31b4755df6d22470995d55ab7533ef7a";
+        byte[] publicFromHex = Hex.decode(x);
+        LOG.info(verify(signedData, publicFromHex, unsignedData));
     }
 }
