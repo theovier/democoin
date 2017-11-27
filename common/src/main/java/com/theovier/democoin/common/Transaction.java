@@ -26,6 +26,9 @@ public class Transaction implements Serializable {
         this.msg = msg;
         this.timestamp = Instant.now().getEpochSecond();
         this.isCoinBase = false;
+    }
+    
+    public void build() {
         this.txId = computeHash();
     }
 

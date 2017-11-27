@@ -28,11 +28,21 @@ public class TransactionValidator {
     }
 
     private static boolean validateRegularTx(Transaction tx) {
-
+        for (TxInput in : tx.getInputs()) {
+            if (!validateRegulatTxInput(in)) {
+                return false;
+            }
+        }
         return true;
     }
 
-    private static boolean validateRegulatTxInput(TxInput txIn) {
-        return true;
+    private static boolean validateRegulatTxInput(TxInput in) {
+        try {
+            TxOutputPointer pointer = in.getPrevOutputInfo();
+            TxOutput out = UTXOPool.getUTXO(pointer);
+            return in.verify(out);
+        } catch (MissingUTXOException e) {
+            return false;
+        }
     }
 }

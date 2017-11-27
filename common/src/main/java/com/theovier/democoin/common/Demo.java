@@ -1,5 +1,6 @@
 package com.theovier.democoin.common;
 
+import com.theovier.democoin.common.crypto.SignatureUtils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -76,18 +77,23 @@ public class Demo {
         KeyPair keypair = wallet.getKeyPair();
 
         Address target = Address.generateAddress(keypair.getPublic());
-
         Transaction coinbaseTx = new CoinbaseTransaction(target);
+        UTXOPool.add(coinbaseTx);
 
         Transaction tx1 = new Transaction(".");
         tx1.addInput(coinbaseTx.getFirstOutput());
         tx1.signInput(0, keypair);
+        tx1.build();
+
+        Transaction tx2 = new Transaction(".");
+        tx2.addInput(coinbaseTx.getFirstOutput());
+        tx2.signInput(0, keypair);
+        tx2.build();
 
         LOG.info(coinbaseTx);
         LOG.info(tx1);
-        LOG.info(tx1.getFirstInput().verify(coinbaseTx.getFirstOutput()));
-        TransactionValidator.validate(tx1);
+        LOG.info(tx2);
+        LOG.info(TransactionValidator.validate(tx1));
+        LOG.info(TransactionValidator.validate(tx2));
     }
-
-
 }
