@@ -16,11 +16,10 @@ public class Transaction implements Serializable {
 
     protected Sha256Hash txId;
     private long timestamp;
-
     private String msg;
     private boolean isCoinBase;
     private ArrayList<TxInput> inputs = new ArrayList<>();
-    private  ArrayList<TxOutput> outputs = new ArrayList<>();
+    private ArrayList<TxOutput> outputs = new ArrayList<>();
 
 
     public Transaction(String msg) {

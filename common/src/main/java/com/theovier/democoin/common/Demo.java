@@ -1,12 +1,8 @@
 package com.theovier.democoin.common;
 
-import com.theovier.democoin.common.crypto.SignatureUtils;
-import jdk.internal.util.xml.impl.Input;
 import org.apache.log4j.Logger;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.List;
