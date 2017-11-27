@@ -11,11 +11,11 @@ public class CoinbaseTransaction extends Transaction {
 
     public static final String COINBASE_MSG = "It's a gift from the Gods!";
 
-    public CoinbaseTransaction(String recipientAddress) {
+    public CoinbaseTransaction(Address recipientAddress) {
         super(COINBASE_MSG);
         inputs = new TxInput[0];
         outputs = new TxOutput[]{
-                new TxOutput(Config.COINBASE_REWARD, recipientAddress)
+                new TxOutput(recipientAddress, Config.COINBASE_REWARD)
         };
         this.txId = computeHash();
     }

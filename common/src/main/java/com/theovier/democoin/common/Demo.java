@@ -96,15 +96,13 @@ public class Demo {
 
 
     public void demoTransactions() throws Exception {
-
-        Transaction coinbaseTx = new CoinbaseTransaction("3059301306072a8648ce3d020106082a8648ce3d03010703420004436c5599484474241b38df054af89fabbd48a5920c4e6f4af7372f72aefca08c2b72844252ddc7cbf37efe2e2d766b36d6121a3edc06a68065932f3fb3c8d308");
-
         byte[] privateKeyBytes = Files.readAllBytes(Paths.get("key.priv"));
         byte[] publicKeyBytes = Files.readAllBytes(Paths.get("key.pub"));
         KeyPair keypair = SignatureUtils.getKeyPair(publicKeyBytes, privateKeyBytes);
 
+        Address target = Address.generateAddress(keypair.getPublic());
 
-
+        Transaction coinbaseTx = new CoinbaseTransaction(target);
 
         TxInput[] inputs = new TxInput[1];
         TxInput input = new TxInput(coinbaseTx.getTxId(), 0);
@@ -113,23 +111,11 @@ public class Demo {
         Transaction tx1 = new Transaction(inputs, new TxOutput[0],".");
 
 
+        LOG.info(coinbaseTx);
+        LOG.info(tx1);
 
-
-        List<Transaction> txInBlock = new ArrayList<>();
-
-
-
-        txInBlock.add(coinbaseTx);
-        txInBlock.add(tx1);
-        txInBlock.forEach((tx) -> LOG.info(tx));
-
-
-        //verify tx1
-
-
-
-        //get this somehow from the UTXOPool by txId
-     //   LOG.info(coinbaseTx.getOutputs()[0].recipientPublicKey.equals(Hex.toHexString(publicKeyBytes)));
+        //verify tx1   //get this somehow from the UTXOPool by txId
+        LOG.info(coinbaseTx.outputs[0].getRecipientAddress().equals(Address.generateAddress(publicKeyBytes)));
         LOG.info(SignatureUtils.verify(tx1.inputs[0].getSignature(), tx1.inputs[0].getPublicKey(), tx1.inputs[0].getUnsignedHash()));
     }
 

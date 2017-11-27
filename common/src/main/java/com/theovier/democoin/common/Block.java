@@ -31,7 +31,7 @@ public class Block implements Serializable {
         this.previousBlockHash = predecessor.getHash();
         this.nonce = nonce;
         this.transactions = transactions;
-        this.transactions.add(new CoinbaseTransaction("todo"));
+ //       this.transactions.add(new CoinbaseTransaction("todo"));
         this.hash = computeHash();
         this.merkleRoot = computeMerkleRoot();
     }
@@ -43,7 +43,7 @@ public class Block implements Serializable {
         this.previousBlockHash = Sha256Hash.ZERO_HASH;
         this.nonce = 9;
         this.transactions = new ArrayList<>();
-        this.transactions.add(new CoinbaseTransaction("todo"));
+//        this.transactions.add(new CoinbaseTransaction("todo"));
         this.hash = computeHash();
         this.merkleRoot = computeMerkleRoot();
     }

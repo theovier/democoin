@@ -30,7 +30,7 @@ public class TxInput implements Serializable {
         try {
             signature = SignatureUtils.signHex(unsignedHash, keyPair.getPrivate());
         } catch (GeneralSecurityException e) {
-            LOG.error(e);
+            LOG.error("failed to sign " + toString(), e);
         }
     }
 
