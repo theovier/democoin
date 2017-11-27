@@ -9,7 +9,7 @@ public class TransactionValidator {
      */
 
     public static boolean validate(Transaction tx) {
-        if (tx.isCoinbaseTx()) {
+        if (tx.isCoinBase()) {
             return validateCoinbaseTx(tx);
         } else {
             return validateRegularTx(tx);
@@ -17,17 +17,22 @@ public class TransactionValidator {
     }
 
     private static boolean validateCoinbaseTx(Transaction tx) {
-        if (tx.inputs.length > 0) {
+        if (tx.getInputs().size() > 0) {
             return false;
-        } else if (tx.outputs.length > 1) {
+        } else if (tx.getOutputs().size() > 1) {
             return false;
-        } else if (tx.outputs[0].getValue() != Config.COINBASE_REWARD) {
+        } else if (tx.getOutputs().get(0).getValue() != Config.COINBASE_REWARD) {
             return false;
         }
         return true;
     }
 
     private static boolean validateRegularTx(Transaction tx) {
+
+        return true;
+    }
+
+    private static boolean validateRegulatTxInput(TxInput txIn) {
         return true;
     }
 }

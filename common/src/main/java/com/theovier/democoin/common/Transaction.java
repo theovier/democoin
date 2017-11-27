@@ -2,10 +2,13 @@ package com.theovier.democoin.common;
 
 
 import com.theovier.democoin.common.crypto.Sha256Hash;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
+import java.security.KeyPair;
 import java.time.Instant;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Transaction implements Serializable {
 
@@ -15,50 +18,78 @@ public class Transaction implements Serializable {
     private long timestamp;
 
     private String msg;
-    private boolean isCoinbaseTx;
-    protected TxInput[] inputs;
-    protected TxOutput[] outputs;
+    private boolean isCoinBase;
+    private ArrayList<TxInput> inputs = new ArrayList<>();
+    private  ArrayList<TxOutput> outputs = new ArrayList<>();
 
 
-    public Transaction(TxInput[] inputs, TxOutput[] outputs, String msg) {
-        this.inputs = inputs;
-        this.outputs = outputs;
+    public Transaction(String msg) {
         this.msg = msg;
         this.timestamp = Instant.now().getEpochSecond();
-        this.isCoinbaseTx = false;
+        this.isCoinBase = false;
         this.txId = computeHash();
     }
 
-    protected Transaction(String msg) {
-        this.msg = msg;
-        this.timestamp = Instant.now().getEpochSecond();
-        this.isCoinbaseTx = true;
+    public TxInput addInput(Sha256Hash spendTxHash, int outputIndex) {
+        return addInput(new TxInput(this, spendTxHash, outputIndex));
+    }
+
+    public TxInput addInput(TxOutput from) {
+        return addInput(new TxInput(from));
+    }
+
+    public TxInput addInput(TxInput input) {
+        input.setParentTransaction(this);
+        inputs.add(input);
+        return input;
+    }
+
+    public TxOutput addOutput(Address recipientAddress, long value) {
+        return addOutput(new TxOutput(this, recipientAddress, value));
+    }
+
+    public TxOutput addOutput(TxOutput out) {
+        out.setParentTransaction(this);
+        this.outputs.add(out);
+        return out;
+    }
+
+    public boolean signInput(int index, KeyPair keyPair) {
+        return inputs.get(index).sign(keyPair);
     }
 
     public Sha256Hash computeHash() {
         StringBuilder txContent = new StringBuilder();
         txContent.append(String.valueOf(timestamp));
         txContent.append(msg);
-        txContent.append(String.valueOf(isCoinbaseTx));
+        txContent.append(String.valueOf(isCoinBase));
         txContent.append(String.valueOf(inputs));
         txContent.append(String.valueOf(outputs));
         return Sha256Hash.create(txContent.toString());
     }
 
-    public boolean isCoinbaseTx() {
-        return isCoinbaseTx;
+    public boolean isCoinBase() {
+        return isCoinBase;
     }
 
     public Sha256Hash getTxId() {
         return txId;
     }
 
+    public List<TxInput> getInputs() {
+        return inputs;
+    }
+
+    public List<TxOutput> getOutputs() {
+        return outputs;
+    }
+
     @Override
     public String toString() {
         return "TX{" +
                 "msg='" + msg + '\'' +
-                ", inputs=" + Arrays.toString(inputs) +
-                ", outputs=" + Arrays.toString(outputs) +
+                ", inputs=" + StringUtils.join(inputs , ", ")+
+                ", outputs=" + StringUtils.join(outputs , ", ") +
                 ", txId='" + txId + '\'' +
                 '}';
     }

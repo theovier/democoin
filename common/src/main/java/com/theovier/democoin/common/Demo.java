@@ -1,6 +1,7 @@
 package com.theovier.democoin.common;
 
 import com.theovier.democoin.common.crypto.SignatureUtils;
+import jdk.internal.util.xml.impl.Input;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -82,16 +83,21 @@ public class Demo {
 
         Transaction coinbaseTx = new CoinbaseTransaction(target);
 
-        TxInput input = new TxInput(coinbaseTx.getTxId(), 0);
-        input.sign(keypair);
-        Transaction tx1 = new Transaction( new TxInput[]{input}, new TxOutput[0],".");
+        Transaction tx1 = new Transaction(".");
+        tx1.addInput(coinbaseTx.getOutputs().get(0));
+        tx1.signInput(0, keypair);
 
         LOG.info(coinbaseTx);
         LOG.info(tx1);
 
         //verify tx1   //get this somehow from the UTXOPool by txId
-        LOG.info(coinbaseTx.outputs[0].getRecipientAddress().equals(Address.generateAddress(keypair.getPublic())));
-        LOG.info(SignatureUtils.verify(tx1.inputs[0].getSignature(), tx1.inputs[0].getPublicKey(), tx1.inputs[0].getUnsignedHash()));
+        LOG.info(coinbaseTx.getOutputs().get(0).getRecipientAddress().equals(Address.generateAddress(keypair.getPublic())));
+        LOG.info(SignatureUtils.verify(
+                tx1.getInputs().get(0).getSignature(),
+                tx1.getInputs().get(0).getPublicKey(),
+                tx1.getInputs().get(0).getUnsignedHash())
+        );
+        TransactionValidator.validate(tx1);
     }
 
 

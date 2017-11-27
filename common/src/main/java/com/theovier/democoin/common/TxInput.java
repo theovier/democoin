@@ -18,6 +18,13 @@ public class TxInput implements Serializable {
     private Sha256Hash unsignedHash;
     private String signature;
     private PublicKey publicKey;
+    private Transaction parentTransaction;
+
+    public TxInput(TxOutput from) {
+        this.prevTXHash = from.getParentTransaction().getTxId();
+        this.prevTxOutputIndex = from.getIndex();
+        this.unsignedHash = computeUnsignedHash();
+    }
 
     public TxInput(Sha256Hash prevTXHash, int prevTxOutputIndex) {
         this.prevTXHash = prevTXHash;
@@ -25,13 +32,22 @@ public class TxInput implements Serializable {
         this.unsignedHash = computeUnsignedHash();
     }
 
-    public void sign(KeyPair keyPair) {
+    public TxInput(Transaction parentTransaction, Sha256Hash prevTXHash, int prevTxOutputIndex) {
+        this.parentTransaction = parentTransaction;
+        this.prevTXHash = prevTXHash;
+        this.prevTxOutputIndex = prevTxOutputIndex;
+        this.unsignedHash = computeUnsignedHash();
+    }
+
+    public boolean sign(KeyPair keyPair) {
         publicKey = keyPair.getPublic();
         try {
             signature = SignatureUtils.signHex(unsignedHash, keyPair.getPrivate());
+            return true;
         } catch (GeneralSecurityException e) {
             LOG.error("failed to sign " + toString(), e);
         }
+        return false;
     }
 
     private Sha256Hash computeUnsignedHash() {
@@ -39,6 +55,10 @@ public class TxInput implements Serializable {
         content.append(prevTXHash);
         content.append(String.valueOf(prevTxOutputIndex));
         return Sha256Hash.create(content.toString());
+    }
+
+    public void setParentTransaction(Transaction parentTransaction) {
+        this.parentTransaction = parentTransaction;
     }
 
     public Sha256Hash getUnsignedHash() {
@@ -51,6 +71,10 @@ public class TxInput implements Serializable {
 
     public PublicKey getPublicKey() {
         return publicKey;
+    }
+
+    public Transaction getParentTransaction() {
+        return parentTransaction;
     }
 
     @Override

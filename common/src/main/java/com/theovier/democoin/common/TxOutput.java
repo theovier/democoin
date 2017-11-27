@@ -1,6 +1,7 @@
 package com.theovier.democoin.common;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class TxOutput implements Serializable {
 
@@ -11,10 +12,21 @@ public class TxOutput implements Serializable {
     private static final long serialVersionUID = -4403978077387051602L;
     private long value;
     private Address recipientAddress; //was recipientPublicKey; //org: scriptPubKey
+    private Transaction parentTransaction;
 
     public TxOutput(final Address recipientAddress, final long value) {
         this.recipientAddress = recipientAddress;
         this.value = value;
+    }
+
+    public TxOutput(Transaction parentTransaction, final Address recipientAddress, final long value) {
+        this.parentTransaction = parentTransaction;
+        this.recipientAddress = recipientAddress;
+        this.value = value;
+    }
+
+    public void setParentTransaction(Transaction parentTransaction) {
+        this.parentTransaction = parentTransaction;
     }
 
     public long getValue() {
@@ -23,6 +35,23 @@ public class TxOutput implements Serializable {
 
     public Address getRecipientAddress() {
         return recipientAddress;
+    }
+
+    public Transaction getParentTransaction() {
+        return parentTransaction;
+    }
+
+    /**
+     * Gets the index of this output in the parentTransaction transaction, or throws if this output is free standing. Iterates
+     * over the parents list to discover this.
+     */
+    public int getIndex() {
+        List<TxOutput> outputs = getParentTransaction().getOutputs();
+        for (int i = 0; i < outputs.size(); i++) {
+            if (outputs.get(i) == this)
+                return i;
+        }
+        throw new IllegalStateException("Output linked to wrong parentTransaction transaction?");
     }
 
     @Override

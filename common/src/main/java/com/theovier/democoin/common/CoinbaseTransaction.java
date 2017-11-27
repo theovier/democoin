@@ -1,6 +1,7 @@
 package com.theovier.democoin.common;
 
 
+
 public class CoinbaseTransaction extends Transaction {
 
     /**
@@ -13,10 +14,7 @@ public class CoinbaseTransaction extends Transaction {
 
     public CoinbaseTransaction(Address recipientAddress) {
         super(COINBASE_MSG);
-        inputs = new TxInput[0];
-        outputs = new TxOutput[]{
-                new TxOutput(recipientAddress, Config.COINBASE_REWARD)
-        };
+        addOutput(new TxOutput(recipientAddress, Config.COINBASE_REWARD));
         this.txId = computeHash();
     }
 }
