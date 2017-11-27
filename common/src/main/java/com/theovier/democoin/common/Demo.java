@@ -46,7 +46,7 @@ public class Demo {
         }
     }
 
-    public void demo() {
+    public void demoBlock() {
         Block block = createBlock();
         if (isValidBlock(block, blockchain.getLastBlock())) {
             blockchain.add(block);
@@ -54,8 +54,6 @@ public class Demo {
         LOG.info(blockchain);
         saveBlockchain();
     }
-
-
 
     public Block createBlock() {
         Block previousBlock = blockchain.getLastBlock();
@@ -76,46 +74,23 @@ public class Demo {
         return true;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public void demoTransactions() throws Exception {
-        byte[] privateKeyBytes = Files.readAllBytes(Paths.get("key.priv"));
-        byte[] publicKeyBytes = Files.readAllBytes(Paths.get("key.pub"));
-        KeyPair keypair = SignatureUtils.getKeyPair(publicKeyBytes, privateKeyBytes);
+        Wallet wallet = new Wallet();
+        KeyPair keypair = wallet.getKeyPair();
 
         Address target = Address.generateAddress(keypair.getPublic());
 
         Transaction coinbaseTx = new CoinbaseTransaction(target);
 
-        TxInput[] inputs = new TxInput[1];
         TxInput input = new TxInput(coinbaseTx.getTxId(), 0);
         input.sign(keypair);
-        inputs[0] = input;
-        Transaction tx1 = new Transaction(inputs, new TxOutput[0],".");
-
+        Transaction tx1 = new Transaction( new TxInput[]{input}, new TxOutput[0],".");
 
         LOG.info(coinbaseTx);
         LOG.info(tx1);
 
         //verify tx1   //get this somehow from the UTXOPool by txId
-        LOG.info(coinbaseTx.outputs[0].getRecipientAddress().equals(Address.generateAddress(publicKeyBytes)));
+        LOG.info(coinbaseTx.outputs[0].getRecipientAddress().equals(Address.generateAddress(keypair.getPublic())));
         LOG.info(SignatureUtils.verify(tx1.inputs[0].getSignature(), tx1.inputs[0].getPublicKey(), tx1.inputs[0].getUnsignedHash()));
     }
 
