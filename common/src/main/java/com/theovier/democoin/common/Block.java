@@ -3,6 +3,7 @@ package com.theovier.democoin.common;
 import com.theovier.democoin.common.crypto.Sha256Hash;
 import com.theovier.democoin.common.templates.BlockTemplate;
 import com.theovier.democoin.common.templates.FillableTemplate;
+import com.theovier.democoin.common.transaction.CoinbaseTransaction;
 import com.theovier.democoin.common.transaction.Transaction;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,6 +19,7 @@ public class Block implements Serializable {
 
     private static final long serialVersionUID = 1113799434508676095L;
     private FillableTemplate template = new BlockTemplate(this);
+    private static final Address MINER_ADDRESS = new Address("1AVuQjcnquXEaXgggJx7TsyMBjbatiBtNB");
 
     private long index;
     private long timestamp;
@@ -26,7 +28,7 @@ public class Block implements Serializable {
 
     private long nonce;
 
-    private List<Transaction> transactions;
+    private List<Transaction> transactions = new ArrayList<>();
     private Sha256Hash merkleRoot;
 
     public Block(Block predecessor, List<Transaction> transactions, long nonce) {
@@ -34,8 +36,8 @@ public class Block implements Serializable {
         this.timestamp = Instant.now().getEpochSecond();
         this.previousBlockHash = predecessor.getHash();
         this.nonce = nonce;
-        this.transactions = transactions;
- //       this.transactions.add(new CoinbaseTransaction("todo"));
+        this.transactions.add(new CoinbaseTransaction(MINER_ADDRESS));
+        this.transactions.addAll(transactions);
         this.hash = computeHash();
         this.merkleRoot = computeMerkleRoot();
     }
@@ -45,9 +47,8 @@ public class Block implements Serializable {
         this.index = 0;
         this.timestamp = Instant.now().getEpochSecond();
         this.previousBlockHash = Sha256Hash.ZERO_HASH;
-        this.nonce = 9;
-        this.transactions = new ArrayList<>();
-//        this.transactions.add(new CoinbaseTransaction("todo"));
+        this.nonce = -1;
+        this.transactions.add(new CoinbaseTransaction(MINER_ADDRESS));
         this.hash = computeHash();
         this.merkleRoot = computeMerkleRoot();
     }
