@@ -1,6 +1,7 @@
-package com.theovier.democoin.common;
+package com.theovier.democoin.common.transaction;
 
 
+import com.theovier.democoin.common.Address;
 import com.theovier.democoin.common.crypto.Sha256Hash;
 import org.apache.commons.lang3.StringUtils;
 

@@ -1,4 +1,6 @@
-package com.theovier.democoin.common;
+package com.theovier.democoin.common.transaction;
+
+import com.theovier.democoin.common.Address;
 
 import java.io.Serializable;
 import java.util.List;

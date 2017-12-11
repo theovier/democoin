@@ -1,6 +1,7 @@
 package com.theovier.democoin.common;
 
 import com.theovier.democoin.common.crypto.Sha256Hash;
+import com.theovier.democoin.common.transaction.Transaction;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;

@@ -1,6 +1,9 @@
 package com.theovier.democoin.common;
 
-import com.theovier.democoin.common.crypto.SignatureUtils;
+import com.theovier.democoin.common.transaction.CoinbaseTransaction;
+import com.theovier.democoin.common.transaction.Transaction;
+import com.theovier.democoin.common.transaction.TransactionValidator;
+import com.theovier.democoin.common.transaction.UTXOPool;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -72,7 +75,7 @@ public class Demo {
         return true;
     }
 
-    public void demoTransactions() throws Exception {
+    public void demoTransactions() {
         Wallet wallet = new Wallet();
         KeyPair keypair = wallet.getKeyPair();
 

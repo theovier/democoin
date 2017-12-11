@@ -1,6 +1,8 @@
-package com.theovier.democoin.common;
+package com.theovier.democoin.common.transaction;
 
 
+import com.theovier.democoin.common.Address;
+import com.theovier.democoin.common.Config;
 
 public class CoinbaseTransaction extends Transaction {
 

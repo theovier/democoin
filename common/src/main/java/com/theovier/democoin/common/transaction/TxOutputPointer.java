@@ -1,4 +1,4 @@
-package com.theovier.democoin.common;
+package com.theovier.democoin.common.transaction;
 
 import com.theovier.democoin.common.crypto.Sha256Hash;
 
