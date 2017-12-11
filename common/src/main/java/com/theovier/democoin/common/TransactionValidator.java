@@ -29,14 +29,14 @@ public class TransactionValidator {
 
     private static boolean validateRegularTx(Transaction tx) {
         for (TxInput in : tx.getInputs()) {
-            if (!validateRegulatTxInput(in)) {
+            if (!validateRegularTxInput(in)) {
                 return false;
             }
         }
         return true;
     }
 
-    private static boolean validateRegulatTxInput(TxInput in) {
+    private static boolean validateRegularTxInput(TxInput in) {
         try {
             TxOutputPointer pointer = in.getPrevOutputInfo();
             TxOutput out = UTXOPool.getUTXO(pointer);
