@@ -7,12 +7,14 @@ import org.bouncycastle.crypto.digests.RIPEMD160Digest;
 import org.bouncycastle.util.Arrays;
 import org.bouncycastle.util.encoders.Hex;
 
+import java.io.Serializable;
 import java.security.PublicKey;
 
-public class Address {
+public class Address implements Serializable{
 
     private static final Logger LOG = Logger.getLogger(Address.class);
     public static final byte PREFIX = 0x00; //0x0F -> 7.
+    private static final long serialVersionUID = -1022871296284619198L;
     private final String address;
 
     /**

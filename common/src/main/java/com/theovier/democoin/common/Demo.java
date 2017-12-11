@@ -17,6 +17,68 @@ public class Demo {
     private static final Logger LOG = Logger.getLogger(Demo.class);
     private Blockchain blockchain = new Blockchain();
 
+    public void demoTransactions() {
+        Wallet wallet = new Wallet();
+        KeyPair keypair = wallet.getKeyPair();
+
+        Address target = Address.generateAddress(keypair.getPublic());
+        Transaction coinbaseTx = new CoinbaseTransaction(target);
+        UTXOPool.add(coinbaseTx);
+
+        Transaction tx1 = new Transaction(".");
+        tx1.addInput(coinbaseTx.getFirstOutput());
+        tx1.signInput(0, keypair);
+        tx1.build();
+
+        Transaction tx2 = new Transaction(".");
+        tx2.addInput(coinbaseTx.getFirstOutput());
+        tx2.signInput(0, keypair);
+        tx2.build();
+
+        LOG.info(coinbaseTx);
+        LOG.info(tx1);
+        LOG.info(tx2);
+        LOG.info(TransactionValidator.validate(tx1));
+        LOG.info(TransactionValidator.validate(tx2));
+    }
+
+    public void demoBlockchain() {
+        initBlockchain();
+
+        Block previousBlock = blockchain.getLastBlock();
+
+        Wallet wallet = new Wallet();
+        KeyPair keypair = wallet.getKeyPair();
+        Address target = Address.generateAddress(keypair.getPublic());
+
+        Transaction coinbaseTx = new CoinbaseTransaction(target);
+
+        Transaction tx1 = new Transaction(".");
+        tx1.addInput(coinbaseTx.getFirstOutput());
+        tx1.addOutput(target, 20);
+        tx1.signInput(0, keypair);
+        tx1.build();
+
+
+
+        List<Transaction> transactions = new ArrayList<>();
+        transactions.add(coinbaseTx);
+        transactions.add(tx1);
+
+        Block block = new Block(previousBlock,  transactions, 0);
+        blockchain.add(block);
+        LOG.info(blockchain);
+        
+        /*
+        //todo BlockValidator
+        if (isValidBlock(block, blockchain.getLastBlock())) {
+            blockchain.add(block);
+        }
+        LOG.info(blockchain);
+        saveBlockchain();
+        */
+    }
+
     public void initBlockchain() {
         if (!loadBlockchain()) {
             Block genesisBlock = Block.generateGenesisBlock();
@@ -47,23 +109,6 @@ public class Demo {
         }
     }
 
-    public void demoBlock() {
-        Block block = createBlock();
-        if (isValidBlock(block, blockchain.getLastBlock())) {
-            blockchain.add(block);
-        }
-        LOG.info(blockchain);
-        saveBlockchain();
-    }
-
-    public Block createBlock() {
-        Block previousBlock = blockchain.getLastBlock();
-        List<Transaction> transactions = new ArrayList<>();
-
-        Block block = new Block(previousBlock,  transactions, 0);
-        return block;
-    }
-
     public static boolean isValidBlock(Block newBlock , Block previousBlock) {
         if (newBlock.getIndex() != previousBlock.getIndex() + 1) {
             LOG.info("invalid index" + newBlock.getIndex());
@@ -73,30 +118,5 @@ public class Demo {
             return false;
         }
         return true;
-    }
-
-    public void demoTransactions() {
-        Wallet wallet = new Wallet();
-        KeyPair keypair = wallet.getKeyPair();
-
-        Address target = Address.generateAddress(keypair.getPublic());
-        Transaction coinbaseTx = new CoinbaseTransaction(target);
-        UTXOPool.add(coinbaseTx);
-
-        Transaction tx1 = new Transaction(".");
-        tx1.addInput(coinbaseTx.getFirstOutput());
-        tx1.signInput(0, keypair);
-        tx1.build();
-
-        Transaction tx2 = new Transaction(".");
-        tx2.addInput(coinbaseTx.getFirstOutput());
-        tx2.signInput(0, keypair);
-        tx2.build();
-
-        LOG.info(coinbaseTx);
-        LOG.info(tx1);
-        LOG.info(tx2);
-        LOG.info(TransactionValidator.validate(tx1));
-        LOG.info(TransactionValidator.validate(tx2));
     }
 }

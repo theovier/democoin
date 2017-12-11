@@ -1,6 +1,8 @@
 package com.theovier.democoin.common;
 
 import com.theovier.democoin.common.crypto.Sha256Hash;
+import com.theovier.democoin.common.templates.BlockTemplate;
+import com.theovier.democoin.common.templates.FillableTemplate;
 import com.theovier.democoin.common.transaction.Transaction;
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 public class Block implements Serializable {
 
     private static final long serialVersionUID = 1113799434508676095L;
+    private FillableTemplate template = new BlockTemplate(this);
 
     private long index;
     private long timestamp;
@@ -84,8 +87,24 @@ public class Block implements Serializable {
         return previousBlockHash;
     }
 
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public long getNonce() {
+        return nonce;
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
     public Sha256Hash getMerkleRoot() {
         return merkleRoot;
+    }
+
+    public String toXML() {
+        return template.getFilledTemplate();
     }
 
     @Override
@@ -94,10 +113,11 @@ public class Block implements Serializable {
                 "index=" + index +
                 ", timestamp=" + timestamp +
                 ", previousBlockHash='" + previousBlockHash + '\'' +
-                ", txId='" + hash + '\'' +
+                ", hash='" + hash + '\'' +
                 ", nonce='" + nonce + '\'' +
                 ", merkleRoot='" + merkleRoot + '\'' +
-                ", TX=" + StringUtils.join(transactions)  +
+                ", Transactions=" + System.lineSeparator() + '\t' +
+                StringUtils.join(transactions, System.lineSeparator() + '\t')  + System.lineSeparator() +
                 '}';
     }
 }

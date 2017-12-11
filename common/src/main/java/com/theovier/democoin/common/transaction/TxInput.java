@@ -3,6 +3,8 @@ package com.theovier.democoin.common.transaction;
 import com.theovier.democoin.common.Address;
 import com.theovier.democoin.common.crypto.Sha256Hash;
 import com.theovier.democoin.common.crypto.SignatureUtils;
+import com.theovier.democoin.common.templates.FillableTemplate;
+import com.theovier.democoin.common.templates.TxInputTemplate;
 import org.apache.log4j.Logger;
 
 import java.io.Serializable;
@@ -14,6 +16,8 @@ public class TxInput implements Serializable {
 
     private static final Logger LOG = Logger.getLogger(TxInput.class);
     private static final long serialVersionUID = 478420474849537539L;
+    private FillableTemplate template = new TxInputTemplate(this);
+
     private Transaction parentTransaction;
 
     private TxOutputPointer prevOutputInfo;
@@ -84,6 +88,10 @@ public class TxInput implements Serializable {
     public String unsigned() {
         //return the raw txInput data. this is called by the parentTX when constructing a signableHash.
         return getPrevOutputInfo().toString();
+    }
+
+    public String toXML() {
+        return template.getFilledTemplate();
     }
 
     @Override

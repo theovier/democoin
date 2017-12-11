@@ -1,6 +1,8 @@
 package com.theovier.democoin.common.transaction;
 
 import com.theovier.democoin.common.Address;
+import com.theovier.democoin.common.templates.FillableTemplate;
+import com.theovier.democoin.common.templates.TxOutputTemplate;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,6 +14,8 @@ public class TxOutput implements Serializable {
      */
 
     private static final long serialVersionUID = -4403978077387051602L;
+    private FillableTemplate template = new TxOutputTemplate(this);
+
     private long value;
     private Address recipientAddress; //was recipientPublicKey; //org: scriptPubKey
     private Transaction parentTransaction;
@@ -54,6 +58,10 @@ public class TxOutput implements Serializable {
                 return i;
         }
         throw new IllegalStateException("Output linked to wrong parentTransaction transaction?");
+    }
+
+    public String toXML() {
+        return template.getFilledTemplate();
     }
 
     @Override

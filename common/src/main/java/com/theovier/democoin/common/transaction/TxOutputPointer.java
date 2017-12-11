@@ -2,8 +2,11 @@ package com.theovier.democoin.common.transaction;
 
 import com.theovier.democoin.common.crypto.Sha256Hash;
 
-public class TxOutputPointer {
+import java.io.Serializable;
 
+public class TxOutputPointer implements Serializable {
+
+    private static final long serialVersionUID = 5743551940949924366L;
     private Sha256Hash transactionHash;
     private int outputIndex;
 

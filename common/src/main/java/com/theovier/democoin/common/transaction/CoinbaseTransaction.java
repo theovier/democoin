@@ -16,6 +16,7 @@ public class CoinbaseTransaction extends Transaction {
 
     public CoinbaseTransaction(Address recipientAddress) {
         super(COINBASE_MSG);
+        this.isCoinBase = true;
         addOutput(new TxOutput(recipientAddress, Config.COINBASE_REWARD));
         build();
     }

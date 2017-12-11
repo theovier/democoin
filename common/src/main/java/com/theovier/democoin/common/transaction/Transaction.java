@@ -3,6 +3,8 @@ package com.theovier.democoin.common.transaction;
 
 import com.theovier.democoin.common.Address;
 import com.theovier.democoin.common.crypto.Sha256Hash;
+import com.theovier.democoin.common.templates.FillableTemplate;
+import com.theovier.democoin.common.templates.TransactionTemplate;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
@@ -14,11 +16,12 @@ import java.util.List;
 public class Transaction implements Serializable {
 
     private static final long serialVersionUID = -3564602822987321657L;
+    private FillableTemplate template = new TransactionTemplate(this);
 
     private Sha256Hash txId;
     private long timestamp;
     private String msg;
-    private boolean isCoinBase;
+    protected boolean isCoinBase;
     private ArrayList<TxInput> inputs = new ArrayList<>();
     private ArrayList<TxOutput> outputs = new ArrayList<>();
 
@@ -90,6 +93,14 @@ public class Transaction implements Serializable {
         return txId;
     }
 
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public String getMessage() {
+        return msg;
+    }
+
     public List<TxInput> getInputs() {
         return inputs;
     }
@@ -106,13 +117,19 @@ public class Transaction implements Serializable {
         return getOutputs().get(0);
     }
 
+    public String toXML() {
+        return template.getFilledTemplate();
+    }
+
     @Override
     public String toString() {
         return "TX{" +
-                "msg='" + msg + '\'' +
-                ", inputs=" + StringUtils.join(inputs , ", ")+
-                ", outputs=" + StringUtils.join(outputs , ", ") +
-                ", txId='" + txId + '\'' +
+                "timestamp=" + timestamp +
+                ", txId=" + txId +
+                ", isCoinBase=" + isCoinBase +
+                ", msg='" + msg + '\'' +
+                ", inputs=" + inputs +
+                ", outputs=" + outputs +
                 '}';
     }
 }

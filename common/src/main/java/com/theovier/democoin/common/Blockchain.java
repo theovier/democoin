@@ -1,10 +1,13 @@
 package com.theovier.democoin.common;
 
+import com.theovier.democoin.common.templates.BlockChainTemplate;
+import com.theovier.democoin.common.templates.FillableTemplate;
+
 import java.util.ArrayList;
 
 public class Blockchain extends ArrayList<Block> {
 
-    //todo: make class with member arraylist to hide the remove functions
+    private FillableTemplate template = new BlockChainTemplate(this);
 
     public Block getLastBlock() {
         if (this.size() > 0) {
@@ -14,10 +17,12 @@ public class Blockchain extends ArrayList<Block> {
         }
     }
 
+    public String toXML() {
+        return template.getFilledTemplate();
+    }
+
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Logging Blockchain: " + System.lineSeparator());
-        this.forEach((block) -> sb.append(block + System.lineSeparator()));
-        return sb.toString();
+        return toXML();
     }
 }
