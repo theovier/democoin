@@ -56,8 +56,20 @@ public class Transaction implements Serializable {
         return out;
     }
 
+    /** call only if all needed inputs and outputs are already added.*/
     public boolean signInput(int index, KeyPair keyPair) {
         return inputs.get(index).sign(keyPair);
+    }
+
+    public Sha256Hash getSignableHash() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(txId);
+        sb.append(timestamp);
+        sb.append(msg);
+        sb.append(isCoinBase);
+        inputs.forEach(input -> sb.append(input.unsigned()));
+        sb.append(outputs);
+        return Sha256Hash.create(sb.toString());
     }
 
     public Sha256Hash computeHash() {

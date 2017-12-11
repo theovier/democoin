@@ -13,32 +13,29 @@ public class TxInput implements Serializable {
 
     private static final Logger LOG = Logger.getLogger(TxInput.class);
     private static final long serialVersionUID = 478420474849537539L;
+    private Transaction parentTransaction;
+
     private TxOutputPointer prevOutputInfo;
-    private Sha256Hash unsignedHash;
     private String signature;
     private PublicKey publicKey;
-    private Transaction parentTransaction;
 
     public TxInput(TxOutput from) {
         this.prevOutputInfo = new TxOutputPointer(from);
-        this.unsignedHash = computeUnsignedHash();
     }
 
     public TxInput(Sha256Hash prevTXHash, int prevTxOutputIndex) {
         this.prevOutputInfo = new TxOutputPointer(prevTXHash, prevTxOutputIndex);
-        this.unsignedHash = computeUnsignedHash();
     }
 
     public TxInput(Transaction parentTransaction, Sha256Hash prevTXHash, int prevTxOutputIndex) {
         this.parentTransaction = parentTransaction;
         this.prevOutputInfo = new TxOutputPointer(prevTXHash, prevTxOutputIndex);
-        this.unsignedHash = computeUnsignedHash();
     }
 
     public boolean sign(KeyPair keyPair) {
         publicKey = keyPair.getPublic();
         try {
-            signature = SignatureUtils.signHex(unsignedHash, keyPair.getPrivate());
+            signature = SignatureUtils.signHex(parentTransaction.getSignableHash(), keyPair.getPrivate());
             return true;
         } catch (GeneralSecurityException e) {
             LOG.error("failed to sign " + toString(), e);
@@ -56,7 +53,7 @@ public class TxInput implements Serializable {
             return false;
         }
         try {
-            SignatureUtils.verify(getSignature(), getPublicKey(), getUnsignedHash());
+            SignatureUtils.verify(getSignature(), getPublicKey(), parentTransaction.getSignableHash());
             return true;
         } catch (GeneralSecurityException e) {
             LOG.error("failed to verify txInput", e);
@@ -64,16 +61,8 @@ public class TxInput implements Serializable {
         return false;
     }
 
-    private Sha256Hash computeUnsignedHash() {
-        return Sha256Hash.create(prevOutputInfo.toString());
-    }
-
     public void setParentTransaction(Transaction parentTransaction) {
         this.parentTransaction = parentTransaction;
-    }
-
-    public Sha256Hash getUnsignedHash() {
-        return unsignedHash;
     }
 
     public String getSignature() {
@@ -90,6 +79,11 @@ public class TxInput implements Serializable {
 
     public TxOutputPointer getPrevOutputInfo() {
         return prevOutputInfo;
+    }
+
+    public String unsigned() {
+        //return the raw txInput data. this is called by the parentTX when constructing a signableHash.
+        return getPrevOutputInfo().toString();
     }
 
     @Override
