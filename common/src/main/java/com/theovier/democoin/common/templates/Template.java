@@ -26,6 +26,7 @@ public abstract class Template implements FillableTemplate {
         this.ve.setProperty( RuntimeConstants.RESOURCE_LOADER, "classpath" );
         this.ve.setProperty( "classpath.resource.loader.class", ClasspathResourceLoader.class.getName() ); //$NON-NLS-1$
         this.ve.setProperty( RuntimeConstants.FILE_RESOURCE_LOADER_CACHE, "true" );
+        this.ve.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.NullLogChute" );
         this.ve.init();
     }
 
