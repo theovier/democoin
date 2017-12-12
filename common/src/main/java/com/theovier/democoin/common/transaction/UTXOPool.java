@@ -2,48 +2,36 @@ package com.theovier.democoin.common.transaction;
 
 import com.theovier.democoin.common.Blockchain;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
+//todo don't make this static?
 public class UTXOPool {
 
-    private static List<TxOutput> unspentOutputs = new ArrayList<>();
+    private static Set<TxOutput> unspentOutputs = new HashSet<>();
 
     public void compute(Blockchain blockchain) {
         //todo just calculate it from scratch when starting -> won't have problems because we are so small.
-    }
-
-    public boolean loadFromFile() {
-        //Unspent Transaction Output -> save as utxo.dat
-        return false;
-    }
-
-    public boolean saveToFile() {
-        return false;
     }
 
     public static void add(Transaction transaction) {
         transaction.getOutputs().forEach(out -> unspentOutputs.add(out));
     }
 
+    /**
+     * gets the referenced TxOutput. Throws an error if the output is not in the UTXO-set.
+     */
     public static TxOutput getUTXO(TxOutputPointer reference) throws MissingUTXOException {
-        int index = getUTXOIndex(reference);
-        if (index != -1) {
-            return unspentOutputs.remove(index);
+        Optional<TxOutput> result = unspentOutputs
+                .stream()
+                .filter(utxo -> utxo.getParentTransaction().getTxId().equals(reference.getTransactionHash()))
+                .filter(utxo -> utxo.getIndex() == reference.getOutputIndex())
+                .findAny();
+
+        if (result.isPresent()) {
+            TxOutput utxo = result.get();
+            unspentOutputs.remove(utxo);
+            return utxo;
         }
         throw new MissingUTXOException();
-    }
-
-    private static int getUTXOIndex(TxOutputPointer reference) {
-        for (int i=0; i < unspentOutputs.size(); i++) {
-            TxOutput utxo = unspentOutputs.get(i);
-            Transaction containingTx = utxo.getParentTransaction();
-            if (containingTx.getTxId().equals(reference.getTransactionHash())) {
-                if (utxo.getIndex() == reference.getOutputIndex()) {
-                    return i;
-                }
-            }
-        }
-        return -1;
     }
 }
