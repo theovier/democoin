@@ -3,6 +3,7 @@ package com.theovier.democoin.common;
 import com.theovier.democoin.common.templates.BlockChainTemplate;
 import com.theovier.democoin.common.templates.FillableTemplate;
 import com.theovier.democoin.common.transaction.TransactionPool;
+import com.theovier.democoin.common.transaction.UTXOPool;
 import org.apache.log4j.Logger;
 
 import java.io.FileInputStream;
@@ -26,6 +27,7 @@ public class Blockchain {
             ObjectOutputStream oos = new ObjectOutputStream(fout);
             oos.writeObject(blockchain);
             LOG.info("saved blockchain.");
+            //todo also save xml version for debugging
             return true;
         } catch (Exception e) {
             LOG.error(e);
@@ -41,15 +43,22 @@ public class Blockchain {
             return true;
         } catch (Exception e) {
             LOG.warn("could not load blockchain - generating GenesisBlock");
-            blockchain.add(Block.generateGenesisBlock());
+            appendGensisBlock();
         }
         return false;
+    }
+
+    private void appendGensisBlock() {
+        Block genesis = Block.generateGenesisBlock();
+        blockchain.add(genesis);
+        genesis.getTransactions().forEach(UTXOPool::add); //add transactions outputs to the UTXO.
     }
 
     public synchronized boolean append(Block block) {
         if (BlockValidator.isValid(block, getLastBlock())) {
             blockchain.add(block);
-            block.getTransactions().forEach(TransactionPool::remove);//remove included transactions from transaction pool
+            block.getTransactions().forEach(TransactionPool::remove);//remove included transactions from (pending) transaction pool
+            block.getTransactions().forEach(UTXOPool::add); //add transactions outputs to the UTXO.
             return true;
         }
         return false;

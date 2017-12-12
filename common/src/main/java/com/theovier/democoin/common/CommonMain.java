@@ -1,7 +1,5 @@
 package com.theovier.democoin.common;
 
-import com.theovier.democoin.common.templates.FillableTemplate;
-import com.theovier.democoin.common.templates.TransactionTemplate;
 import org.apache.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -14,7 +12,7 @@ public class CommonMain {
     public static void main (String[] args) throws Exception {
         Security.addProvider(new BouncyCastleProvider());
         Demo miner = new Demo();
-        //miner.demoTransactions();
+        //miner.generateDemoBlockchainFile();
         miner.demoBlockchain();
     }
 }

@@ -1,20 +1,43 @@
 package com.theovier.democoin.common.transaction;
 
+import com.theovier.democoin.common.Block;
 import com.theovier.democoin.common.Blockchain;
+import org.apache.log4j.Logger;
 
 import java.util.*;
 
 //todo don't make this static?
 public class UTXOPool {
 
+    private static final Logger LOG = Logger.getLogger(UTXOPool.class);
     private static Set<TxOutput> unspentOutputs = new HashSet<>();
 
-    public void compute(Blockchain blockchain) {
+    public static void compute(Blockchain blockchain) {
         //todo just calculate it from scratch when starting -> won't have problems because we are so small.
+        //todo make this better and faster.
+
+        HashMap<TxOutputPointer, TxOutput> outputs = new HashMap<>();
+        ArrayList<Block> blocks = blockchain.getBlocks();
+        for (Block block : blocks) {
+            for (Transaction transaction : block.getTransactions()) {
+                for (TxOutput output : transaction.getOutputs()) {
+                    TxOutputPointer pointer = new TxOutputPointer(output.getParentTransaction().getTxId(), output.getIndex()); //todo move this to TxOutput
+                    outputs.put(pointer, output);
+                }
+                for (TxInput input : transaction.getInputs()) {
+                    TxOutputPointer pointer = input.getPrevOutputInfo();
+                    outputs.remove(pointer);
+                }
+            }
+        }
+        for (TxOutputPointer key : outputs.keySet()) {
+            LOG.info(key);
+        }
+        unspentOutputs.addAll(outputs.values());
     }
 
     public static void add(Transaction transaction) {
-        transaction.getOutputs().forEach(out -> unspentOutputs.add(out));
+        transaction.getOutputs().forEach(unspentOutputs::add);
     }
 
     /**

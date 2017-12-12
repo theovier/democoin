@@ -30,12 +30,12 @@ public class Block implements Serializable {
     private List<Transaction> transactions = new ArrayList<>();
     private Sha256Hash merkleRoot;
 
-    public Block(Block predecessor, List<Transaction> transactions, long nonce) {
+    public Block(Block predecessor, List<Transaction> transactions, long nonce, Address coinbaseRecipient) {
         this.index = predecessor.getIndex() + 1;
         this.timestamp = Instant.now().getEpochSecond();
         this.previousBlockHash = predecessor.getHash();
         this.nonce = nonce;
-        this.transactions.add(new CoinbaseTransaction(MINER_ADDRESS));
+        this.transactions.add(new CoinbaseTransaction(coinbaseRecipient));
         this.transactions.addAll(transactions);
         this.merkleRoot = computeMerkleRoot();
         this.hash = computeHash();
@@ -62,6 +62,7 @@ public class Block implements Serializable {
         return Sha256Hash.create(blockContent.toString());
     }
 
+    //todo if only 1 element hash with duplicate -> atm. genesis block merkle root = tx hash.
     public Sha256Hash computeMerkleRoot() {
         Queue<Sha256Hash> hashQueue = new LinkedList<>(transactions.stream().map(Transaction::getTxId).collect(Collectors.toList()));
         while (hashQueue.size() > 1) {

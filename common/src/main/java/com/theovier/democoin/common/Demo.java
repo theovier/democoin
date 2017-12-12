@@ -1,12 +1,12 @@
 package com.theovier.democoin.common;
 
+import com.theovier.democoin.common.crypto.Sha256Hash;
 import com.theovier.democoin.common.transaction.CoinbaseTransaction;
 import com.theovier.democoin.common.transaction.Transaction;
 import com.theovier.democoin.common.transaction.TransactionValidator;
 import com.theovier.democoin.common.transaction.UTXOPool;
 import org.apache.log4j.Logger;
 
-import java.io.*;
 import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,81 +42,38 @@ public class Demo {
         LOG.info(TransactionValidator.validate(tx2));
     }
 
-    public void demoBlockchain() {
-        initBlockchain();
+    public void generateDemoBlockchainFile() {
+        //remove blockchain.dat before calling
+        // -> only 1 genesis block with 1 coinbase TX is present
+        //because of the blockchain = new Blockchain();
 
-        Block previousBlock = blockchain.getLastBlock();
+//        blockchain.save();
+        Block block = new Block(blockchain.getLastBlock(),  new ArrayList<>(), 0, new Address("..."));
+        blockchain.append(block);
+        LOG.info(blockchain);
+        UTXOPool.compute(blockchain);
+    }
+
+    public void demoBlockchain() {
+        UTXOPool.compute(blockchain);
 
         Wallet wallet = new Wallet();
         KeyPair keypair = wallet.getKeyPair();
         Address target = Address.generateAddress(keypair.getPublic());
 
-        Transaction coinbaseTx = new CoinbaseTransaction(target);
-
         Transaction tx1 = new Transaction(".");
-        tx1.addInput(coinbaseTx.getFirstOutput());
+
+        //reference the genesisBlock coinbase transaction.
+        tx1.addInput(new Sha256Hash("eba690d49ef7a59efd057f22984989ab7f6f597dc6d63442fb75139c4655efd4"), 0);
         tx1.addOutput(target, 20);
         tx1.signInput(0, keypair);
         tx1.build();
 
-
-
         List<Transaction> transactions = new ArrayList<>();
-        transactions.add(coinbaseTx);
         transactions.add(tx1);
 
-        Block block = new Block(previousBlock,  transactions, 0);
-        blockchain.add(block);
+        Block block = new Block(blockchain.getLastBlock(),  transactions, 0, target);
+        blockchain.append(block);
         LOG.info(blockchain);
-        
-        /*
-        //todo BlockValidator
-        if (isValidBlock(block, blockchain.getLastBlock())) {
-            blockchain.add(block);
-        }
-        LOG.info(blockchain);
-        saveBlockchain();
-        */
-    }
-
-    public void initBlockchain() {
-        if (!loadBlockchain()) {
-            Block genesisBlock = Block.generateGenesisBlock();
-            blockchain.add(genesisBlock);
-        }
-    }
-
-    public boolean loadBlockchain() {
-        try {
-            FileInputStream fin = new FileInputStream("blockchain.dat");
-            ObjectInputStream ois = new ObjectInputStream(fin);
-            blockchain = (Blockchain)ois.readObject();
-            return true;
-        } catch (Exception e) {
-            LOG.error(e);
-        }
-        return false;
-    }
-
-    public void saveBlockchain() {
-        try {
-            FileOutputStream fout = new FileOutputStream("blockchain.dat");
-            ObjectOutputStream oos = new ObjectOutputStream(fout);
-            oos.writeObject(blockchain);
-            LOG.info("saved blockchain.");
-        } catch (Exception e) {
-            LOG.error(e);
-        }
-    }
-
-    public static boolean isValidBlock(Block newBlock , Block previousBlock) {
-        if (newBlock.getIndex() != previousBlock.getIndex() + 1) {
-            LOG.info("invalid index" + newBlock.getIndex());
-            return false;
-        } else if (!newBlock.getPreviousBlockHash().equals(previousBlock.getHash())) {
-            LOG.info("invalid previous txId");
-            return false;
-        }
-        return true;
     }
 }

@@ -23,7 +23,7 @@ public class BlockValidator {
             //return false;
         }
         if (!hasValidTransactionCount(candidate)) {
-           //return false;
+           return false;
         }
         if (!hasOnlyValidTransactions(candidate)) {
             return false;
