@@ -14,7 +14,6 @@ public class TxOutput implements Serializable {
      */
 
     private static final long serialVersionUID = -4403978077387051602L;
-    private FillableTemplate template = new TxOutputTemplate(this);
 
     private long value;
     private Address recipientAddress; //was recipientPublicKey; //org: scriptPubKey
@@ -61,7 +60,7 @@ public class TxOutput implements Serializable {
     }
 
     public String toXML() {
-        return template.getFilledTemplate();
+        return new TxOutputTemplate(this).getFilledTemplate();
     }
 
     @Override

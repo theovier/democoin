@@ -16,7 +16,6 @@ public class TxInput implements Serializable {
 
     private static final Logger LOG = Logger.getLogger(TxInput.class);
     private static final long serialVersionUID = 478420474849537539L;
-    private FillableTemplate template = new TxInputTemplate(this);
 
     private Transaction parentTransaction;
 
@@ -91,7 +90,7 @@ public class TxInput implements Serializable {
     }
 
     public String toXML() {
-        return template.getFilledTemplate();
+        return new TxInputTemplate(this).getFilledTemplate();
     }
 
     @Override

@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 public class Block implements Serializable {
 
     private static final long serialVersionUID = 1113799434508676095L;
-    private FillableTemplate template = new BlockTemplate(this);
     private static final Address MINER_ADDRESS = new Address("1AVuQjcnquXEaXgggJx7TsyMBjbatiBtNB");
 
     private long index;
@@ -105,7 +104,7 @@ public class Block implements Serializable {
     }
 
     public String toXML() {
-        return template.getFilledTemplate();
+        return new BlockTemplate(this).getFilledTemplate();
     }
 
     @Override

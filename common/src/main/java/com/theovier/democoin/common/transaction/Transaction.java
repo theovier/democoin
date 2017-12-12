@@ -16,7 +16,6 @@ import java.util.List;
 public class Transaction implements Serializable {
 
     private static final long serialVersionUID = -3564602822987321657L;
-    private FillableTemplate template = new TransactionTemplate(this);
 
     private Sha256Hash txId;
     private long timestamp;
@@ -118,7 +117,7 @@ public class Transaction implements Serializable {
     }
 
     public String toXML() {
-        return template.getFilledTemplate();
+        return new TransactionTemplate(this).getFilledTemplate();
     }
 
     @Override
