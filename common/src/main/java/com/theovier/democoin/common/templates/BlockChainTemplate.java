@@ -22,7 +22,7 @@ public class BlockChainTemplate extends Template {
 
     @Override
     protected void fillPlaceholder() {
-        this.context.put(BLOCKS, blockchain );
+        this.context.put(BLOCKS, blockchain.getBlocks() );
     }
 
     @Override

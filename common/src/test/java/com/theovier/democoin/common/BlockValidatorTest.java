@@ -47,7 +47,7 @@ public class BlockValidatorTest {
     public Blockchain setupBlockchain() {
         Blockchain blockchain = new Blockchain();
         Block genesisBlock = Block.generateGenesisBlock();
-        blockchain.add(genesisBlock);
+        blockchain.append(genesisBlock);
         return blockchain;
     }
 }

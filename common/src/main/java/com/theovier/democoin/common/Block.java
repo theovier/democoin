@@ -38,8 +38,8 @@ public class Block implements Serializable {
         this.nonce = nonce;
         this.transactions.add(new CoinbaseTransaction(MINER_ADDRESS));
         this.transactions.addAll(transactions);
-        this.hash = computeHash();
         this.merkleRoot = computeMerkleRoot();
+        this.hash = computeHash();
     }
 
     //GenesisBlock
@@ -49,11 +49,11 @@ public class Block implements Serializable {
         this.previousBlockHash = Sha256Hash.ZERO_HASH;
         this.nonce = -1;
         this.transactions.add(new CoinbaseTransaction(MINER_ADDRESS));
-        this.hash = computeHash();
         this.merkleRoot = computeMerkleRoot();
+        this.hash = computeHash();
     }
 
-    private Sha256Hash computeHash() {
+    public Sha256Hash computeHash() {
         StringBuilder blockContent = new StringBuilder();
         blockContent.append(String.valueOf(index));
         blockContent.append(String.valueOf(timestamp));
@@ -63,7 +63,7 @@ public class Block implements Serializable {
         return Sha256Hash.create(blockContent.toString());
     }
 
-    private Sha256Hash computeMerkleRoot() {
+    public Sha256Hash computeMerkleRoot() {
         Queue<Sha256Hash> hashQueue = new LinkedList<>(transactions.stream().map(Transaction::getTxId).collect(Collectors.toList()));
         while (hashQueue.size() > 1) {
             String hashableData = hashQueue.poll().toString() + hashQueue.poll().toString();
