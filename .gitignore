@@ -4,3 +4,4 @@ target
 /log.out
 /blockchain.dat
 /key.*
+/blockchain.xml

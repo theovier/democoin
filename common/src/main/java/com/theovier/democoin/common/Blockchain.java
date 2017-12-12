@@ -4,12 +4,10 @@ import com.theovier.democoin.common.templates.BlockChainTemplate;
 import com.theovier.democoin.common.templates.FillableTemplate;
 import com.theovier.democoin.common.transaction.TransactionPool;
 import com.theovier.democoin.common.transaction.UTXOPool;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.ArrayList;
 
 public class Blockchain {
@@ -27,7 +25,7 @@ public class Blockchain {
             ObjectOutputStream oos = new ObjectOutputStream(fout);
             oos.writeObject(blockchain);
             LOG.info("saved blockchain.");
-            //todo also save xml version for debugging
+            FileUtils.writeStringToFile(new File("blockchain.xml"), toXML(), "UTF-8");
             return true;
         } catch (Exception e) {
             LOG.error(e);
