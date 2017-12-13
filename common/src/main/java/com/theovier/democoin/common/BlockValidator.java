@@ -64,7 +64,7 @@ public class BlockValidator {
     public static boolean hasOnlyValidTransactions(Block candidate) {
         return candidate.getTransactions()
                 .stream()
-                .anyMatch(TransactionValidator::validate);
+                .allMatch(TransactionValidator::validate);
     }
 
     public static boolean hasOnlyBroadcastedTransactions(Block candidate) {
