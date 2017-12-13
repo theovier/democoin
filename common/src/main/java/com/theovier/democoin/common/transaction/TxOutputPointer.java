@@ -16,7 +16,6 @@ public class TxOutputPointer implements Serializable {
     public TxOutputPointer(final Sha256Hash transactionHash, final int outputIndex) {
         this.transactionHash = transactionHash;
         this.outputIndex = outputIndex;
-        LOG.info(this);
     }
 
     public TxOutputPointer(final TxOutput output) {
