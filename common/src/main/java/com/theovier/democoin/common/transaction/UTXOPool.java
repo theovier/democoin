@@ -51,10 +51,14 @@ public class UTXOPool {
                 .findAny();
 
         if (result.isPresent()) {
-            TxOutput utxo = result.get();
-            unspentOutputs.remove(utxo);
-            return utxo;
+            return result.get();
         }
         throw new MissingUTXOException();
+    }
+
+    public static TxOutput removeUTXO(TxOutputPointer reference) throws MissingUTXOException {
+        TxOutput utxo = getUTXO(reference);
+        unspentOutputs.remove(utxo);
+        return utxo;
     }
 }

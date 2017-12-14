@@ -45,7 +45,7 @@ public class TransactionValidator {
     private static boolean validateRegularTxInput(TxInput in) {
         try {
             TxOutputPointer pointer = in.getPrevOutputInfo();
-            TxOutput out = UTXOPool.getUTXO(pointer);
+            TxOutput out = UTXOPool.removeUTXO(pointer);
             return in.verify(out);
         } catch (MissingUTXOException e) {
             return false;
