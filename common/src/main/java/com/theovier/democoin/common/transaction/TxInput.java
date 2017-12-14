@@ -58,7 +58,7 @@ public class TxInput implements Serializable {
             return false;
         }
         try {
-            return SignatureUtils.verify(getSignature(), getPublicKey(), parentTransaction.getSignableHash());
+            return SignatureUtils.verify(getSignature(), publicKey, parentTransaction.getSignableHash());
         } catch (GeneralSecurityException e) {
             LOG.error("failed to verify txInput", e);
         }
@@ -75,10 +75,6 @@ public class TxInput implements Serializable {
 
     public String getSignature() {
         return signature;
-    }
-
-    public PublicKey getPublicKey() {
-        return publicKey;
     }
 
     public Transaction getParentTransaction() {
