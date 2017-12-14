@@ -23,8 +23,6 @@ public class TransactionValidator {
             return false;
         } else if (tx.getOutputs().size() > 1) {
             return false;
-        } else if (tx.getOutputs().get(0).getValue() != Config.COINBASE_REWARD) {
-            return false;
         }
         return true;
     }
