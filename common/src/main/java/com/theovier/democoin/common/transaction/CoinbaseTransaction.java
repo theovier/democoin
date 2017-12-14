@@ -20,4 +20,9 @@ public class CoinbaseTransaction extends Transaction {
         addOutput(new TxOutput(recipientAddress, Config.COINBASE_REWARD));
         build();
     }
+
+    @Override
+    public void build() {
+        this.txId = computeHash();
+    }
 }

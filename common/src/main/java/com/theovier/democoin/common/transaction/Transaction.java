@@ -3,9 +3,8 @@ package com.theovier.democoin.common.transaction;
 
 import com.theovier.democoin.common.Address;
 import com.theovier.democoin.common.crypto.Sha256Hash;
-import com.theovier.democoin.common.templates.FillableTemplate;
 import com.theovier.democoin.common.templates.TransactionTemplate;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 
 import java.io.Serializable;
 import java.security.KeyPair;
@@ -14,16 +13,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Transaction implements Serializable {
-
+private static final Logger LOG = Logger.getLogger(Transaction.class);
     private static final long serialVersionUID = -3564602822987321657L;
 
-    private Sha256Hash txId;
+    protected Sha256Hash txId;
     private long timestamp;
     private String msg;
     protected boolean isCoinBase;
     private ArrayList<TxInput> inputs = new ArrayList<>();
     private ArrayList<TxOutput> outputs = new ArrayList<>();
 
+    private long transactionFee;
 
     public Transaction(String msg) {
         this.msg = msg;
@@ -32,7 +32,9 @@ public class Transaction implements Serializable {
     }
     
     public void build() {
+        this.transactionFee = calculateTransactionFee();
         this.txId = computeHash();
+        LOG.info(transactionFee);
     }
 
     public TxInput addInput(Sha256Hash spendTxHash, int outputIndex) {
@@ -84,6 +86,12 @@ public class Transaction implements Serializable {
         return Sha256Hash.create(txContent.toString());
     }
 
+    private long calculateTransactionFee() {
+        long sumInputs = inputs.stream().mapToLong(TxInput::getClaimedValue).sum();
+        long sumOutputs = outputs.stream().mapToLong(TxOutput::getValue).sum();
+        return sumInputs - sumOutputs;
+    }
+
     public boolean isCoinBase() {
         return isCoinBase;
     }
@@ -114,6 +122,10 @@ public class Transaction implements Serializable {
 
     public TxOutput getFirstOutput() {
         return getOutputs().get(0);
+    }
+
+    public long getTransactionFee() {
+        return transactionFee;
     }
 
     public String toXML() {
