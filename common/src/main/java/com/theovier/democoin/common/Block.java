@@ -20,9 +20,7 @@ public class Block implements Serializable {
     private long timestamp;
     private Sha256Hash previousBlockHash;
     private Sha256Hash hash;
-
     private long nonce;
-
     private List<Transaction> transactions = new ArrayList<>();
     private Sha256Hash merkleRoot;
 
@@ -31,21 +29,15 @@ public class Block implements Serializable {
         this.timestamp = Instant.now().getEpochSecond();
         this.previousBlockHash = predecessor.getHash();
         this.nonce = nonce;
-        this.transactions.add(new CoinbaseTransaction(coinbaseRecipient));
+        long txFees = transactions.stream().mapToLong(Transaction::getTransactionFee).sum();
+        this.transactions.add(new CoinbaseTransaction(coinbaseRecipient, txFees));
         this.transactions.addAll(transactions);
         this.merkleRoot = computeMerkleRoot();
         this.hash = computeHash();
     }
 
     public Block(Block predecessor, long nonce, Address coinbaseRecipient, Transaction... transactions) {
-        this.index = predecessor.getIndex() + 1;
-        this.timestamp = Instant.now().getEpochSecond();
-        this.previousBlockHash = predecessor.getHash();
-        this.nonce = nonce;
-        this.transactions.add(new CoinbaseTransaction(coinbaseRecipient));
-        this.transactions.addAll(Arrays.asList(transactions));
-        this.merkleRoot = computeMerkleRoot();
-        this.hash = computeHash();
+        this(predecessor, nonce, coinbaseRecipient, Arrays.asList(transactions));
     }
 
     //GenesisBlock

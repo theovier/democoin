@@ -21,6 +21,13 @@ public class CoinbaseTransaction extends Transaction {
         build();
     }
 
+    public CoinbaseTransaction(Address recipientAddress, long fees) {
+        super(COINBASE_MSG);
+        this.isCoinBase = true;
+        addOutput(new TxOutput(recipientAddress, Config.COINBASE_REWARD + fees));
+        build();
+    }
+
     @Override
     public void build() {
         this.txId = computeHash();
