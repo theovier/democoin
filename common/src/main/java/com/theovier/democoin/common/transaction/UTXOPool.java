@@ -53,7 +53,7 @@ public class UTXOPool {
         if (result.isPresent()) {
             return result.get();
         }
-        throw new MissingUTXOException();
+        throw new MissingUTXOException(reference);
     }
 
     public static TxOutput removeUTXO(TxOutputPointer reference) throws MissingUTXOException {
