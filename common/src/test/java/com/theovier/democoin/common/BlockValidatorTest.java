@@ -41,7 +41,7 @@ public class BlockValidatorTest {
         txs.add(new CoinbaseTransaction(new Address("...")));
         Blockchain blockchain = setupBlockchain();
         Block block = new Block(blockchain.getLastBlock(), 0, new Address(""),  new ArrayList<>());
-        assert !BlockValidator.hasCoinbaseTX(block);
+        assert !BlockValidator.hasCoinbaseTx(block);
     }
 
     public Blockchain setupBlockchain() {

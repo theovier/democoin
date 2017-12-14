@@ -23,23 +23,21 @@ public class TxInput implements Serializable {
     private String signature;
     private PublicKey publicKey;
 
-    private long claimedValue;
+    private TxOutput from;
 
     public TxInput(TxOutput from) {
         this.prevOutputInfo = new TxOutputPointer(from);
-        this.claimedValue = from.getValue();
+        this.from = from;
     }
 
     //if the claimedValue turns out to be invalid, the parentTransaction will be invalid.
-    public TxInput(Sha256Hash prevTXHash, int prevTxOutputIndex, long claimedValue) {
+    public TxInput(Sha256Hash prevTXHash, int prevTxOutputIndex) {
         this.prevOutputInfo = new TxOutputPointer(prevTXHash, prevTxOutputIndex);
-        this.claimedValue = claimedValue;
     }
 
     public TxInput(Transaction parentTransaction, Sha256Hash prevTXHash, int prevTxOutputIndex) {
         this.parentTransaction = parentTransaction;
         this.prevOutputInfo = new TxOutputPointer(prevTXHash, prevTxOutputIndex);
-        this.claimedValue = lookupClaimedValue();
     }
 
     public boolean sign(KeyPair keyPair) {
@@ -69,18 +67,8 @@ public class TxInput implements Serializable {
         return false;
     }
 
-    /**
-     * returns the value that this input claims.
-     * if no matching UTXO (hence no value) is found, 0 is returned.
-     * The parentTransaction will then be invalid because of the missing UTXO.
-     */
-    private long lookupClaimedValue() {
-        try {
-            TxOutput from = UTXOPool.getUTXO(prevOutputInfo);
-            return from.getValue();
-        } catch (MissingUTXOException e) {
-            return 0;
-        }
+    public void setReferencedOutput(TxOutput from) {
+        this.from = from;
     }
 
     public void setParentTransaction(Transaction parentTransaction) {
@@ -109,7 +97,7 @@ public class TxInput implements Serializable {
     }
 
     public long getClaimedValue() {
-        return claimedValue;
+        return from.getValue();
     }
 
     public String toXML() {

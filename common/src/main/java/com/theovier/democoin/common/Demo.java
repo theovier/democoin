@@ -22,7 +22,7 @@ public class Demo {
         Transaction tx1 = new Transaction(".");
 
         //reference the genesisBlock coinbase transaction.
-        TxInput input1 = new TxInput(new Sha256Hash("825ebc967d94b6ddab65d241a19cfa5b916f86d153f28502fe8aca77f5dd84ad"), 0, 50);
+        TxInput input1 = new TxInput(new Sha256Hash("172e5b6c0339375a7ea60e9293effc2f861a9a046a682d45169a9dab890f5f80"), 0);
         tx1.addInput(input1);
         tx1.addOutput(target, 20);
         tx1.addOutput(target, 20);
@@ -33,6 +33,6 @@ public class Demo {
         Block block = new Block(blockchain.getLastBlock(),  0, target, tx1);
         blockchain.append(block);
         LOG.info(blockchain);
-//        blockchain.save();
+        blockchain.save();
     }
 }

@@ -34,6 +34,10 @@ public class TxOutput implements Serializable {
         this.parentTransaction = parentTransaction;
     }
 
+    public void setValue(long value) {
+        this.value = value;
+    }
+
     public long getValue() {
         return value;
     }

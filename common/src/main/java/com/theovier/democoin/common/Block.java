@@ -2,7 +2,6 @@ package com.theovier.democoin.common;
 
 import com.theovier.democoin.common.crypto.Sha256Hash;
 import com.theovier.democoin.common.templates.BlockTemplate;
-import com.theovier.democoin.common.templates.FillableTemplate;
 import com.theovier.democoin.common.transaction.CoinbaseTransaction;
 import com.theovier.democoin.common.transaction.Transaction;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +21,7 @@ public class Block implements Serializable {
     private Sha256Hash hash;
     private long nonce;
     private List<Transaction> transactions = new ArrayList<>();
+    private CoinbaseTransaction coinbaseTx;
     private Sha256Hash merkleRoot;
 
     public Block(Block predecessor, long nonce, Address coinbaseRecipient, List<Transaction> transactions) {
@@ -29,8 +29,8 @@ public class Block implements Serializable {
         this.timestamp = Instant.now().getEpochSecond();
         this.previousBlockHash = predecessor.getHash();
         this.nonce = nonce;
-        long txFees = transactions.stream().mapToLong(Transaction::getTransactionFee).sum();
-        this.transactions.add(new CoinbaseTransaction(coinbaseRecipient, txFees));
+        this.coinbaseTx = new CoinbaseTransaction(coinbaseRecipient);
+        this.transactions.add(coinbaseTx);
         this.transactions.addAll(transactions);
         this.merkleRoot = computeMerkleRoot();
         this.hash = computeHash();
@@ -101,6 +101,10 @@ public class Block implements Serializable {
 
     public Sha256Hash getMerkleRoot() {
         return merkleRoot;
+    }
+
+    public CoinbaseTransaction getCoinbaseTx() {
+        return coinbaseTx;
     }
 
     public String toXML() {

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Transaction implements Serializable {
-private static final Logger LOG = Logger.getLogger(Transaction.class);
     private static final long serialVersionUID = -3564602822987321657L;
 
     protected Sha256Hash txId;
@@ -23,7 +22,7 @@ private static final Logger LOG = Logger.getLogger(Transaction.class);
     private ArrayList<TxInput> inputs = new ArrayList<>();
     private ArrayList<TxOutput> outputs = new ArrayList<>();
 
-    private long transactionFee;
+    private long transactionFee = 0;
 
     public Transaction(String msg) {
         this.msg = msg;
@@ -32,9 +31,7 @@ private static final Logger LOG = Logger.getLogger(Transaction.class);
     }
     
     public void build() {
-        this.transactionFee = calculateTransactionFee();
         this.txId = computeHash();
-        LOG.info(transactionFee);
     }
 
     public TxInput addInput(Sha256Hash spendTxHash, int outputIndex) {
@@ -86,12 +83,6 @@ private static final Logger LOG = Logger.getLogger(Transaction.class);
         return Sha256Hash.create(txContent.toString());
     }
 
-    private long calculateTransactionFee() {
-        long sumInputs = inputs.stream().mapToLong(TxInput::getClaimedValue).sum();
-        long sumOutputs = outputs.stream().mapToLong(TxOutput::getValue).sum();
-        return sumInputs - sumOutputs;
-    }
-
     public boolean isCoinBase() {
         return isCoinBase;
     }
@@ -126,6 +117,29 @@ private static final Logger LOG = Logger.getLogger(Transaction.class);
 
     public long getTransactionFee() {
         return transactionFee;
+    }
+
+    /**
+     * has to be called after the validation, to make sure each input references an actual output.
+     */
+    public void calculateTransactionFee() {
+        long sumInputs = calculateSumInputs();
+        long sumOutputs = calculateSumOutputs();
+        transactionFee = sumInputs - sumOutputs;
+    }
+
+    /**
+     * @return the sum of the input values.
+     */
+    public long calculateSumInputs() {
+        return inputs.stream().mapToLong(TxInput::getClaimedValue).sum();
+    }
+
+    /**
+     * @return the sum of the output values.
+     */
+    public long calculateSumOutputs() {
+        return outputs.stream().mapToLong(TxOutput::getValue).sum();
     }
 
     public String toXML() {

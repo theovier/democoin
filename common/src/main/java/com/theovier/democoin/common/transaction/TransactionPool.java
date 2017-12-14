@@ -7,7 +7,7 @@ public class TransactionPool {
     private static Set<Transaction> pendingTransactions = new HashSet<>();
 
     public static synchronized boolean add(Transaction transaction) {
-        if (TransactionValidator.validate(transaction)) {
+        if (TransactionValidator.isValid(transaction)) {
             pendingTransactions.add(transaction);
             return true;
         }
