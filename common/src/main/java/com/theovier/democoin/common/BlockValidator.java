@@ -9,37 +9,43 @@ public class BlockValidator {
 
     public static boolean isValid(Block candidate, Block prevBlock) {
         if (!hasValidIndex(candidate, prevBlock)) {
+            LOG.warn("invalid block index");
             return false;
         }
         if (!hasValidHashChain(candidate, prevBlock)) {
+            LOG.warn("not referring to the previous block");
             return false;
         }
         if (!hasValidMerkleRoot(candidate)) {
+            LOG.warn("invalid merkle root");
             return false;
         }
         if (!hasValidBlockHash(candidate)) {
+            LOG.warn("invalid blockhash");
             return false;
         }
         if (!hasValidProofOfWork(candidate)) {
+            LOG.warn("pow missing");
             //return false;
         }
         if (!hasValidTransactionCount(candidate)) {
+            LOG.warn("there are too many transactions in this block");
            return false;
         }
         if (!hasOnlyValidTransactions(candidate)) {
-            LOG.warn("invalid transactions");
+            LOG.warn("invalid transaction(s)");
             return false;
         }
         if (!hasOnlyBroadcastedTransactions(candidate)) {
             //return false;
         }
         if (!hasCoinbaseTx(candidate)) {
-            LOG.warn("nicht genau 1 coinbase tx");
+            LOG.warn("there is not exactly 1 coinbase transaction");
             return false;
         }
         //has to be called after regular transaction validation. because this sets the correct output reference.
         if (!hasValidCoinbaseTx(candidate)) {
-            LOG.warn("coinbase reward passt nicht");
+            LOG.warn("coinbase output value is not calculated honestly.");
             return false;
         }
         return true;
