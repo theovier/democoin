@@ -14,14 +14,21 @@ public class CoinbaseTransaction extends Transaction {
 
     public static final String COINBASE_MSG = "It's a gift from the Gods!";
 
-    public CoinbaseTransaction(Address recipientAddress) {
+    public CoinbaseTransaction(final Address recipientAddress) {
         super(COINBASE_MSG);
         this.isCoinBase = true;
         addOutput(new TxOutput(recipientAddress, Config.COINBASE_REWARD));
         build();
     }
 
-    public void addTransactionFees(long fees) {
+    public CoinbaseTransaction(final Address recipientAddress, final String msg) {
+        super(msg);
+        this.isCoinBase = true;
+        addOutput(new TxOutput(recipientAddress, Config.COINBASE_REWARD));
+        build();
+    }
+
+    public void addTransactionFees(final long fees) {
         getFirstOutput().setValue(Config.COINBASE_REWARD + fees);
     }
 }
