@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 public class Block implements Serializable {
 
     private static final long serialVersionUID = 1113799434508676095L;
-    private static final Address MINER_ADDRESS = new Address("1AVuQjcnquXEaXgggJx7TsyMBjbatiBtNB");
 
     private long index;
     private long timestamp;
@@ -55,7 +54,7 @@ public class Block implements Serializable {
         this.timestamp = Instant.now().getEpochSecond();
         this.previousBlockHash = Sha256Hash.ZERO_HASH;
         this.nonce = -1;
-        this.transactions.add(new CoinbaseTransaction(MINER_ADDRESS));
+        this.transactions.add(new CoinbaseTransaction(Config.GENESIS_ADDRESS));
         this.merkleRoot = computeMerkleRoot();
         this.hash = computeHash();
     }
