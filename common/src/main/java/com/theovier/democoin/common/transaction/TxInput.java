@@ -46,8 +46,7 @@ public class TxInput implements Serializable {
         }
         return false;
     }
-
-    //todo throw new exception
+    
     public boolean verify(TxOutput output) {
         if (publicKey == null) {
             return false;
