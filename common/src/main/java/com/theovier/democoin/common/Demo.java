@@ -48,7 +48,7 @@ public class Demo {
         //because of the blockchain = new Blockchain();
 
 //        blockchain.save();
-        Block block = new Block(blockchain.getLastBlock(),  new ArrayList<>(), 0, new Address("..."));
+        Block block = new Block(blockchain.getLastBlock(),  0, new Address("..."), new ArrayList<>());
         blockchain.append(block);
         LOG.info(blockchain);
         UTXOPool.compute(blockchain);
@@ -64,16 +64,13 @@ public class Demo {
         Transaction tx1 = new Transaction(".");
 
         //reference the genesisBlock coinbase transaction.
-        tx1.addInput(new Sha256Hash("eba690d49ef7a59efd057f22984989ab7f6f597dc6d63442fb75139c4655efd4"), 0);
+        tx1.addInput(new Sha256Hash("cb21e6d3a2fdbe879ffcb7ea3d19a50410755c4456a35ae8561be4573ff743de"), 0);
         tx1.addOutput(target, 20);
         tx1.signInput(0, keypair);
         tx1.build();
 
-        List<Transaction> transactions = new ArrayList<>();
-        transactions.add(tx1);
-
-        Block block = new Block(blockchain.getLastBlock(),  transactions, 0, target);
+        Block block = new Block(blockchain.getLastBlock(),  0, target, tx1);
         blockchain.append(block);
-        LOG.info(blockchain);
+        blockchain.save();
     }
 }

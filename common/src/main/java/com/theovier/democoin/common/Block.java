@@ -9,10 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Block implements Serializable {
@@ -30,13 +27,24 @@ public class Block implements Serializable {
     private List<Transaction> transactions = new ArrayList<>();
     private Sha256Hash merkleRoot;
 
-    public Block(Block predecessor, List<Transaction> transactions, long nonce, Address coinbaseRecipient) {
+    public Block(Block predecessor, long nonce, Address coinbaseRecipient, List<Transaction> transactions) {
         this.index = predecessor.getIndex() + 1;
         this.timestamp = Instant.now().getEpochSecond();
         this.previousBlockHash = predecessor.getHash();
         this.nonce = nonce;
         this.transactions.add(new CoinbaseTransaction(coinbaseRecipient));
         this.transactions.addAll(transactions);
+        this.merkleRoot = computeMerkleRoot();
+        this.hash = computeHash();
+    }
+
+    public Block(Block predecessor, long nonce, Address coinbaseRecipient, Transaction... transactions) {
+        this.index = predecessor.getIndex() + 1;
+        this.timestamp = Instant.now().getEpochSecond();
+        this.previousBlockHash = predecessor.getHash();
+        this.nonce = nonce;
+        this.transactions.add(new CoinbaseTransaction(coinbaseRecipient));
+        this.transactions.addAll(Arrays.asList(transactions));
         this.merkleRoot = computeMerkleRoot();
         this.hash = computeHash();
     }
