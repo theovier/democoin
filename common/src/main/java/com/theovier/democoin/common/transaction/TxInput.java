@@ -22,7 +22,6 @@ public class TxInput implements Serializable {
     private TxOutputPointer prevOutputInfo;
     private String signature;
     private PublicKey publicKey;
-
     private TxOutput from;
 
     public TxInput(TxOutput from) {
@@ -30,7 +29,6 @@ public class TxInput implements Serializable {
         this.from = from;
     }
 
-    //if the claimedValue turns out to be invalid, the parentTransaction will be invalid.
     public TxInput(Sha256Hash prevTXHash, int prevTxOutputIndex) {
         this.prevOutputInfo = new TxOutputPointer(prevTXHash, prevTxOutputIndex);
     }
