@@ -18,7 +18,11 @@ public class TransactionPool {
         pendingTransactions.remove(transaction);
     }
 
-    public static boolean containsAll(Collection<Transaction> transactions) {
+    public static synchronized boolean containsAll(Collection<Transaction> transactions) {
         return pendingTransactions.containsAll(transactions);
+    }
+
+    public static synchronized Set<Transaction> getPendingTransactions() {
+        return pendingTransactions;
     }
 }
