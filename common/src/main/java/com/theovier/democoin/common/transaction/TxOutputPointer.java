@@ -8,7 +8,6 @@ import java.util.Objects;
 
 public class TxOutputPointer implements Serializable {
 
-    private static final Logger LOG = Logger.getLogger(TxOutputPointer.class);
     private static final long serialVersionUID = 5743551940949924366L;
     private Sha256Hash transactionHash;
     private int outputIndex;
@@ -42,7 +41,6 @@ public class TxOutputPointer implements Serializable {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(transactionHash, outputIndex);
     }
 
