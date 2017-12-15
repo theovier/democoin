@@ -21,7 +21,7 @@ public class UTXOPool {
         for (Block block : blocks) {
             for (Transaction transaction : block.getTransactions()) {
                 for (TxOutput output : transaction.getOutputs()) {
-                    TxOutputPointer pointer = new TxOutputPointer(output.getParentTransaction().getTxId(), output.getIndex()); //todo move this to TxOutput
+                    TxOutputPointer pointer = new TxOutputPointer(output);
                     outputs.put(pointer, output);
                 }
                 for (TxInput input : transaction.getInputs()) {
