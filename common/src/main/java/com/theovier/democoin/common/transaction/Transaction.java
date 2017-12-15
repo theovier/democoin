@@ -2,9 +2,9 @@ package com.theovier.democoin.common.transaction;
 
 
 import com.theovier.democoin.common.Address;
+import com.theovier.democoin.common.Utils;
 import com.theovier.democoin.common.crypto.Sha256Hash;
 import com.theovier.democoin.common.templates.TransactionTemplate;
-import org.apache.log4j.Logger;
 
 import java.io.Serializable;
 import java.security.KeyPair;
@@ -25,11 +25,11 @@ public class Transaction implements Serializable {
     private long transactionFee = 0;
 
     public Transaction(String msg) {
-        this.msg = msg;
+        this.msg = Utils.escapeText(msg);
         this.timestamp = Instant.now().getEpochSecond();
         this.isCoinBase = false;
     }
-    
+
     public void build() {
         this.txId = computeHash();
     }
