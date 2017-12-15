@@ -10,6 +10,9 @@ public abstract class Config {
     public static final int COINBASE_MATURITY = 1;
     public static final int MAX_TRANSACTIONS_PER_BLOCK = 5;
 
+    //number of zeroes a blockHash must start with
+    public static final long DIFFICULTY = 3;
+
 
 
 }

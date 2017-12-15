@@ -8,6 +8,10 @@ public class BlockValidator {
     private static final Logger LOG = Logger.getLogger(BlockValidator.class);
 
     public static boolean isValid(Block candidate, Block prevBlock) {
+        if (!hasValidProofOfWork(candidate)) {
+            LOG.warn("pow missing");
+            return false;
+        }
         if (!hasValidIndex(candidate, prevBlock)) {
             LOG.warn("invalid block index");
             return false;
@@ -23,10 +27,6 @@ public class BlockValidator {
         if (!hasValidBlockHash(candidate)) {
             LOG.warn("invalid blockhash");
             return false;
-        }
-        if (!hasValidProofOfWork(candidate)) {
-            LOG.warn("pow missing");
-            //return false;
         }
         if (!hasValidTransactionCount(candidate)) {
             LOG.warn("there are too many transactions in this block");
@@ -51,6 +51,10 @@ public class BlockValidator {
         return true;
     }
 
+    public static boolean hasValidProofOfWork(Block candidate) {
+        return candidate.getLeadingZerosCount() >= Config.DIFFICULTY;
+    }
+
     public static boolean hasValidIndex(Block candidate, Block prevBlock) {
         return (candidate.getIndex() == prevBlock.getIndex() + 1);
     }
@@ -65,10 +69,6 @@ public class BlockValidator {
 
     public static boolean hasValidBlockHash(Block candidate) {
         return candidate.computeHash().equals(candidate.getHash());
-    }
-
-    public static boolean hasValidProofOfWork(Block candidate) {
-        return false;
     }
 
     public static boolean hasValidTransactionCount(Block candidate) {

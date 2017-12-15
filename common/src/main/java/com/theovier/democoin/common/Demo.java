@@ -22,17 +22,46 @@ public class Demo {
         Transaction tx1 = new Transaction(".");
 
         //reference the genesisBlock coinbase transaction.
-        TxInput input1 = new TxInput(new Sha256Hash("172e5b6c0339375a7ea60e9293effc2f861a9a046a682d45169a9dab890f5f80"), 0);
+        TxInput input1 = new TxInput(new Sha256Hash("f99630a720faedb0ac16115fb84d83614488e15919e030e18ec095a226ecdba0"), 0);
         tx1.addInput(input1);
-        tx1.addOutput(target, 20);
-        tx1.addOutput(target, 20);
+        tx1.addOutput(target, 130);
+        //tx1.addOutput(target, 20);
 
         tx1.signInput(0, keypair);
         tx1.build();
 
         Block block = new Block(blockchain.getLastBlock(),  0, target, tx1);
-        blockchain.append(block);
-        LOG.info(blockchain);
+        LOG.info(blockchain.append(block));
         blockchain.save();
+    }
+
+    public void demoMining() {
+        Wallet wallet = new Wallet();
+        KeyPair keypair = wallet.getKeyPair();
+        Address target = Address.generateAddress(keypair.getPublic());
+
+
+        Block block = null;
+        long nonce = 0;
+        while (true) {
+            block = new Block(blockchain.getLastBlock(),  nonce, target);
+            if (hasProofOfWork(block)) {
+                break;
+            }
+            LOG.info("retry " + block.getHash());
+            nonce++;
+        }
+        blockchain.append(block);
+        LOG.info(blockchain.toXML());
+    }
+
+    public static boolean hasProofOfWork(Block block) {
+        long leadingZeroesCount = block.getLeadingZerosCount();
+
+        if (leadingZeroesCount >= Config.DIFFICULTY) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -108,6 +108,15 @@ public class Block implements Serializable {
         return coinbaseTx;
     }
 
+    public long getLeadingZerosCount() {
+        for (int i = 0; i < getHash().getBytes().length; i++) {
+            if (getHash().getBytes()[i] != 0) {
+                return i;
+            }
+        }
+        return Sha256Hash.LENGTH;
+    }
+
     public String toXML() {
         return new BlockTemplate(this).getFilledTemplate();
     }
