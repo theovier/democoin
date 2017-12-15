@@ -34,14 +34,14 @@ public class UTXOPool {
         unspentOutputs.addAll(outputs.values());
     }
 
-    public static void add(Transaction transaction) {
+    public static synchronized void add(Transaction transaction) {
         transaction.getOutputs().forEach(unspentOutputs::add);
     }
 
     /**
      * gets the referenced TxOutput. Throws an error if the output is not in the UTXO-set.
      */
-    public static TxOutput getUTXO(TxOutputPointer reference) throws MissingUTXOException {
+    public static synchronized TxOutput getUTXO(TxOutputPointer reference) throws MissingUTXOException {
         Optional<TxOutput> result = unspentOutputs
                 .stream()
                 .filter(utxo -> utxo.getParentTransaction().getTxId().equals(reference.getTransactionHash()))
@@ -54,7 +54,7 @@ public class UTXOPool {
         throw new MissingUTXOException(reference);
     }
 
-    public static TxOutput removeUTXO(TxOutputPointer reference) throws MissingUTXOException {
+    public static synchronized TxOutput removeUTXO(TxOutputPointer reference) throws MissingUTXOException {
         TxOutput utxo = getUTXO(reference);
         unspentOutputs.remove(utxo);
         return utxo;
