@@ -2,6 +2,7 @@ package com.theovier.democoin.common;
 
 import com.theovier.democoin.common.templates.BlockChainTemplate;
 import com.theovier.democoin.common.templates.FillableTemplate;
+import com.theovier.democoin.common.transaction.MissingUTXOException;
 import com.theovier.democoin.common.transaction.TransactionPool;
 import com.theovier.democoin.common.transaction.UTXOPool;
 import org.apache.commons.io.FileUtils;
@@ -57,6 +58,17 @@ public class Blockchain {
             blockchain.add(block);
             block.getTransactions().forEach(TransactionPool::remove);//remove included transactions from (pending) transaction pool
             block.getTransactions().forEach(UTXOPool::add); //add transactions outputs to the UTXO.
+
+            //todo make this pretty.
+            block.getTransactions().forEach(
+                    tx -> tx.getInputs().forEach(in -> {
+                            try {
+                                UTXOPool.removeUTXO(in);
+                            } catch (MissingUTXOException e) {
+                                throw new IllegalStateException("validation must be broken");
+                            }
+                    })); //remove transaction inputs from the UTXO.
+
             return true;
         }
         return false;

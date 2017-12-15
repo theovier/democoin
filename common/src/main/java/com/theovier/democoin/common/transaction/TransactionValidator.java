@@ -40,7 +40,7 @@ public class TransactionValidator {
             return false;
         }
         tx.calculateTransactionFee();
-        //todo "Reject if we already have matching tx in the pool, or in a block in the main branch"
+        //todo "Reject if we already have matching tx in the pool, or in a block in the main branch" //use merkleHash for this.
         return true;
     }
 
@@ -69,7 +69,7 @@ public class TransactionValidator {
     public static boolean isValidTxInput(TxInput in) {
         try {
             TxOutputPointer pointer = in.getPrevOutputInfo();
-            TxOutput out = UTXOPool.removeUTXO(pointer);
+            TxOutput out = UTXOPool.getUTXO(pointer);
             in.setReferencedOutput(out);
             return in.verify(out);
         } catch (MissingUTXOException e) {
