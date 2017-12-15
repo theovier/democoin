@@ -1,5 +1,6 @@
 package com.theovier.democoin.common;
 
+import com.theovier.democoin.common.transaction.CoinbaseTransaction;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.log4j.Logger;
 
@@ -23,10 +24,18 @@ public class Miner {
     private ExecutorService executor= Executors.newFixedThreadPool(SLAVE_POOL_SIZE, threadFactory);
     private final Address payoutAddress;
     private final Blockchain blockchain;
+    private final String coinbaseMsg;
 
     public Miner(final Blockchain blockchain, final Address payoutAddress) {
         this.blockchain = blockchain;
         this.payoutAddress = payoutAddress;
+        this.coinbaseMsg = CoinbaseTransaction.COINBASE_MSG;
+    }
+
+    public Miner(final Blockchain blockchain, final Address payoutAddress, final String optionalCoinbaseMsg) {
+        this.blockchain = blockchain;
+        this.payoutAddress = payoutAddress;
+        this.coinbaseMsg = optionalCoinbaseMsg;
     }
 
     public void start() {
@@ -34,7 +43,7 @@ public class Miner {
         startMiningSlaves();
     }
 
-    public void stop() {
+    public synchronized void stop() {
         LOG.info("stop mining.");
         LOG.info(blockchain);
         stopMiningSlaves();
@@ -42,7 +51,7 @@ public class Miner {
 
     private void startMiningSlaves() {
         for (int i = 0; i < SLAVE_POOL_SIZE; i++) {
-            MiningSlave slave = new MiningSlave(blockchain, payoutAddress, this);
+            MiningSlave slave = new MiningSlave(blockchain, payoutAddress, coinbaseMsg, this);
             slaves.add(slave);
             executor.execute(slave);
         }

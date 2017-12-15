@@ -40,7 +40,7 @@ public class Demo {
         KeyPair keypair = wallet.getKeyPair();
         Address target = Address.generateAddress(keypair.getPublic());
 
-        Miner miner = new Miner(blockchain, target);
+        Miner miner = new Miner(blockchain, target, "mined by theo's computer");
         miner.start();
     }
 }

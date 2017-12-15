@@ -25,7 +25,19 @@ public class Block implements Serializable {
     private CoinbaseTransaction coinbaseTx;
     private Sha256Hash merkleRoot;
 
-    public Block(Block predecessor, long nonce, Address coinbaseRecipient, List<Transaction> transactions) {
+    public Block(final Block predecessor, final long nonce, final Address coinbaseRecipient, final String coinbaseMsg, final List<Transaction> transactions) {
+        this.index = predecessor.getIndex() + 1;
+        this.timestamp = Instant.now().getEpochSecond();
+        this.previousBlockHash = predecessor.getHash();
+        this.nonce = nonce;
+        this.coinbaseTx = new CoinbaseTransaction(coinbaseRecipient, coinbaseMsg);
+        this.transactions.add(coinbaseTx);
+        this.transactions.addAll(transactions);
+        this.merkleRoot = computeMerkleRoot();
+        this.hash = computeHash();
+    }
+
+    public Block(final Block predecessor, final long nonce, final Address coinbaseRecipient, final List<Transaction> transactions) {
         this.index = predecessor.getIndex() + 1;
         this.timestamp = Instant.now().getEpochSecond();
         this.previousBlockHash = predecessor.getHash();
@@ -37,8 +49,12 @@ public class Block implements Serializable {
         this.hash = computeHash();
     }
 
-    public Block(Block predecessor, long nonce, Address coinbaseRecipient, Transaction... transactions) {
+    public Block(final Block predecessor, final long nonce, final Address coinbaseRecipient, final Transaction... transactions) {
         this(predecessor, nonce, coinbaseRecipient, Arrays.asList(transactions));
+    }
+
+    public Block(final Block predecessor, final long nonce, final Address coinbaseRecipient, final String optionalCoinbaseMsg, final Transaction... transactions) {
+        this(predecessor, nonce, coinbaseRecipient, optionalCoinbaseMsg, Arrays.asList(transactions));
     }
 
     //GenesisBlock
