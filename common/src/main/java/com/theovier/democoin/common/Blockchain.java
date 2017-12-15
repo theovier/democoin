@@ -62,7 +62,7 @@ public class Blockchain {
         return false;
     }
 
-    public Block getLastBlock() {
+    public synchronized Block getLastBlock() {
         if (blockchain.isEmpty()) {
             return null;
         }
@@ -73,12 +73,12 @@ public class Blockchain {
         return blockchain;
     }
 
-    public String toXML() {
+    public synchronized String toXML() {
         return template.getFilledTemplate();
     }
 
     @Override
-    public String toString() {
+    public synchronized String toString() {
         return toXML();
     }
 }

@@ -5,6 +5,7 @@ import com.theovier.democoin.common.templates.BlockTemplate;
 import com.theovier.democoin.common.transaction.CoinbaseTransaction;
 import com.theovier.democoin.common.transaction.Transaction;
 import org.apache.commons.lang3.StringUtils;
+import org.bouncycastle.util.encoders.Hex;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -108,13 +109,17 @@ public class Block implements Serializable {
         return coinbaseTx;
     }
 
+    /**
+     * @return the leading zeros in the hex representation of the block hash.
+     */
     public long getLeadingZerosCount() {
-        for (int i = 0; i < getHash().getBytes().length; i++) {
-            if (getHash().getBytes()[i] != 0) {
+        String hashHex = getHash().toString();
+        for (int i = 0; i < hashHex.length(); i++) {
+            if (hashHex.charAt(i) != '0') {
                 return i;
             }
         }
-        return Sha256Hash.LENGTH;
+        return hashHex.length();
     }
 
     public String toXML() {

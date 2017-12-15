@@ -40,28 +40,7 @@ public class Demo {
         KeyPair keypair = wallet.getKeyPair();
         Address target = Address.generateAddress(keypair.getPublic());
 
-
-        Block block = null;
-        long nonce = 0;
-        while (true) {
-            block = new Block(blockchain.getLastBlock(),  nonce, target);
-            if (hasProofOfWork(block)) {
-                break;
-            }
-            LOG.info("retry " + block.getHash());
-            nonce++;
-        }
-        blockchain.append(block);
-        LOG.info(blockchain.toXML());
-    }
-
-    public static boolean hasProofOfWork(Block block) {
-        long leadingZeroesCount = block.getLeadingZerosCount();
-
-        if (leadingZeroesCount >= Config.DIFFICULTY) {
-            return true;
-        }
-
-        return false;
+        Miner miner = new Miner(blockchain, target);
+        miner.start();
     }
 }
