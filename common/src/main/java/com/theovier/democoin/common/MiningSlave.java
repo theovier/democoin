@@ -1,10 +1,17 @@
 package com.theovier.democoin.common;
 
+import com.theovier.democoin.common.transaction.Transaction;
+import com.theovier.democoin.common.transaction.TransactionPool;
+import org.apache.log4j.Logger;
+
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public class MiningSlave implements Runnable {
 
+    private static final Logger LOG = Logger.getLogger(MiningSlave.class);
     private AtomicBoolean isRunning = new AtomicBoolean(true);
     private final Address payoutAddress;
     private final Blockchain blockchain;
@@ -41,8 +48,13 @@ public class MiningSlave implements Runnable {
     private Block mineBlock() {
         long nonce = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
         while (isRunning.get()) {
-            //todo get Transactions from TransactionPool
-            Block candidate = new Block(blockchain.getLastBlock(),  nonce, payoutAddress, coinbaseMsg);
+
+            List<Transaction> transactions = TransactionPool.getPendingTransactions()
+                    .stream()
+                    .limit(Config.MAX_TRANSACTIONS_PER_BLOCK)
+                    .collect(Collectors.toList());
+
+            Block candidate = new Block(blockchain.getLastBlock(),  nonce, payoutAddress, coinbaseMsg, transactions);
             //just check the pow here, so we don't have to falsely claim a block valid
             if (BlockValidator.hasValidProofOfWork(candidate)) {
                 return candidate;
