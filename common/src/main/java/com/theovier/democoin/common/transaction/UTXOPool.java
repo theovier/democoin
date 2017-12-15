@@ -6,14 +6,12 @@ import org.apache.log4j.Logger;
 
 import java.util.*;
 
-//todo don't make this static?
 public class UTXOPool {
 
     private static final Logger LOG = Logger.getLogger(UTXOPool.class);
     private static Set<TxOutput> unspentOutputs = new HashSet<>();
 
     public static void compute(Blockchain blockchain) {
-        //todo just calculate it from scratch when starting -> won't have problems because we are so small.
         //todo make this better and faster.
 
         HashMap<TxOutputPointer, TxOutput> outputs = new HashMap<>();
