@@ -59,4 +59,8 @@ public class UTXOPool {
         unspentOutputs.remove(utxo);
         return utxo;
     }
+
+    public static synchronized TxOutput removeUTXO(TxInput input) throws MissingUTXOException {
+        return removeUTXO(input.getPrevOutputInfo());
+    }
 }
