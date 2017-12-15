@@ -3,6 +3,8 @@ package com.theovier.democoin.common;
 import com.theovier.democoin.common.transaction.*;
 import org.apache.log4j.Logger;
 
+import java.util.stream.Collectors;
+
 public class BlockValidator {
 
     private static final Logger LOG = Logger.getLogger(BlockValidator.class);
@@ -37,7 +39,7 @@ public class BlockValidator {
             return false;
         }
         if (!hasOnlyBroadcastedTransactions(candidate)) {
-            //return false;
+            return false;
         }
         if (!hasCoinbaseTx(candidate)) {
             LOG.warn("there is not exactly 1 coinbase transaction");
@@ -83,7 +85,11 @@ public class BlockValidator {
     }
 
     public static boolean hasOnlyBroadcastedTransactions(Block candidate) {
-        return TransactionPool.containsAll(candidate.getTransactions());
+        return TransactionPool.containsAll(
+                candidate.getTransactions()
+                        .stream()
+                        .filter(tx -> !tx.isCoinBase())
+                        .collect(Collectors.toList()));
     }
 
     public static boolean hasCoinbaseTx(Block candidate) {
