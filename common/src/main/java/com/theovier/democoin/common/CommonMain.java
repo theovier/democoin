@@ -9,7 +9,6 @@ public class CommonMain {
     public static void main (String[] args) {
         Security.addProvider(new BouncyCastleProvider());
         Demo demo = new Demo();
-        //miner.demoBlock();
         demo.demoMining();
     }
 }
