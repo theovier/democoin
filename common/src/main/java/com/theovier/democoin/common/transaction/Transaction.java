@@ -75,11 +75,11 @@ public class Transaction implements Serializable {
 
     public Sha256Hash computeHash() {
         StringBuilder txContent = new StringBuilder();
-        txContent.append(String.valueOf(timestamp));
+        txContent.append(timestamp);
         txContent.append(msg);
-        txContent.append(String.valueOf(isCoinBase));
-        txContent.append(String.valueOf(inputs));
-        txContent.append(String.valueOf(outputs));
+        txContent.append(isCoinBase);
+        txContent.append(inputs);
+        txContent.append(outputs);
         return Sha256Hash.create(txContent.toString());
     }
 
