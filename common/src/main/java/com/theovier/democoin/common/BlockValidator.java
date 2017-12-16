@@ -58,7 +58,7 @@ public class BlockValidator {
         if (!Pow.checkProofOfWork(candidate.getHash(), candidate.getPowTarget())) {
             return false;
         }
-        if (candidate.getPowTarget() != Pow.getNextWorkRequired(blockchain)) {
+        if (!candidate.getPowTarget().equals(Pow.getNextWorkRequired(blockchain))) {
             return false;
         }
         return true;

@@ -30,9 +30,9 @@ public abstract class Config {
     public static final int DIFFICULTY_ADJUSTMENT_INTERVAL = TARGET_TIMESPAN / TARGET_SPACING;
 
     //min difficulty for pow
-    public static final int MIN_DIFFICULTY = 4;
+    public static final String MIN_DIFFICULTY = "0000F00000000000000000000000000000000000000000000000000000000000";
 
     //max difficulty for pow
-    public static final int MAX_DIFFICULTY = 30;
+    public static final String MAX_DIFFICULTY = "00000000000000000000000000000000F0000000000000000000000000000000";
 
 }

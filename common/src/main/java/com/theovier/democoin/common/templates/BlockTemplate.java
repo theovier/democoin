@@ -32,7 +32,7 @@ public class BlockTemplate extends Template {
         this.context.put( INDEX, block.getIndex() );
         this.context.put( TIMESTAMP, block.getTimestamp() );
         this.context.put( NONCE, block.getNonce() );
-        this.context.put( TARGET, block.getTargetZeros() );
+        this.context.put( TARGET, block.getPowTarget() );
         this.context.put( PREVIOUS_BLOCK_HASH,  block.getPreviousBlockHash() );
         this.context.put( MERKLE_ROOT, block.getMerkleRoot() );
         this.context.put( TRANSACTIONS, block.getTransactions() );

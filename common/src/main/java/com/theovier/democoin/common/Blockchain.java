@@ -93,6 +93,10 @@ public class Blockchain {
         return blockchain.get(index);
     }
 
+    public synchronized int getHeight() {
+        return blockchain.size();
+    }
+
     public synchronized String toXML() {
         return template.getFilledTemplate();
     }

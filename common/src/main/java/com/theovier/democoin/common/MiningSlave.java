@@ -54,7 +54,7 @@ public class MiningSlave implements Runnable {
         long nonce = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
         while (isRunning.get()) {
 
-            int difficultyTarget = Pow.getNextWorkRequired(blockchain);
+            String difficultyTarget = Pow.getNextWorkRequired(blockchain);
 
             List<Transaction> transactions = TransactionPool.getPendingTransactions()
                     .stream()

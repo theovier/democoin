@@ -12,4 +12,16 @@ public class Utils {
         return text;
     }
 
+    public static String fillTo64ByteWithLeadingZeros(final String hextext) {
+        int difference = 64 - hextext.length();
+        if (difference <= 0) {
+            return hextext;
+        }
+        StringBuilder builder = new StringBuilder(hextext).reverse();
+        for (int i=0; i < difference; i++) {
+            builder.append("0");
+        }
+        return builder.reverse().toString();
+    }
+
 }

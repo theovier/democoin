@@ -12,14 +12,14 @@ public class BlockValidatorTest {
     @Test
     public void testValidIndex() {
         Blockchain blockchain = setupBlockchain();
-        Block block = new Block(blockchain.getLastBlock(),  0, new Address(""), new ArrayList<>());
+        Block block = new Block(blockchain.getLastBlock(),  0, "", new Address(""), new ArrayList<>());
         assert BlockValidator.hasValidIndex(block, blockchain.getLastBlock());
     }
 
     @Test
     public void testValidHashChain() {
         Blockchain blockchain = setupBlockchain();
-        Block block = new Block(blockchain.getLastBlock(), 0, new Address(""),  new ArrayList<>());
+        Block block = new Block(blockchain.getLastBlock(), 0, "", new Address(""),  new ArrayList<>());
         assert BlockValidator.hasValidHashChain(block, blockchain.getLastBlock());
     }
 
@@ -30,7 +30,7 @@ public class BlockValidatorTest {
            txs.add(new CoinbaseTransaction(new Address("...")));
         }
         Blockchain blockchain = setupBlockchain();
-        Block block = new Block(blockchain.getLastBlock(),  0, new Address(""), txs);
+        Block block = new Block(blockchain.getLastBlock(),  0,"", new Address(""), txs);
         assert !BlockValidator.hasValidTransactionCount(block);
     }
 
@@ -40,7 +40,7 @@ public class BlockValidatorTest {
         txs.add(new CoinbaseTransaction(new Address("...")));
         txs.add(new CoinbaseTransaction(new Address("...")));
         Blockchain blockchain = setupBlockchain();
-        Block block = new Block(blockchain.getLastBlock(), 0, new Address(""),  new ArrayList<>());
+        Block block = new Block(blockchain.getLastBlock(), 0, "", new Address(""),  new ArrayList<>());
         assert !BlockValidator.hasCoinbaseTx(block);
     }
 
