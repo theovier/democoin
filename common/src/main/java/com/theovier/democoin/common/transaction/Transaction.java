@@ -142,6 +142,11 @@ public class Transaction implements Serializable {
         return outputs.stream().mapToLong(TxOutput::getValue).sum();
     }
 
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+        build();
+    }
+
     public String toXML() {
         return new TransactionTemplate(this).getFilledTemplate();
     }
