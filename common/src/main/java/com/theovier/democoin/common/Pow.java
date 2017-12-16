@@ -1,17 +1,19 @@
 package com.theovier.democoin.common;
 
 import com.theovier.democoin.common.crypto.Sha256Hash;
+import org.apache.log4j.Logger;
 
 public class Pow {
 
+    private static final Logger LOG = Logger.getLogger(Pow.class);
+
     //todo instead of blockchain use prevBlock variable in block, to iterate in time?
-    //returns how many zeros a blockHash must start with
     public static int getNextWorkRequired(final Blockchain blockchain) {
         Block latestBlock = blockchain.getLastBlock();
         long latestBlockIndex = latestBlock.getIndex();
 
         if ((latestBlockIndex+1) % Config.DIFFICULTY_ADJUSTMENT_INTERVAL != 0) {
-            return latestBlock.getTargetZeros(); //requires same work as the previous block
+            return latestBlock.getPowTarget(); //requires same work as the previous block
         }
 
         //genesis block
@@ -21,14 +23,21 @@ public class Pow {
 
         //get the block before the last adjustment
         long lastAdjustmentBlockIndex = latestBlockIndex - Config.DIFFICULTY_ADJUSTMENT_INTERVAL - 1;
-        assert(lastAdjustmentBlockIndex >= 0);
+
+        if (lastAdjustmentBlockIndex < 0) {
+            lastAdjustmentBlockIndex = 0;
+        }
         Block lastBlockBeforeAdjustment = blockchain.get((int)lastAdjustmentBlockIndex);
-        assert(lastBlockBeforeAdjustment != null);
+        if (lastBlockBeforeAdjustment == null) {
+            //throw error.
+        }
         return calculateNextWorkRequired(lastBlockBeforeAdjustment, latestBlock);
     }
 
     private static int calculateNextWorkRequired(final Block firstBlockInDifficulty, final Block lastBlockInDifficulty) {
         int actualTimeSpan = (int) (lastBlockInDifficulty.getTimestamp() - firstBlockInDifficulty.getTimestamp());
+
+        LOG.info(String.format("needed time: %d, expected time %d", actualTimeSpan, Config.TARGET_TIMESPAN));
 
         //limit adjustment
         if (actualTimeSpan < Config.TARGET_TIMESPAN / 4) {
@@ -38,8 +47,9 @@ public class Pow {
             actualTimeSpan = Config.TARGET_TIMESPAN * 4;
         }
 
+        //todo DO NOT MULTIPLY THE ZEROES! ITS GETTING EXPONENTIALLY HARDER FOR EACH 0.
         //retarget (higher target = higher difficulty, while in bitcoin lower target = higher difficulty)
-        int newTarget = (lastBlockInDifficulty.getTargetZeros() * Config.TARGET_TIMESPAN) / actualTimeSpan;
+        int newTarget = (lastBlockInDifficulty.getPowTarget() * Config.TARGET_TIMESPAN) / actualTimeSpan;
 
         if (newTarget > Config.MAX_DIFFICULTY) {
             newTarget = Config.MAX_DIFFICULTY;

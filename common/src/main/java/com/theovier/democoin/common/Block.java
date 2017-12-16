@@ -5,12 +5,10 @@ import com.theovier.democoin.common.templates.BlockTemplate;
 import com.theovier.democoin.common.transaction.CoinbaseTransaction;
 import com.theovier.democoin.common.transaction.Transaction;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class Block implements Serializable {
@@ -25,14 +23,14 @@ public class Block implements Serializable {
     private List<Transaction> transactions = new ArrayList<>(); //todo make Collection = new HashSet
     private CoinbaseTransaction coinbaseTx;
     private Sha256Hash merkleRoot;
-    private int targetZeros;
+    private int powTarget;
 
-    public Block(final Block predecessor, final long nonce, final int targetZeros, final Address coinbaseRecipient, final String coinbaseMsg, final List<Transaction> transactions) {
+    public Block(final Block predecessor, final long nonce, final int powTarget, final Address coinbaseRecipient, final String coinbaseMsg, final List<Transaction> transactions) {
         this.index = predecessor.getIndex() + 1;
         this.timestamp = Instant.now().getEpochSecond();
         this.previousBlockHash = predecessor.getHash();
         this.nonce = nonce;
-        this.targetZeros = targetZeros;
+        this.powTarget = powTarget;
         this.coinbaseTx = new CoinbaseTransaction(coinbaseRecipient, coinbaseMsg);
         this.transactions.add(coinbaseTx);
         this.transactions.addAll(transactions);
@@ -40,12 +38,12 @@ public class Block implements Serializable {
         this.hash = computeHash();
     }
 
-    public Block(final Block predecessor, final long nonce, final int targetZeros, final Address coinbaseRecipient, final List<Transaction> transactions) {
+    public Block(final Block predecessor, final long nonce, final int powTarget, final Address coinbaseRecipient, final List<Transaction> transactions) {
         this.index = predecessor.getIndex() + 1;
         this.timestamp = Instant.now().getEpochSecond();
         this.previousBlockHash = predecessor.getHash();
         this.nonce = nonce;
-        this.targetZeros = targetZeros;
+        this.powTarget = powTarget;
         this.coinbaseTx = new CoinbaseTransaction(coinbaseRecipient);
         this.transactions.add(coinbaseTx);
         this.transactions.addAll(transactions);
@@ -53,12 +51,12 @@ public class Block implements Serializable {
         this.hash = computeHash();
     }
 
-    public Block(final Block predecessor, final long nonce, final int targetZeros, final Address coinbaseRecipient, final Transaction... transactions) {
-        this(predecessor, nonce, targetZeros, coinbaseRecipient, Arrays.asList(transactions));
+    public Block(final Block predecessor, final long nonce, final int powTarget, final Address coinbaseRecipient, final Transaction... transactions) {
+        this(predecessor, nonce, powTarget, coinbaseRecipient, Arrays.asList(transactions));
     }
 
-    public Block(final Block predecessor, final long nonce, final int targetZeros, final Address coinbaseRecipient, final String optionalCoinbaseMsg, final Transaction... transactions) {
-        this(predecessor, nonce, targetZeros, coinbaseRecipient, optionalCoinbaseMsg, Arrays.asList(transactions));
+    public Block(final Block predecessor, final long nonce, final int powTarget, final Address coinbaseRecipient, final String optionalCoinbaseMsg, final Transaction... transactions) {
+        this(predecessor, nonce, powTarget, coinbaseRecipient, optionalCoinbaseMsg, Arrays.asList(transactions));
     }
 
     //GenesisBlock, always the same.
@@ -67,7 +65,7 @@ public class Block implements Serializable {
         this.timestamp = 1513428657;
         this.previousBlockHash = Sha256Hash.ZERO_HASH;
         this.nonce =  684848142333899113L;
-        this.targetZeros = Config.MIN_DIFFICULTY;
+        this.powTarget = Config.MIN_DIFFICULTY;
         this.coinbaseTx = new CoinbaseTransaction(Config.GENESIS_ADDRESS, "GENESIS");
         this.coinbaseTx.setTimestamp(1513428657);
         this.transactions.add(coinbaseTx);
@@ -80,7 +78,7 @@ public class Block implements Serializable {
         blockContent.append(index);
         blockContent.append(timestamp);
         blockContent.append(nonce);
-        blockContent.append(targetZeros);
+        blockContent.append(powTarget);
         blockContent.append(previousBlockHash);
         blockContent.append(merkleRoot);
         return Sha256Hash.create(blockContent.toString());
@@ -135,12 +133,12 @@ public class Block implements Serializable {
         return coinbaseTx;
     }
 
-    public int getTargetZeros() {
-        return targetZeros;
+    public int getPowTarget() {
+        return powTarget;
     }
 
-    public void setTargetZeros(int target) {
-        this.targetZeros = target;
+    public void setPowTarget(int target) {
+        this.powTarget = target;
         this.hash = null; //forces to recalculate the hash
     }
 

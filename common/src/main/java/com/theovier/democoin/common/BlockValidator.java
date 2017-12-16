@@ -55,10 +55,10 @@ public class BlockValidator {
     }
 
     public static boolean hasValidProofOfWork(Block candidate, Blockchain blockchain) {
-        if (!Pow.checkProofOfWork(candidate.getHash(), candidate.getTargetZeros())) {
+        if (!Pow.checkProofOfWork(candidate.getHash(), candidate.getPowTarget())) {
             return false;
         }
-        if (candidate.getTargetZeros() != Pow.getNextWorkRequired(blockchain)) {
+        if (candidate.getPowTarget() != Pow.getNextWorkRequired(blockchain)) {
             return false;
         }
         return true;

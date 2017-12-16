@@ -34,11 +34,16 @@ public class MiningSlave implements Runnable {
     @Override
     public void run() {
         while (isRunning.get()) {
+
+            if (blockchain.getHeight() >= 30) {
+                master.stop();
+            }
+
             Block block = mineBlock();
             if (block != null) {
                 if (blockchain.append(block)) {
-                    master.stop(); //todo remove this. just for testing.
-                    //blockchain.save();
+                    //master.stop(); //todo remove this. just for testing.
+                    blockchain.save();
                     //todo broadcast
                 }
             }
@@ -59,7 +64,7 @@ public class MiningSlave implements Runnable {
             Block candidate = new Block(blockchain.getLastBlock(),  nonce, difficultyTarget, payoutAddress, coinbaseMsg, transactions);
 
             //just precheck the pow here, so we don't have to falsely claim a block valid
-            if (Pow.checkProofOfWork(candidate.getHash(), candidate.getTargetZeros())) {
+            if (Pow.checkProofOfWork(candidate.getHash(), candidate.getPowTarget())) {
                 return candidate;
             }
             nonce = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
