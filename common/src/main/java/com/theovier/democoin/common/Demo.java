@@ -19,6 +19,7 @@ public class Demo {
         KeyPair keypair = wallet.getKeyPair();
         Address target = Address.generateAddress(keypair.getPublic());
 
+        /*
         //simulate transaction pool
         Transaction tx1 = new Transaction("my message");
         TxInput input1 = new TxInput(new Sha256Hash("79fa92b596eced05d2baf130b4e9c5dc1b3c06dc7e233cd16f78697853887892"), 0); //50
@@ -32,8 +33,9 @@ public class Demo {
         tx1.build();
 
         LOG.info(TransactionPool.add(tx1));
+        */
 
         Miner miner = new Miner(blockchain, target, "mined by theo's computer");
-       // miner.start();
+        miner.start();
     }
 }

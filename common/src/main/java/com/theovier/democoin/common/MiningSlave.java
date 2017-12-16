@@ -49,14 +49,17 @@ public class MiningSlave implements Runnable {
         long nonce = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
         while (isRunning.get()) {
 
+            int difficultyTarget = Pow.getNextWorkRequired(blockchain);
+
             List<Transaction> transactions = TransactionPool.getPendingTransactions()
                     .stream()
                     .limit(Config.MAX_TRANSACTIONS_PER_BLOCK)
                     .collect(Collectors.toList());
 
-            Block candidate = new Block(blockchain.getLastBlock(),  nonce, payoutAddress, coinbaseMsg, transactions);
-            //just check the pow here, so we don't have to falsely claim a block valid
-            if (BlockValidator.hasValidProofOfWork(candidate)) {
+            Block candidate = new Block(blockchain.getLastBlock(),  nonce, difficultyTarget, payoutAddress, coinbaseMsg, transactions);
+
+            //just precheck the pow here, so we don't have to falsely claim a block valid
+            if (Pow.checkProofOfWork(candidate.getHash(), candidate.getTargetZeros())) {
                 return candidate;
             }
             nonce = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);

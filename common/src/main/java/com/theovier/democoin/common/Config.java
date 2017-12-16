@@ -1,5 +1,6 @@
 package com.theovier.democoin.common;
 
+//todo rename ConsensusParams?
 public abstract class Config {
 
     public static final String BLOCKCHAIN_FILE = "blockchain.dat";
@@ -19,6 +20,19 @@ public abstract class Config {
     //includes the coinbaseTx.
     public static final int MAX_TRANSACTIONS_PER_BLOCK = 5;
 
-    //number of zeroes a blockHash must start with.
-    public static final long DIFFICULTY = 6; //todo make it possible to adjust this value.
+    //seconds until target is adjusted (3600s = 1h)
+    public static final int TARGET_TIMESPAN = 60 * 60;
+
+    //how far are blocks apart in seconds (360s = 6min)
+    public static final int TARGET_SPACING = 6 * 60;
+
+    //amount of blocks till target adjustment
+    public static final int DIFFICULTY_ADJUSTMENT_INTERVAL = TARGET_TIMESPAN / TARGET_SPACING;
+
+    //min difficulty for pow
+    public static final int MIN_DIFFICULTY = 4;
+
+    //max difficulty for pow
+    public static final int MAX_DIFFICULTY = 30;
+
 }

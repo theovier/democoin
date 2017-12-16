@@ -9,8 +9,9 @@ public class BlockValidator {
 
     private static final Logger LOG = Logger.getLogger(BlockValidator.class);
 
-    public static boolean isValid(Block candidate, Block prevBlock) {
-        if (!hasValidProofOfWork(candidate)) {
+    public static boolean isValid(final Block candidate, final Blockchain blockchain) {
+        Block prevBlock = blockchain.getLastBlock();
+        if (!hasValidProofOfWork(candidate, blockchain)) {
             LOG.warn("pow missing");
             return false;
         }
@@ -53,8 +54,15 @@ public class BlockValidator {
         return true;
     }
 
-    public static boolean hasValidProofOfWork(Block candidate) {
-        return candidate.getLeadingZerosCount() >= Config.DIFFICULTY;
+    public static boolean hasValidProofOfWork(Block candidate, Blockchain blockchain) {
+        if (!Pow.checkProofOfWork(candidate.getHash(), candidate.getTargetZeros())) {
+            return false;
+        }
+        if (candidate.getTargetZeros() != Pow.getNextWorkRequired(blockchain)) {
+            return false;
+        }
+        return true;
+        //return candidate.getLeadingZerosCount() >= Config.DIFFICULTY;
     }
 
     public static boolean hasValidIndex(Block candidate, Block prevBlock) {

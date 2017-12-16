@@ -21,7 +21,7 @@ public class Blockchain {
         load();
     }
 
-    public boolean save() {
+    public synchronized boolean save() {
         try {
             FileOutputStream fout = new FileOutputStream(Config.BLOCKCHAIN_FILE);
             ObjectOutputStream oos = new ObjectOutputStream(fout);
@@ -55,7 +55,7 @@ public class Blockchain {
     }
 
     public synchronized boolean append(Block block) {
-        if (BlockValidator.isValid(block, getLastBlock())) {
+        if (BlockValidator.isValid(block, this)) {
             blockchain.add(block);
             block.getTransactions().forEach(TransactionPool::remove);//remove included transactions from (pending) transaction pool
             block.getTransactions().forEach(UTXOPool::add); //add transactions outputs to the UTXO.
@@ -86,7 +86,10 @@ public class Blockchain {
         return blockchain;
     }
 
-    public Block get(int index) {
+    public synchronized Block get(int index) {
+        if (index >= blockchain.size()) {
+            return null;
+        }
         return blockchain.get(index);
     }
 
