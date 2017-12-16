@@ -15,7 +15,7 @@ public class UTXOPool {
         //todo make this better and faster.
 
         HashMap<TxOutputPointer, TxOutput> outputs = new HashMap<>();
-        ArrayList<Block> blocks = blockchain.getBlocks();
+        List<Block> blocks = blockchain.getBlocks();
         for (Block block : blocks) {
             for (Transaction transaction : block.getTransactions()) {
                 for (TxOutput output : transaction.getOutputs()) {

@@ -10,11 +10,12 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Blockchain {
     private static final Logger LOG = Logger.getLogger(Blockchain.class);
     private FillableTemplate template = new BlockChainTemplate(this);
-    private ArrayList<Block> blockchain = new ArrayList<>();
+    private List<Block> blockchain = new ArrayList<>(); //todo volatile? TODO LINKEDLIST!
 
     public Blockchain() {
         load();
@@ -81,8 +82,12 @@ public class Blockchain {
         return blockchain.get(blockchain.size() - 1);
     }
 
-    public ArrayList<Block> getBlocks() {
+    public List<Block> getBlocks() {
         return blockchain;
+    }
+
+    public Block get(int index) {
+        return blockchain.get(index);
     }
 
     public synchronized String toXML() {
