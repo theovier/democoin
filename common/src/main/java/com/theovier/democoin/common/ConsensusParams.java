@@ -2,8 +2,6 @@ package com.theovier.democoin.common;
 
 public abstract class ConsensusParams {
 
-    public static final String BLOCKCHAIN_FILE = "blockchain.dat";
-
     //address the genesis transaction pays to.
     public static final Address GENESIS_ADDRESS = new Address("1AVuQjcnquXEaXgggJx7TsyMBjbatiBtNB");
 
