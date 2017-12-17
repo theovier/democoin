@@ -26,7 +26,7 @@ public class Blockchain {
             FileOutputStream fout = new FileOutputStream(Config.BLOCKCHAIN_FILE);
             ObjectOutputStream oos = new ObjectOutputStream(fout);
             oos.writeObject(blockchain);
-            LOG.info("saved blockchain.");
+            LOG.info(String.format("saved blockchain, height: %d", getHeight()));
             FileUtils.writeStringToFile(new File("blockchain.xml"), toXML(), "UTF-8");
             return true;
         } catch (Exception e) {
