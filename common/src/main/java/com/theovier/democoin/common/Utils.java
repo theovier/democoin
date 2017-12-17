@@ -7,9 +7,9 @@ public class Utils {
         if (text.length() > 255) {
             escaped = text.substring(0, 255);
         }
-        escaped.replace(">", ")");
-        escaped.replace("<", "(");
-        return text;
+        escaped = escaped.replace(">", ")");
+        escaped = escaped.replace("<", "(");
+        return escaped;
     }
 
     public static String fillTo64ByteWithLeadingZeros(final String hextext) {
