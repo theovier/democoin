@@ -36,7 +36,7 @@ public abstract class ConsensusParams {
     public static final int MAX_TIMESPAN_ADJUSTMENT = TARGET_TIMESPAN * TIMESPAN_LIMIT_FACTOR;
 
     //min difficulty for pow. Lowest difficulty = highest possible target
-    public static final String MIN_DIFFICULTY = "0000000F00000000000000000000000000000000000000000000000000000000";
+    public static final String MIN_DIFFICULTY = "000000F000000000000000000000000000000000000000000000000000000000";
     public static final String HIGHEST_POSSIBLE_TARGET = MIN_DIFFICULTY;
 
     //max difficulty for pow. Highest difficulty = lowest possible target
