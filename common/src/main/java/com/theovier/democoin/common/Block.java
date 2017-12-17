@@ -65,8 +65,8 @@ public class Block implements Serializable {
         this.timestamp = Instant.now().getEpochSecond();
         this.previousBlockHash = Sha256Hash.ZERO_HASH;
         this.nonce =  684848142333899113L;
-        this.powTarget = Config.MIN_DIFFICULTY;
-        this.coinbaseTx = new CoinbaseTransaction(Config.GENESIS_ADDRESS, "GENESIS");
+        this.powTarget = ConsensusParams.MIN_DIFFICULTY;
+        this.coinbaseTx = new CoinbaseTransaction(ConsensusParams.GENESIS_ADDRESS, "GENESIS");
         this.coinbaseTx.setTimestamp(1513428657);
         this.transactions.add(coinbaseTx);
         this.merkleRoot = computeMerkleRoot();

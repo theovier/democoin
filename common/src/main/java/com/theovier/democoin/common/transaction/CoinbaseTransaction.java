@@ -2,7 +2,7 @@ package com.theovier.democoin.common.transaction;
 
 
 import com.theovier.democoin.common.Address;
-import com.theovier.democoin.common.Config;
+import com.theovier.democoin.common.ConsensusParams;
 
 public class CoinbaseTransaction extends Transaction {
 
@@ -17,18 +17,18 @@ public class CoinbaseTransaction extends Transaction {
     public CoinbaseTransaction(final Address recipientAddress) {
         super(COINBASE_MSG);
         this.isCoinBase = true;
-        addOutput(new TxOutput(recipientAddress, Config.COINBASE_REWARD));
+        addOutput(new TxOutput(recipientAddress, ConsensusParams.COINBASE_REWARD));
         build();
     }
 
     public CoinbaseTransaction(final Address recipientAddress, final String msg) {
         super(msg);
         this.isCoinBase = true;
-        addOutput(new TxOutput(recipientAddress, Config.COINBASE_REWARD));
+        addOutput(new TxOutput(recipientAddress, ConsensusParams.COINBASE_REWARD));
         build();
     }
 
     public void addTransactionFees(final long fees) {
-        getFirstOutput().setValue(Config.COINBASE_REWARD + fees);
+        getFirstOutput().setValue(ConsensusParams.COINBASE_REWARD + fees);
     }
 }

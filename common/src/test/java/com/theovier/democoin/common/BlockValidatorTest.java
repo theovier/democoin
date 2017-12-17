@@ -26,7 +26,7 @@ public class BlockValidatorTest {
     @Test
     public void testValidTransactionCount() {
         List<Transaction> txs = new ArrayList<>();
-        for (int i=0; i <= Config.MAX_TRANSACTIONS_PER_BLOCK; i++) {
+        for (int i = 0; i <= ConsensusParams.MAX_TRANSACTIONS_PER_BLOCK; i++) {
            txs.add(new CoinbaseTransaction(new Address("...")));
         }
         Blockchain blockchain = setupBlockchain();

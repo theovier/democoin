@@ -1,7 +1,6 @@
 package com.theovier.democoin.common;
 
-//todo rename ConsensusParams?
-public abstract class Config {
+public abstract class ConsensusParams {
 
     public static final String BLOCKCHAIN_FILE = "blockchain.dat";
 
@@ -39,10 +38,10 @@ public abstract class Config {
     public static final int MAX_TIMESPAN_ADJUSTMENT = TARGET_TIMESPAN * TIMESPAN_LIMIT_FACTOR;
 
     //min difficulty for pow. Lowest difficulty = highest possible target
-    public static final String MIN_DIFFICULTY = "00000F0000000000000000000000000000000000000000000000000000000000";
+    public static final String MIN_DIFFICULTY = "0000000F00000000000000000000000000000000000000000000000000000000";
     public static final String HIGHEST_POSSIBLE_TARGET = MIN_DIFFICULTY;
 
     //max difficulty for pow. Highest difficulty = lowest possible target
-    public static final String MAX_DIFFICULTY = "00000000000000000000000000000000F0000000000000000000000000000000";
+    public static final String MAX_DIFFICULTY = "000000000000000000000000000000000000F000000000000000000000000000";
     public static final String LOWEST_POSSIBLE_TARGET = MAX_DIFFICULTY;
 }

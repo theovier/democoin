@@ -1,6 +1,6 @@
 package com.theovier.democoin.common.transaction;
 
-import com.theovier.democoin.common.Config;
+import com.theovier.democoin.common.ConsensusParams;
 
 import java.util.List;
 
@@ -17,10 +17,10 @@ public class TransactionValidator {
         if (tx.getOutputs().size() != 1) {
             return false;
         }
-        if (tx.getFirstOutput().getValue() < 0 || tx.getFirstOutput().getValue() > Config.MAX_COINS) {
+        if (tx.getFirstOutput().getValue() < 0 || tx.getFirstOutput().getValue() > ConsensusParams.MAX_COINS) {
             return false;
         }
-        if (tx.getFirstOutput().getValue() != (Config.COINBASE_REWARD + totalBlockFee)) {
+        if (tx.getFirstOutput().getValue() != (ConsensusParams.COINBASE_REWARD + totalBlockFee)) {
             //return false;
         }
         return true;
@@ -86,7 +86,7 @@ public class TransactionValidator {
     }
 
     public static boolean isInLegalMoneyRange(long value) {
-        return 0 < value && value <= Config.MAX_COINS;
+        return 0 < value && value <= ConsensusParams.MAX_COINS;
     }
 
     public static boolean isValueSumInLegalMoneyRange(List<TxInput> inputs) {
@@ -104,14 +104,14 @@ public class TransactionValidator {
         if (!tx.getOutputs().stream().allMatch(TransactionValidator::isValidTxOutput)) {
             return false;
         }
-        if (tx.getOutputs().stream().mapToLong(TxOutput::getValue).sum() > Config.MAX_COINS) {
+        if (tx.getOutputs().stream().mapToLong(TxOutput::getValue).sum() > ConsensusParams.MAX_COINS) {
             return false;
         }
         return true;
     }
 
     public static boolean isValidTxOutput(TxOutput out) {
-        if (out.getValue() > Config.MAX_COINS) {
+        if (out.getValue() > ConsensusParams.MAX_COINS) {
             return false;
         }
         return true;

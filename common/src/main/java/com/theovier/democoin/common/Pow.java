@@ -13,17 +13,17 @@ public class Pow {
         Block lastBlock = blockchain.getLastBlock();
         long currentIndex = lastBlock.getIndex();
 
-        if ((currentIndex + 1) % Config.DIFFICULTY_ADJUSTMENT_INTERVAL != 0) {
+        if ((currentIndex + 1) % ConsensusParams.DIFFICULTY_ADJUSTMENT_INTERVAL != 0) {
             return lastBlock.getPowTarget();
         }
 
         //first target adjustment
-        if (currentIndex + 1 == Config.DIFFICULTY_ADJUSTMENT_INTERVAL) {
+        if (currentIndex + 1 == ConsensusParams.DIFFICULTY_ADJUSTMENT_INTERVAL) {
             return calculateNextWorkRequired(blockchain.getGenesisBlock(), lastBlock);
         } else {
             //further target adjustments. e.g. (29 + 1) - 10 = 20
             //look how long we did take from the creation of 20 to creation of 29.
-            long lastAdjustedBlockIndex = (currentIndex + 1) - Config.DIFFICULTY_ADJUSTMENT_INTERVAL;
+            long lastAdjustedBlockIndex = (currentIndex + 1) - ConsensusParams.DIFFICULTY_ADJUSTMENT_INTERVAL;
             Block lastAdjustedBlock = blockchain.get((int) lastAdjustedBlockIndex);
             return calculateNextWorkRequired(lastAdjustedBlock, lastBlock);
         }
@@ -31,10 +31,10 @@ public class Pow {
 
     private static String calculateNextWorkRequired(final Block firstBlockInDifficulty, final Block lastBlockInDifficulty) {
         long timeNeeded = lastBlockInDifficulty.getTimestamp() - firstBlockInDifficulty.getTimestamp();
-        long limitedTimeNeeded = Utils.clamp(timeNeeded, Config.MIN_TIMESPAN_ADJUSTMENT, Config.MAX_TIMESPAN_ADJUSTMENT);
-        BigInteger adjustedTarget = calculateAdjustedTarget(lastBlockInDifficulty.getPowTarget(), limitedTimeNeeded, Config.TARGET_TIMESPAN);
+        long limitedTimeNeeded = Utils.clamp(timeNeeded, ConsensusParams.MIN_TIMESPAN_ADJUSTMENT, ConsensusParams.MAX_TIMESPAN_ADJUSTMENT);
+        BigInteger adjustedTarget = calculateAdjustedTarget(lastBlockInDifficulty.getPowTarget(), limitedTimeNeeded, ConsensusParams.TARGET_TIMESPAN);
         String adjustedTargetHex = convertTargetToHex(adjustedTarget);
-        return Utils.clampHex(adjustedTargetHex, Config.LOWEST_POSSIBLE_TARGET, Config.HIGHEST_POSSIBLE_TARGET);
+        return Utils.clampHex(adjustedTargetHex, ConsensusParams.LOWEST_POSSIBLE_TARGET, ConsensusParams.HIGHEST_POSSIBLE_TARGET);
     }
 
     //adjustedTarget = (currentTarget * neededTime) / intendedTime

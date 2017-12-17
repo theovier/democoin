@@ -24,7 +24,7 @@ public class Blockchain {
 
     public synchronized boolean save() {
         try {
-            FileOutputStream fout = new FileOutputStream(Config.BLOCKCHAIN_FILE);
+            FileOutputStream fout = new FileOutputStream(ConsensusParams.BLOCKCHAIN_FILE);
             ObjectOutputStream oos = new ObjectOutputStream(fout);
             oos.writeObject(blockchain);
             LOG.info(String.format("saved blockchain, height: %d", getHeight()));
@@ -38,7 +38,7 @@ public class Blockchain {
 
     public boolean load() {
         try {
-            FileInputStream fin = new FileInputStream(Config.BLOCKCHAIN_FILE);
+            FileInputStream fin = new FileInputStream(ConsensusParams.BLOCKCHAIN_FILE);
             ObjectInputStream ois = new ObjectInputStream(fin);
             this.blockchain = (ArrayList<Block>)ois.readObject();
             return true;

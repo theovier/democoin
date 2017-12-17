@@ -58,7 +58,7 @@ public class MiningSlave implements Runnable {
 
             List<Transaction> transactions = TransactionPool.getPendingTransactions()
                     .stream()
-                    .limit(Config.MAX_TRANSACTIONS_PER_BLOCK)
+                    .limit(ConsensusParams.MAX_TRANSACTIONS_PER_BLOCK)
                     .collect(Collectors.toList());
 
             Block candidate = new Block(blockchain.getLastBlock(),  nonce, difficultyTarget, payoutAddress, coinbaseMsg, transactions);

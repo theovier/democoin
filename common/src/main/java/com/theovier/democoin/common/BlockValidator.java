@@ -81,7 +81,7 @@ public class BlockValidator {
     }
 
     public static boolean hasValidTransactionCount(Block candidate) {
-        return candidate.getTransactions().size() <= Config.MAX_TRANSACTIONS_PER_BLOCK;
+        return candidate.getTransactions().size() <= ConsensusParams.MAX_TRANSACTIONS_PER_BLOCK;
     }
 
     public static boolean hasOnlyValidTransactions(Block candidate) {
