@@ -1,4 +1,4 @@
-                        <output>
-                            <address>${address}</address>
-                            <value>${value}</value>
-                        </output>
+                    <output>
+                        <address>${address}</address>
+                        <value>${value}</value>
+                    </output>

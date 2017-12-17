@@ -1,17 +1,17 @@
-                <transaction txId="${txid}">
-                    <timestamp>${timestamp}</timestamp>
-                    <msg>${msg}</msg>
-                    <coinbase>${coinbase}</coinbase>
+            <transaction txId="${txid}">
+                <timestamp>${timestamp}</timestamp>
+                <msg>${msg}</msg>
+                <coinbase>${coinbase}</coinbase>
 #if(!${coinbase})
-                    <inputs>
+                <inputs>
 #foreach($input in $inputs)
 ${input.toXML()}
 #end
-                    </inputs>
+                </inputs>
 #end
-                    <outputs>
+                <outputs>
 #foreach($output in $outputs)
 ${output.toXML()}
 #end
-                    </outputs>
-                </transaction>
+                </outputs>
+            </transaction>

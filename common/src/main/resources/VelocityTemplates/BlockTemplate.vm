@@ -1,13 +1,13 @@
-        <block hash="${hash}">
-            <index>${index}</index>
-            <timestamp>${timestamp}</timestamp>
-            <nonce>${nonce}</nonce>
-            <target>${target}</target>
-            <previousBlockHash>${previousBlockHash}</previousBlockHash>
-            <merkleRoot>${merkleRoot}</merkleRoot>
-            <transactions>
+    <block hash="${hash}">
+        <index>${index}</index>
+        <timestamp>${timestamp}</timestamp>
+        <nonce>${nonce}</nonce>
+        <target>${target}</target>
+        <previousBlockHash>${previousBlockHash}</previousBlockHash>
+        <merkleRoot>${merkleRoot}</merkleRoot>
+        <transactions>
 #foreach($tx in $transactions)
 ${tx.toXML()}
 #end
-            </transactions>
-        </block>
+        </transactions>
+    </block>

@@ -1,7 +1,7 @@
-                        <input>
-                            <prevOutputPointer>
-                                <transactionHash>${prevTransactionHash}</transactionHash>
-                                <outputIndex>${outputIndex}</outputIndex>
-                            </prevOutputPointer>
-                            <signature>${signature}</signature>
-                        </input>
+                    <input>
+                        <prevOutputPointer>
+                            <transactionHash>${prevTransactionHash}</transactionHash>
+                            <outputIndex>${outputIndex}</outputIndex>
+                        </prevOutputPointer>
+                        <signature>${signature}</signature>
+                    </input>
