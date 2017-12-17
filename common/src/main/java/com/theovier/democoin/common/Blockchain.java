@@ -92,6 +92,10 @@ public class Blockchain {
         }
         return blockchain.get(index);
     }
+    
+    public synchronized Block getGenesisBlock() {
+        return get(0);
+    }
 
     public synchronized int getHeight() {
         return blockchain.size();
