@@ -62,7 +62,6 @@ public class BlockValidator {
             return false;
         }
         return true;
-        //return candidate.getLeadingZerosCount() >= Config.DIFFICULTY;
     }
 
     public static boolean hasValidIndex(Block candidate, Block prevBlock) {
