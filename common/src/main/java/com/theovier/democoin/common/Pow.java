@@ -13,11 +13,6 @@ public class Pow {
         Block lastBlock = blockchain.getLastBlock();
         long currentIndex = lastBlock.getIndex();
 
-        //to check the validity of the genesis block //todo remove this and solve this otherwise.
-        if (currentIndex == 0) {
-            return Config.MIN_DIFFICULTY;
-        }
-
         if ((currentIndex + 1) % Config.DIFFICULTY_ADJUSTMENT_INTERVAL != 0) {
             return lastBlock.getPowTarget();
         }
