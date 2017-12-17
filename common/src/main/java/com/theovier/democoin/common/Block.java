@@ -20,12 +20,12 @@ public class Block implements Serializable {
     private Sha256Hash previousBlockHash;
     private Sha256Hash hash;
     private long nonce;
-    private List<Transaction> transactions = new ArrayList<>(); //todo make Collection = new HashSet
+    private Set<Transaction> transactions = new HashSet<>();
     private CoinbaseTransaction coinbaseTx;
     private Sha256Hash merkleRoot;
     private String powTarget;
 
-    public Block(final Block predecessor, final long nonce, final String powTarget, final Address coinbaseRecipient, final String coinbaseMsg, final List<Transaction> transactions) {
+    public Block(final Block predecessor, final long nonce, final String powTarget, final Address coinbaseRecipient, final String coinbaseMsg, final Collection<Transaction> transactions) {
         this.index = predecessor.getIndex() + 1;
         this.timestamp = Instant.now().getEpochSecond();
         this.previousBlockHash = predecessor.getHash();
@@ -38,7 +38,7 @@ public class Block implements Serializable {
         this.hash = computeHash();
     }
 
-    public Block(final Block predecessor, final long nonce, final String powTarget, final Address coinbaseRecipient, final List<Transaction> transactions) {
+    public Block(final Block predecessor, final long nonce, final String powTarget, final Address coinbaseRecipient, final Collection<Transaction> transactions) {
         this.index = predecessor.getIndex() + 1;
         this.timestamp = Instant.now().getEpochSecond();
         this.previousBlockHash = predecessor.getHash();
@@ -121,7 +121,7 @@ public class Block implements Serializable {
         return nonce;
     }
 
-    public List<Transaction> getTransactions() {
+    public Set<Transaction> getTransactions() {
         return transactions;
     }
 

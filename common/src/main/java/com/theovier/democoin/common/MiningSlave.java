@@ -5,6 +5,7 @@ import com.theovier.democoin.common.transaction.TransactionPool;
 import org.apache.log4j.Logger;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -56,10 +57,10 @@ public class MiningSlave implements Runnable {
 
             String difficultyTarget = Pow.getNextWorkRequired(blockchain);
 
-            List<Transaction> transactions = TransactionPool.getPendingTransactions()
+            Set<Transaction> transactions = TransactionPool.getPendingTransactions()
                     .stream()
                     .limit(ConsensusParams.MAX_TRANSACTIONS_PER_BLOCK)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toSet());
 
             Block candidate = new Block(blockchain.getLastBlock(),  nonce, difficultyTarget, payoutAddress, coinbaseMsg, transactions);
 
