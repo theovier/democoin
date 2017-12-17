@@ -12,7 +12,7 @@ public class Utils {
         return escaped;
     }
 
-    public static String fillTo64ByteWithLeadingZeros(final String hextext) {
+    public static String fillTo64CharsWithLeadingZeros(final String hextext) {
         int difference = 64 - hextext.length();
         if (difference <= 0) {
             return hextext;
@@ -24,4 +24,23 @@ public class Utils {
         return builder.reverse().toString();
     }
 
+    public static long clamp(long val, long min, long max) {
+        if (val < min) {
+            return min;
+        }
+        if (val > max) {
+            return max;
+        }
+        return val;
+    }
+
+    public static String clampHex(String val, String min, String max) {
+        if (val.compareTo(min) < 0) {
+            return min;
+        }
+        if (val.compareTo(max) > 0) {
+            return max;
+        }
+        return val;
+    }
 }

@@ -29,10 +29,20 @@ public abstract class Config {
     //amount of blocks till target adjustment
     public static final int DIFFICULTY_ADJUSTMENT_INTERVAL = TARGET_TIMESPAN / TARGET_SPACING;
 
-    //min difficulty for pow
+    //protect target from too much volatility
+    public static final int TIMESPAN_LIMIT_FACTOR = 4;
+
+    //lowest possible adjustment of the needed time
+    public static final int MIN_TIMESPAN_ADJUSTMENT = TARGET_TIMESPAN / TIMESPAN_LIMIT_FACTOR;
+
+    //highest possible adjustment of the needed time
+    public static final int MAX_TIMESPAN_ADJUSTMENT = TARGET_TIMESPAN * TIMESPAN_LIMIT_FACTOR;
+
+    //min difficulty for pow. Lowest difficulty = highest possible target
     public static final String MIN_DIFFICULTY = "00000F0000000000000000000000000000000000000000000000000000000000";
+    public static final String HIGHEST_POSSIBLE_TARGET = MIN_DIFFICULTY;
 
-    //max difficulty for pow
+    //max difficulty for pow. Highest difficulty = lowest possible target
     public static final String MAX_DIFFICULTY = "00000000000000000000000000000000F0000000000000000000000000000000";
-
+    public static final String LOWEST_POSSIBLE_TARGET = MAX_DIFFICULTY;
 }
