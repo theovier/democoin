@@ -6,29 +6,32 @@ import java.math.BigInteger;
 
 public class Pow {
 
+    /**
+     * returns the targetHex which a blockHash has to beat (be lower)
+     */
     public static String getNextWorkRequired(final Blockchain blockchain) {
-        Block latestBlock = blockchain.getLastBlock();
-        long latestBlockIndex = latestBlock.getIndex();
+        Block lastBlock = blockchain.getLastBlock();
+        long currentIndex = lastBlock.getIndex();
 
         //to check the validity of the genesis block //todo remove this and solve this otherwise.
-        if (latestBlockIndex == 0) {
+        if (currentIndex == 0) {
             return Config.MIN_DIFFICULTY;
         }
 
-        if ((latestBlockIndex + 1) % Config.DIFFICULTY_ADJUSTMENT_INTERVAL != 0) {
-            return latestBlock.getPowTarget();
+        if ((currentIndex + 1) % Config.DIFFICULTY_ADJUSTMENT_INTERVAL != 0) {
+            return lastBlock.getPowTarget();
         }
 
-        //get the block before the last adjustment
-        long lastAdjustmentBlockIndex = latestBlockIndex - Config.DIFFICULTY_ADJUSTMENT_INTERVAL - 1;
-        if (lastAdjustmentBlockIndex < 0) {
-            lastAdjustmentBlockIndex = 0;
+        //first target adjustment
+        if (currentIndex + 1 == Config.DIFFICULTY_ADJUSTMENT_INTERVAL) {
+            return calculateNextWorkRequired(blockchain.getGenesisBlock(), lastBlock);
+        } else {
+            //further target adjustments. e.g. (29 + 1) - 10 = 20
+            //look how long we did take from the creation of 20 to creation of 29.
+            long lastAdjustedBlockIndex = (currentIndex + 1) - Config.DIFFICULTY_ADJUSTMENT_INTERVAL;
+            Block lastAdjustedBlock = blockchain.get((int) lastAdjustedBlockIndex);
+            return calculateNextWorkRequired(lastAdjustedBlock, lastBlock);
         }
-        Block lastBlockBeforeAdjustment = blockchain.get((int)lastAdjustmentBlockIndex);
-        if (lastBlockBeforeAdjustment == null) {
-            throw new IllegalStateException();
-        }
-        return calculateNextWorkRequired(lastBlockBeforeAdjustment, latestBlock);
     }
 
     private static String calculateNextWorkRequired(final Block firstBlockInDifficulty, final Block lastBlockInDifficulty) {
