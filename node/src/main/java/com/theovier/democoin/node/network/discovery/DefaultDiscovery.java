@@ -33,10 +33,11 @@ public class DefaultDiscovery implements PeerDiscovery {
     @Override
     public Set<Peer> getRandomPeers() throws PeerDiscoveryException {
         Set<Peer> defaultPeers = getDefaultPeers();
+        Set<Peer> randomPeers = defaultPeers;
+        randomPeers.forEach(Peer::start);
         //todo query defaultPeers for more addresses
-        //connect to several of those addresses
-
-        return defaultPeers;
+        //todo connect to several of those addresses
+        return randomPeers;
     }
 
     public Set<Peer> getDefaultPeers() throws PeerDiscoveryException {
