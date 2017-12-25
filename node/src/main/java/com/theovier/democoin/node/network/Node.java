@@ -4,71 +4,44 @@ import com.theovier.democoin.node.network.messages.Message;
 import org.apache.log4j.Logger;
 
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-//todo initial connect to other nodes and query their lists.
-public class Node implements Runnable {
+public class Node {
 
     private static final Logger LOG = Logger.getLogger(Node.class);
-
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private boolean isRunning;
-    private ServerSocket serverSocket;
-    private List<Peer> connectedPeers = new ArrayList<>(NetworkParams.MAX_CONNECTIONS);
+    private final List<Peer> outgoingConnections = new ArrayList<>(NetworkParams.MAX_OUT_CONNECTIONS);
+    private final NetworkListener networkListener = new NetworkListener();
+    private final ExecutorService listenExecutor = Executors.newSingleThreadExecutor();
+    private final OutgoingConnectionHandler outgoingConnectionHandler = new OutgoingConnectionHandler();
 
     public void start() throws IOException {
-        serverSocket = new ServerSocket(NetworkParams.PORT);
-        isRunning = true;
-        executor.execute(this);
+        //1) try to connect to a hardcoded node
+        //2) get X other nodes to connect to
+        //3) download most recent blockchain from random node
+        //4) start listening for incoming connections
+        startListening();
+        outgoingConnectionHandler.connectWithOtherNodes();
     }
 
     public void shutdown() {
-        isRunning = false;
-        try {
-            serverSocket.close();
-        } catch (IOException e) {
-            LOG.error(e);
-        }
-        executor.shutdown();
+        stopListening();
     }
 
-    @Override
-    public void run() {
-        Thread.currentThread().setName("node");
-        LOG.info("Node running on Port " + serverSocket.getLocalPort());
-        while (isRunning && hasNotReachedMaxConnectionsYet()) {
-            handleIncomingConnections();
-        }
-        LOG.info("Node stopped on Port " + serverSocket.getLocalPort());
+    private void startListening() throws IOException {
+        networkListener.startAcceptingConnections();
+        listenExecutor.execute(networkListener);
     }
 
-    private boolean hasNotReachedMaxConnectionsYet() {
-        return connectedPeers.size() < NetworkParams.MAX_CONNECTIONS;
-    }
-
-    private void handleIncomingConnections() {
-        try {
-            Socket socket = serverSocket.accept(); //blocking
-            socket.setSoTimeout(0);
-
-            //todo extract me
-            Peer peer = new Peer(socket);
-            peer.start();
-            connectedPeers.add(peer);
-        } catch (IOException e) {
-            LOG.error(e);
-        }
+    private void stopListening() {
+        networkListener.stop();
+        listenExecutor.shutdown();
     }
 
     public void broadcastMessage(Message msg) {
-        for (Peer peer : connectedPeers) {
+        for (Peer peer : outgoingConnections) {
             try {
                 peer.sendMessage(msg);
             } catch (IOException e) {
@@ -77,4 +50,6 @@ public class Node implements Runnable {
             }
         }
     }
+
 }
+

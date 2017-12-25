@@ -22,10 +22,9 @@ public class NetworkConnection {
 
     public NetworkConnection(final Socket socket) throws IOException {
         this.socket = socket;
-        this.in = new ObjectInputStream(socket.getInputStream());
         this.out = new ObjectOutputStream(socket.getOutputStream());
+        this.in = new ObjectInputStream(socket.getInputStream());
         this.remoteAddress = socket.getInetAddress();
-
         /*
         //negotiate version
         sendMessage(new VersionMessage());

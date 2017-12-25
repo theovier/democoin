@@ -55,6 +55,7 @@ public class Peer implements Runnable {
             }
         } catch (IOException e) {
             LOG.error(e);
+            disconnect();
         }
     }
 
@@ -68,5 +69,10 @@ public class Peer implements Runnable {
 
     public void sendMessage(Message msg) throws IOException {
         connection.sendMessage(msg);
+    }
+
+    @Override
+    public String toString() {
+        return connection.toString();
     }
 }
