@@ -8,12 +8,12 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
+ * todo do this in a new thread?
  try to establish connection with known peers on node startup.
- 1) connect with 1 known node
+ 1) connect with known nodes
  2) query for more node addresses
  */
 public class DefaultDiscovery implements PeerDiscovery {
@@ -21,8 +21,8 @@ public class DefaultDiscovery implements PeerDiscovery {
     private static final Logger LOG = Logger.getLogger(DefaultDiscovery.class);
 
     @Override
-    public Set<InetSocketAddress> getPeerAddresses() {
-        Set<InetSocketAddress> addresses = new HashSet<>();
+    public List<InetSocketAddress> getPeerAddresses() {
+        List<InetSocketAddress> addresses = new ArrayList<>();
         for (String defaultHost : NetworkParams.DEFAULT_HOSTS) {
             InetSocketAddress address = new InetSocketAddress(defaultHost, NetworkParams.PORT);
             addresses.add(address);
@@ -31,28 +31,60 @@ public class DefaultDiscovery implements PeerDiscovery {
     }
 
     @Override
-    public Set<Peer> getRandomPeers() throws PeerDiscoveryException {
-        Set<Peer> defaultPeers = getDefaultPeers();
-        Set<Peer> randomPeers = defaultPeers;
-        randomPeers.forEach(Peer::start);
-        //todo query defaultPeers for more addresses
-        //todo connect to several of those addresses
-        return randomPeers;
+    /**
+     * 1) connect to 1 random default node (x)
+     * 2) query this node for new addresses
+     * 3) connect to the newly discovered addresses
+     */
+    public List<Peer> getRandomPeers() throws PeerDiscoveryException {
+        List<InetSocketAddress> defaultAddresses = getPeerAddresses();
+        //Peer randomDefaultPeer = getRandom(defaultAddresses);
+        //List<InetSocketAddress> knownAddresses = randomDefaultPeer.requestAddresses();
+        return getPeersFromAddresses(defaultAddresses);
     }
 
-    public Set<Peer> getDefaultPeers() throws PeerDiscoveryException {
-        Set<Peer> defaultPeers = new HashSet<>();
-        for (InetSocketAddress address : getPeerAddresses()) {
+    private Peer getRandom(List<InetSocketAddress> addresses) throws PeerDiscoveryException {
+        Collections.shuffle(addresses);
+        for (InetSocketAddress randomAddress : addresses) {
             try {
-                Socket socket = new Socket(address.getHostName(), address.getPort());
-                defaultPeers.add(new Peer(socket)); //don't forget to start the peer later.
+                return getPeerFromAddress(randomAddress);
+            } catch (IOException e) {
+                LOG.error(e);
+            }
+        }
+        throw new PeerDiscoveryException();
+    }
+
+    private Peer getPeerFromAddress(InetSocketAddress address) throws IOException {
+        Socket socket = new Socket(address.getHostName(), address.getPort());
+        Peer peer = new Peer(socket);
+        peer.start();
+        return peer;
+    }
+
+    public List<Peer> getKnownPeersFromSeeds(List<Peer> seeds) throws PeerDiscoveryException {
+        List<InetSocketAddress> discovered = new ArrayList<>();
+        for (Peer seed : seeds) {
+            List<InetSocketAddress> knownAddresses = seed.requestAddresses();
+            discovered.addAll(knownAddresses);
+        }
+        return getPeersFromAddresses(discovered);
+    }
+
+
+    private List<Peer> getPeersFromAddresses(List<InetSocketAddress> addresses) throws PeerDiscoveryException {
+        List<Peer> peers = new ArrayList<>();
+        for (InetSocketAddress address : addresses) {
+            try {
+                Peer peer = getPeerFromAddress(address);
+                peers.add(peer);
             } catch (IOException e) {
                 LOG.error("could not connect to " + address, e);
             }
         }
-        if (defaultPeers.isEmpty()) {
+        if (peers.isEmpty()) {
             throw new PeerDiscoveryException();
         }
-        return defaultPeers;
+        return peers;
     }
 }

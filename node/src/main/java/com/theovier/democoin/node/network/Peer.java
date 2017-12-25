@@ -7,7 +7,10 @@ import com.theovier.democoin.node.network.messages.Pong;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -64,6 +67,13 @@ public class Peer implements Runnable {
 
     public void sendMessage(Message msg) throws IOException {
         connection.sendMessage(msg);
+    }
+
+    public List<InetSocketAddress> requestAddresses() {
+        //todo
+        List<InetSocketAddress> addresses = new ArrayList<>();
+        addresses.add(new InetSocketAddress("192.168.1.48", NetworkParams.PORT));
+        return addresses;
     }
 
     @Override

@@ -18,7 +18,7 @@ public class Node {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final NetworkListener networkListener = new NetworkListener();
     private final PeerDiscovery peerDiscovery = new DefaultDiscovery();
-    private final Set<Peer> outgoingConnections = new HashSet<>(NetworkParams.MAX_OUT_CONNECTIONS);
+    private Set<Peer> outgoingConnections = new HashSet<>(NetworkParams.MAX_OUT_CONNECTIONS);
 
     public void start() throws IOException {
         //1) try to connect to a hardcoded node
@@ -26,12 +26,10 @@ public class Node {
         //3) download most recent blockchain from random node
         //4) start listening for incoming connections
         startListening();
-        outgoingConnections.addAll(
-                peerDiscovery.getRandomPeers()
+        outgoingConnections = peerDiscovery.getRandomPeers()
                         .stream()
                         .limit(NetworkParams.MAX_OUT_CONNECTIONS)
-                        .collect(Collectors.toSet())
-        );
+                        .collect(Collectors.toSet());
         LOG.info(outgoingConnections.size());
     }
 
