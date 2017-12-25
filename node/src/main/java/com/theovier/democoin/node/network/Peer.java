@@ -19,11 +19,6 @@ public class Peer implements Runnable {
     private final NetworkConnection connection;
     private final Blockchain blockchain;
 
-    public Peer(final NetworkConnection connection) {
-        this.connection = connection;
-        this.blockchain = null;
-    }
-
     public Peer(final Socket socket) throws IOException {
         this.connection = new NetworkConnection(socket);
         this.blockchain = null;
