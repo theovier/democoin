@@ -1,8 +1,7 @@
 package com.theovier.democoin.node.network;
 
 import com.theovier.democoin.node.network.messages.Message;
-import com.theovier.democoin.node.network.messages.Ping;
-import com.theovier.democoin.node.network.messages.VersionACK;
+import com.theovier.democoin.node.network.messages.Requests.Ping;
 import com.theovier.democoin.node.network.messages.VersionMessage;
 import org.apache.log4j.Logger;
 

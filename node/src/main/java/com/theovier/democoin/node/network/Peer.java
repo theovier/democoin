@@ -1,9 +1,10 @@
 package com.theovier.democoin.node.network;
 
 import com.theovier.democoin.common.Blockchain;
-import com.theovier.democoin.node.network.messages.Message;
-import com.theovier.democoin.node.network.messages.Ping;
-import com.theovier.democoin.node.network.messages.Pong;
+import com.theovier.democoin.node.network.messages.*;
+import com.theovier.democoin.node.network.messages.Requests.AddressRequest;
+import com.theovier.democoin.node.network.messages.Request;
+import com.theovier.democoin.node.network.messages.Responses.AddressResponse;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -21,6 +22,8 @@ public class Peer implements Runnable {
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private final NetworkConnection connection;
     private final Blockchain blockchain;
+    private final List<FutureResponse> pendingRequests = new ArrayList<>();
+
 
     public Peer(final Socket socket) throws IOException {
         this.connection = new NetworkConnection(socket);
@@ -58,19 +61,52 @@ public class Peer implements Runnable {
     }
 
     private void processMessage(Message msg) throws IOException {
-        if (msg instanceof Ping) {
-            connection.sendMessage(new Pong());
+        if (msg instanceof Request) {
+            processRequests((Request) msg);
         }
-        String info = String.format("Peer %s received msg: '%s'", connection, msg);
-        LOG.info(info);
+
+        if (msg instanceof Response) {
+            processResponse((Response) msg);
+        }
+
+        LOG.info(String.format("Peer %s received msg: '%s'", connection, msg));
     }
+
+    private void processResponse(Response response) {
+        //need to uniquely identify our request in order to know its respond.
+        synchronized (pendingRequests) {
+            for (FutureResponse sentRequests : pendingRequests) {
+                if (sentRequests.requestID().equals(response.getRequestID())) {
+                    sentRequests.setResult(response);
+                }
+            }
+        }
+    }
+
+    private void processRequests(Request request) throws IOException {
+        //let the caller of the request cast the response?
+
+        Response response = new Response("");
+
+        if (request instanceof AddressRequest) {
+            response = new AddressResponse(request.getID());
+        }
+
+        sendMessage(response);
+    }
+
 
     public void sendMessage(Message msg) throws IOException {
         connection.sendMessage(msg);
     }
 
     public List<InetSocketAddress> requestAddresses() {
-        //todo
+        AddressRequest addressRequest = new AddressRequest();
+        FutureResponse futureResponse = new FutureResponse(addressRequest);
+        //AddressResponse response = futureResponse.get();
+        //sendMessage(addressRequest);
+
+        //just for testing
         List<InetSocketAddress> addresses = new ArrayList<>();
         addresses.add(new InetSocketAddress("192.168.1.48", NetworkParams.PORT));
         return addresses;
