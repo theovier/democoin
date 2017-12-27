@@ -51,8 +51,7 @@ public class NetworkConnection {
     @Override
     public String toString() {
         return  "[" + remoteAddress + ":" +
-                NetworkParams.PORT + " (" +
-                (socket.isConnected() ? "connected" : "disconnected") + ")" +
+                NetworkParams.PORT +
                 ']';
     }
 }

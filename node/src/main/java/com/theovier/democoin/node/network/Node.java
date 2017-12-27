@@ -50,8 +50,7 @@ public class Node implements PeerObserver {
         try {
             peerDiscovery.discoverAndConnect(connections, freeSlots);
         } catch (PeerDiscoveryException e) {
-            //pass
-            LOG.warn("could not connect to any known host. seems we are the first one.", e);
+            LOG.warn("could not connect to any discovered hosts", e);
         }
     }
 
@@ -90,7 +89,7 @@ public class Node implements PeerObserver {
         synchronized (connections) {
             if (!connections.contains(peer)) {
                 connections.add(peer);
-                LOG.info("connection accepted: " + peer);
+                LOG.info("connection established " + peer);
             }
         }
     }
@@ -98,8 +97,8 @@ public class Node implements PeerObserver {
     @Override
     public void onPeerConnectionClosed(Peer peer) {
         synchronized (connections) {
-            LOG.info("dc: " + peer);
             connections.remove(peer);
+            LOG.info("connection closed " + peer);
         }
     }
 }

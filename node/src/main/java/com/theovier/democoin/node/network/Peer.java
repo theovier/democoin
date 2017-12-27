@@ -67,7 +67,7 @@ public class Peer implements Runnable {
             processResponse((Response) msg);
         }
 
-        LOG.info(String.format("Peer %s received msg: '%s'", connection, msg));
+        LOG.info(String.format("received msg <%s>", msg));
     }
 
     private void processResponse(Response response) {
