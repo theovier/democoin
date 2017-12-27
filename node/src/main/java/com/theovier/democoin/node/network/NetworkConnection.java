@@ -1,8 +1,6 @@
 package com.theovier.democoin.node.network;
 
 import com.theovier.democoin.node.network.messages.Message;
-import com.theovier.democoin.node.network.messages.Requests.Ping;
-import com.theovier.democoin.node.network.messages.VersionMessage;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -17,20 +15,12 @@ public class NetworkConnection {
     private final ObjectInputStream in;
     private final ObjectOutputStream out;
     private final InetAddress remoteAddress;
-    private VersionMessage versionMessage;
 
     public NetworkConnection(final Socket socket) throws IOException {
         this.socket = socket;
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in = new ObjectInputStream(socket.getInputStream());
         this.remoteAddress = socket.getInetAddress();
-        /*
-        //negotiate version
-        sendMessage(new VersionMessage());
-        versionMessage = (VersionMessage) readMessage();
-        sendMessage(new VersionACK());
-        VersionACK response = (VersionACK) readMessage();
-        */
     }
 
     public Message readMessage() throws IOException {
