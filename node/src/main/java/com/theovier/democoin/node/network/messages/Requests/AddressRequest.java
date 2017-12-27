@@ -1,7 +1,6 @@
 package com.theovier.democoin.node.network.messages.Requests;
 
 import com.theovier.democoin.node.network.Peer;
-import com.theovier.democoin.node.network.messages.IMessage;
 import com.theovier.democoin.node.network.messages.Request;
 import com.theovier.democoin.node.network.messages.Responses.AddressResponse;
 

@@ -1,10 +1,7 @@
 package com.theovier.democoin.node.network;
 
 import com.theovier.democoin.node.network.messages.*;
-import com.theovier.democoin.node.network.messages.Requests.AddressRequest;
-import com.theovier.democoin.node.network.messages.Request;
 import com.theovier.democoin.node.network.messages.Requests.Ping;
-import com.theovier.democoin.node.network.messages.Responses.AddressResponse;
 import com.theovier.democoin.node.network.messages.Responses.Pong;
 import org.apache.log4j.Logger;
 
@@ -49,7 +46,7 @@ public class Peer implements Runnable {
         Thread.currentThread().setName("peer" + connection);
         try {
             while (isRunning) {
-                IMessage msg = connection.readMessage();
+                Messagable msg = connection.readMessage();
                 msg.handle(this);
                 LOG.info(String.format("received msg <%s>", msg));
             }
@@ -69,7 +66,7 @@ public class Peer implements Runnable {
         }
     }
 
-    public void sendMessage(IMessage msg) throws IOException {
+    public void sendMessage(Messagable msg) throws IOException {
         connection.sendMessage(msg);
     }
 
