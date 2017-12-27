@@ -38,7 +38,7 @@ public class Node implements PeerObserver {
 
     private void connectToDefaultPeers() {
         try {
-            connections.addAll(peerDiscovery.connectToDefaultPeers(NetworkParams.MAX_OUT_CONNECTIONS));
+            peerDiscovery.connectToDefaultPeers(NetworkParams.MAX_OUT_CONNECTIONS);
         } catch (PeerDiscoveryException e) {
             //pass
             LOG.warn("could not connect to any known host. seems we are the first one.", e);
@@ -48,9 +48,7 @@ public class Node implements PeerObserver {
     private void discoverAndConnectToNewPeers() {
         int freeSlots = NetworkParams.MAX_OUT_CONNECTIONS - connections.size();
         try {
-            connections.addAll(
-                    peerDiscovery.discoverAndConnect(connections, freeSlots)
-            );
+            peerDiscovery.discoverAndConnect(connections, freeSlots);
         } catch (PeerDiscoveryException e) {
             //pass
             LOG.warn("could not connect to any known host. seems we are the first one.", e);
