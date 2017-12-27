@@ -100,17 +100,12 @@ public class Peer implements Runnable {
         connection.sendMessage(msg);
     }
 
-    public Pong ping() throws IOException {
+    public Pong ping() throws IOException, InterruptedException  {
         Ping ping = new Ping();
         FutureResponse futureResponse = new FutureResponse(ping);
         pendingRequests.add(futureResponse);
         sendMessage(ping);
-        try {
-            return (Pong)futureResponse.get();
-        } catch (InterruptedException e) {
-            LOG.error(e);
-        }
-        return null;
+        return (Pong)futureResponse.get(); //blocking
     }
 
     public List<InetSocketAddress> requestAddresses() {
