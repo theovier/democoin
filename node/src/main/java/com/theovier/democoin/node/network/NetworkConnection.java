@@ -48,10 +48,6 @@ public class NetworkConnection {
         }
     }
 
-    public void ping() throws IOException {
-        sendMessage(new Ping());
-    }
-
     public synchronized void close() {
         try {
             socket.shutdownOutput();

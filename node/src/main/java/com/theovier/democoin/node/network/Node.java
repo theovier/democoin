@@ -3,11 +3,12 @@ package com.theovier.democoin.node.network;
 import com.theovier.democoin.node.network.discovery.DefaultDiscovery;
 import com.theovier.democoin.node.network.discovery.PeerDiscovery;
 import com.theovier.democoin.node.network.messages.Message;
+import com.theovier.democoin.node.network.messages.Responses.Pong;
 import org.apache.log4j.Logger;
 
 import java.io.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -18,7 +19,7 @@ public class Node {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final NetworkListener networkListener = new NetworkListener();
     private final PeerDiscovery peerDiscovery = new DefaultDiscovery();
-    private Set<Peer> outgoingConnections = new HashSet<>(NetworkParams.MAX_OUT_CONNECTIONS);
+    private List<Peer> outgoingConnections = new ArrayList<>(NetworkParams.MAX_OUT_CONNECTIONS);
 
     public void start() throws IOException {
         //1) try to connect to a hardcoded node
@@ -29,8 +30,13 @@ public class Node {
         outgoingConnections = peerDiscovery.getRandomPeers()
                         .stream()
                         .limit(NetworkParams.MAX_OUT_CONNECTIONS)
-                        .collect(Collectors.toSet());
+                        .collect(Collectors.toList());
         LOG.info(outgoingConnections.size());
+
+
+        Peer myself = outgoingConnections.get(0);
+        Pong pong = myself.ping();
+        LOG.info(pong.toString());
     }
 
     public void shutdown() {
