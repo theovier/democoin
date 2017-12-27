@@ -1,6 +1,6 @@
 package com.theovier.democoin.node.network.messages;
 
-public class Response extends Message {
+public abstract class Response extends Message {
 
     private final String requestID;
 

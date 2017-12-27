@@ -86,12 +86,12 @@ public class Peer implements Runnable {
     private void processRequests(Request request) throws IOException {
         //let the caller of the request cast the response?
 
-        Response response = new Response("");
-
+        Response response;
         if (request instanceof AddressRequest) {
             response = new AddressResponse(request.getID());
+        } else {
+            response = new AddressResponse(request.getID()); //different possibilities go here
         }
-
         sendMessage(response);
     }
 
