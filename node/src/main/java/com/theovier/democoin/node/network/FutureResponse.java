@@ -44,8 +44,12 @@ public class FutureResponse implements Future<Response> {
     }
 
     @Override
-    public Response get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        return null;
+    public Response get(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException {
+        if (!latch.await(timeout, unit)) {
+            throw new TimeoutException();
+        }
+        assert result != null;
+        return result;
     }
 
     public void setResult(Response result) {
