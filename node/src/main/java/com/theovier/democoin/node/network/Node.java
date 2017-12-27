@@ -2,8 +2,8 @@ package com.theovier.democoin.node.network;
 
 import com.theovier.democoin.node.network.discovery.DefaultDiscovery;
 import com.theovier.democoin.node.network.discovery.PeerDiscovery;
+import com.theovier.democoin.node.network.discovery.PeerDiscoveryException;
 import com.theovier.democoin.node.network.messages.Message;
-import com.theovier.democoin.node.network.messages.Responses.Pong;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -19,28 +19,47 @@ public class Node {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final NetworkListener networkListener = new NetworkListener();
     private final PeerDiscovery peerDiscovery = new DefaultDiscovery();
-    private List<Peer> outgoingConnections = new ArrayList<>(NetworkParams.MAX_OUT_CONNECTIONS);
+    private List<Peer> outgoingConnections = new ArrayList<>(NetworkParams.MAX_OUT_CONNECTIONS); //todo should manage all peers here. even the incomings
 
     public void start() throws IOException {
-        //1) try to connect to a hardcoded node
-        //2) get X other nodes to connect to
-        //3) download most recent blockchain from random node
-        //4) start listening for incoming connections
+        connectToOtherPeers();
+        downloadMostRecentBlockchain();
         startListening();
-        outgoingConnections = peerDiscovery.getRandomPeers()
-                        .stream()
-                        .limit(NetworkParams.MAX_OUT_CONNECTIONS)
-                        .collect(Collectors.toList());
-        LOG.info(outgoingConnections.size());
-
-
-        Peer myself = outgoingConnections.get(0);
-        Pong pong = myself.ping();
-        LOG.info(pong.toString());
+        LOG.info("outgoing connection count: " + outgoingConnections.size());
     }
 
     public void shutdown() {
         stopListening();
+    }
+
+    private void connectToOtherPeers() {
+        connectToDefaultPeers();
+        discoverAndConnectToNewPeers();
+    }
+
+    private void connectToDefaultPeers() {
+        try {
+            outgoingConnections = peerDiscovery.connectToDefaultPeers(NetworkParams.MAX_OUT_CONNECTIONS);
+        } catch (PeerDiscoveryException e) {
+            //pass
+            LOG.warn("could not connect to any known host. seems we are the first one.", e);
+        }
+    }
+
+    private void discoverAndConnectToNewPeers() {
+        int freeSlots = NetworkParams.MAX_OUT_CONNECTIONS - outgoingConnections.size();
+        try {
+            outgoingConnections.addAll(
+                    peerDiscovery.discoverAndConnect(outgoingConnections, freeSlots)
+            );
+        } catch (PeerDiscoveryException e) {
+            //pass
+            LOG.warn("could not connect to any known host. seems we are the first one.", e);
+        }
+    }
+
+    private void downloadMostRecentBlockchain() {
+
     }
 
     private void startListening() throws IOException {

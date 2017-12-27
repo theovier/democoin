@@ -10,18 +10,17 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.*;
 
-/**
- * todo do this in a new thread?
- try to establish connection with known peers on node startup.
- 1) connect with known nodes
- 2) query for more node addresses
- */
+
 public class DefaultDiscovery implements PeerDiscovery {
 
     private static final Logger LOG = Logger.getLogger(DefaultDiscovery.class);
+    private final List<InetSocketAddress> defaultHostAddresses;
 
-    @Override
-    public List<InetSocketAddress> getPeerAddresses() {
+    public DefaultDiscovery() {
+        defaultHostAddresses = getDefaultHostAddresses();
+    }
+
+    private List<InetSocketAddress> getDefaultHostAddresses() {
         List<InetSocketAddress> addresses = new ArrayList<>();
         for (String defaultHost : NetworkParams.DEFAULT_HOSTS) {
             InetSocketAddress address = new InetSocketAddress(defaultHost, NetworkParams.PORT);
@@ -31,55 +30,35 @@ public class DefaultDiscovery implements PeerDiscovery {
     }
 
     @Override
-    /**
-     * 1) connect to 1 random default node (x)
-     * 2) query this node for new addresses
-     * 3) connect to the newly discovered addresses
-     */
-    public List<Peer> getRandomPeers() throws PeerDiscoveryException {
-        List<InetSocketAddress> defaultAddresses = getPeerAddresses();
-        //Peer randomDefaultPeer = getRandom(defaultAddresses);
-        //List<InetSocketAddress> knownAddresses = randomDefaultPeer.requestAddresses();
-        return getPeersFromAddresses(defaultAddresses);
+    public List<Peer> connectToDefaultPeers(final int maxConnections) throws PeerDiscoveryException {
+        return connectToPeersFromAddresses(defaultHostAddresses, maxConnections);
     }
 
-    private Peer getRandom(List<InetSocketAddress> addresses) throws PeerDiscoveryException {
-        Collections.shuffle(addresses);
-        for (InetSocketAddress randomAddress : addresses) {
-            try {
-                return getPeerFromAddress(randomAddress);
-            } catch (IOException e) {
-                LOG.error(e);
-            }
-        }
-        throw new PeerDiscoveryException();
+    @Override
+    public Peer connectToRandomDefaultPeer() throws PeerDiscoveryException {
+        return connectToRandomPeer(defaultHostAddresses);
     }
 
-    private Peer getPeerFromAddress(InetSocketAddress address) throws IOException {
-        Socket socket = new Socket(address.getHostName(), address.getPort());
-        Peer peer = new Peer(socket);
-        peer.start();
-        return peer;
+    @Override
+    public List<Peer> discoverAndConnect(final List<Peer> seed, final int maxConnections) throws PeerDiscoveryException {
+        //query each of these nodes for new addresses
+        //check that we are not already connect to those
+        //connect to the newly discovered addresses till we reach max or no addresses are left.
+        //todo
+        return new ArrayList<>();
     }
 
-    public List<Peer> getKnownPeersFromSeeds(List<Peer> seeds) throws PeerDiscoveryException {
-        List<InetSocketAddress> discovered = new ArrayList<>();
-        for (Peer seed : seeds) {
-            List<InetSocketAddress> knownAddresses = seed.requestAddresses();
-            discovered.addAll(knownAddresses);
-        }
-        return getPeersFromAddresses(discovered);
-    }
-
-
-    private List<Peer> getPeersFromAddresses(List<InetSocketAddress> addresses) throws PeerDiscoveryException {
-        List<Peer> peers = new ArrayList<>();
+    private List<Peer> connectToPeersFromAddresses(List<InetSocketAddress> addresses, final int maxConnections) throws PeerDiscoveryException {
+        List<Peer> peers = new ArrayList<>(maxConnections);
         for (InetSocketAddress address : addresses) {
             try {
-                Peer peer = getPeerFromAddress(address);
+                Peer peer = connectToPeer(address);
                 peers.add(peer);
             } catch (IOException e) {
                 LOG.error("could not connect to " + address, e);
+            }
+            if (peers.size() == maxConnections) {
+                return peers;
             }
         }
         if (peers.isEmpty()) {
@@ -87,4 +66,30 @@ public class DefaultDiscovery implements PeerDiscovery {
         }
         return peers;
     }
+
+    private Peer connectToPeer(InetSocketAddress address) throws IOException {
+        Socket socket = new Socket(address.getHostName(), address.getPort());
+        Peer peer = new Peer(socket);
+        peer.start();
+        return peer;
+    }
+
+    private Peer connectToRandomPeer(List<InetSocketAddress> addresses) throws PeerDiscoveryException {
+        Collections.shuffle(addresses);
+        for (InetSocketAddress randomAddress : addresses) {
+            try {
+                return connectToPeer(randomAddress);
+            } catch (IOException e) {
+                LOG.error(e);
+            }
+        }
+        throw new PeerDiscoveryException();
+    }
+
+
+
+
+
+
+
 }

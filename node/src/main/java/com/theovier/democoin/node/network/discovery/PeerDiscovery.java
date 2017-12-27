@@ -2,10 +2,10 @@ package com.theovier.democoin.node.network.discovery;
 
 import com.theovier.democoin.node.network.Peer;
 
-import java.net.InetSocketAddress;
 import java.util.List;
 
 public interface PeerDiscovery {
-    List<InetSocketAddress> getPeerAddresses();
-    List<Peer> getRandomPeers() throws PeerDiscoveryException;
+    List<Peer> connectToDefaultPeers(final int maxConnections) throws PeerDiscoveryException;
+    Peer connectToRandomDefaultPeer() throws PeerDiscoveryException;
+    List<Peer> discoverAndConnect(final List<Peer> seed, final int maxConnections) throws PeerDiscoveryException;
 }
