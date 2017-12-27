@@ -1,10 +1,13 @@
 package com.theovier.democoin.node.network.messages.Responses;
 
+import com.theovier.democoin.node.network.Peer;
+import com.theovier.democoin.node.network.messages.IMessage;
 import com.theovier.democoin.node.network.messages.Response;
 
+import java.io.IOException;
 import java.util.UUID;
 
-public class Pong extends Response {
+public class Pong extends Response implements IMessage {
 
     public Pong(UUID requestID) {
         super(requestID);
@@ -13,5 +16,10 @@ public class Pong extends Response {
     @Override
     public String toString() {
         return "pong";
+    }
+
+    @Override
+    public void handle(Peer receiver) throws IOException {
+        receiver.receivedResponse(this);
     }
 }

@@ -49,8 +49,9 @@ public class Peer implements Runnable {
         Thread.currentThread().setName("peer" + connection);
         try {
             while (isRunning) {
-                Message msg = connection.readMessage();
-                processMessage(msg);
+                IMessage msg = connection.readMessage();
+                msg.handle(this);
+                LOG.info(String.format("received msg <%s>", msg));
             }
         } catch (IOException e) {
             LOG.error(e);
@@ -58,19 +59,7 @@ public class Peer implements Runnable {
         }
     }
 
-    private void processMessage(Message msg) throws IOException {
-        if (msg instanceof Request) {
-            processRequests((Request) msg);
-        }
-
-        if (msg instanceof Response) {
-            processResponse((Response) msg);
-        }
-
-        LOG.info(String.format("received msg <%s>", msg));
-    }
-
-    private void processResponse(Response response) {
+    public void receivedResponse(Response response) {
         synchronized (pendingRequests) {
             for (FutureResponse sentRequests : pendingRequests) {
                 if (sentRequests.requestID().equals(response.getRequestID())) {
@@ -80,18 +69,7 @@ public class Peer implements Runnable {
         }
     }
 
-    private void processRequests(Request request) throws IOException {
-        Response response; //let the caller cast the response, he knows what he requested.
-        if (request instanceof AddressRequest) {
-            response = new AddressResponse(request.getID());
-        } else {
-            response = new Pong(request.getID());
-        }
-        sendMessage(response);
-    }
-
-
-    public void sendMessage(Message msg) throws IOException {
+    public void sendMessage(IMessage msg) throws IOException {
         connection.sendMessage(msg);
     }
 

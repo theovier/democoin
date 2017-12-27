@@ -1,5 +1,6 @@
 package com.theovier.democoin.node.network;
 
+import com.theovier.democoin.node.network.messages.IMessage;
 import com.theovier.democoin.node.network.messages.Message;
 import org.apache.log4j.Logger;
 
@@ -23,15 +24,15 @@ public class NetworkConnection {
         this.remoteAddress = socket.getInetAddress();
     }
 
-    public Message readMessage() throws IOException {
+    public IMessage readMessage() throws IOException {
         try {
-            return (Message) in.readObject();
+            return (IMessage) in.readObject();
         } catch (ClassNotFoundException | ClassCastException e) {
             throw new ProtocolException();
         }
     }
 
-    public void sendMessage(final Message message) throws IOException {
+    public void sendMessage(final IMessage message) throws IOException {
         synchronized (out) {
             out.writeObject(message);
             out.flush();
