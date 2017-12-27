@@ -1,17 +1,18 @@
 package com.theovier.democoin.node.network.messages;
 
 
+import java.util.UUID;
+
 public abstract class Request extends Message {
 
-    //find something unique for the id? timestamp + inetaddress?
-    private final String id;
+    private final UUID ID;
 
     public Request() {
-        this.id = "todo";
+        this.ID = UUID.randomUUID();
     }
 
-    public String getID() {
-        return id;
+    public UUID getID() {
+        return ID;
     }
 
 }

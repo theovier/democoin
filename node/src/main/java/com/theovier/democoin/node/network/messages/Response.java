@@ -1,14 +1,16 @@
 package com.theovier.democoin.node.network.messages;
 
+import java.util.UUID;
+
 public abstract class Response extends Message {
 
-    private final String requestID;
+    private final UUID requestID;
 
-    public Response(final String requestID) {
+    public Response(final UUID requestID) {
         this.requestID = requestID;
     }
 
-    public String getRequestID() {
+    public UUID getRequestID() {
         return requestID;
     }
 

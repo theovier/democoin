@@ -3,6 +3,7 @@ package com.theovier.democoin.node.network;
 import com.theovier.democoin.node.network.messages.Request;
 import com.theovier.democoin.node.network.messages.Response;
 
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -52,7 +53,7 @@ public class FutureResponse implements Future<Response> {
         this.result = result;
     }
 
-    public String requestID() {
+    public UUID requestID() {
         return request.getID();
     }
 }
