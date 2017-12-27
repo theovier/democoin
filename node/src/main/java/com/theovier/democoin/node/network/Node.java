@@ -11,21 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
-public class Node {
+public class Node implements PeerObserver {
 
     private static final Logger LOG = Logger.getLogger(Node.class);
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final NetworkListener networkListener = new NetworkListener();
-    private final PeerDiscovery peerDiscovery = new DefaultDiscovery();
-    private List<Peer> outgoingConnections = new ArrayList<>(NetworkParams.MAX_OUT_CONNECTIONS); //todo should manage all peers here. even the incomings
+    private final PeerDiscovery peerDiscovery = new DefaultDiscovery(this);
+    private final List<Peer> connections = new ArrayList<>(NetworkParams.MAX_CONNECTIONS);
 
     public void start() throws IOException {
         connectToOtherPeers();
         downloadMostRecentBlockchain();
         startListening();
-        LOG.info("outgoing connection count: " + outgoingConnections.size());
+        LOG.info("outgoing connection count: " + connections.size());
     }
 
     public void shutdown() {
@@ -39,7 +38,7 @@ public class Node {
 
     private void connectToDefaultPeers() {
         try {
-            outgoingConnections = peerDiscovery.connectToDefaultPeers(NetworkParams.MAX_OUT_CONNECTIONS);
+            connections.addAll(peerDiscovery.connectToDefaultPeers(NetworkParams.MAX_OUT_CONNECTIONS));
         } catch (PeerDiscoveryException e) {
             //pass
             LOG.warn("could not connect to any known host. seems we are the first one.", e);
@@ -47,10 +46,10 @@ public class Node {
     }
 
     private void discoverAndConnectToNewPeers() {
-        int freeSlots = NetworkParams.MAX_OUT_CONNECTIONS - outgoingConnections.size();
+        int freeSlots = NetworkParams.MAX_OUT_CONNECTIONS - connections.size();
         try {
-            outgoingConnections.addAll(
-                    peerDiscovery.discoverAndConnect(outgoingConnections, freeSlots)
+            connections.addAll(
+                    peerDiscovery.discoverAndConnect(connections, freeSlots)
             );
         } catch (PeerDiscoveryException e) {
             //pass
@@ -63,7 +62,7 @@ public class Node {
     }
 
     private void startListening() throws IOException {
-        networkListener.startAcceptingConnections();
+        networkListener.startAcceptingConnections(this);
         executor.execute(networkListener);
     }
 
@@ -73,7 +72,7 @@ public class Node {
     }
 
     public void broadcastMessage(Message msg) {
-        for (Peer peer : outgoingConnections) {
+        for (Peer peer : connections) {
             try {
                 peer.sendMessage(msg);
             } catch (IOException e) {
@@ -83,5 +82,27 @@ public class Node {
         }
     }
 
+    @Override
+    public boolean isAcceptingConnections() {
+        return connections.size() < NetworkParams.MAX_CONNECTIONS;
+    }
+
+    @Override
+    public void onPeerConnectionEstablished(Peer peer) {
+        synchronized (connections) {
+            if (!connections.contains(peer)) {
+                connections.add(peer);
+                LOG.info("connection accepted: " + peer);
+            }
+        }
+    }
+
+    @Override
+    public void onPeerConnectionClosed(Peer peer) {
+        synchronized (connections) {
+            LOG.info("dc: " + peer);
+            connections.remove(peer);
+        }
+    }
 }
 

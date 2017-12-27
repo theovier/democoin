@@ -3,6 +3,7 @@ package com.theovier.democoin.node.network.discovery;
 
 import com.theovier.democoin.node.network.NetworkParams;
 import com.theovier.democoin.node.network.Peer;
+import com.theovier.democoin.node.network.PeerObserver;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -10,13 +11,15 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.*;
 
-
+//TODO just return addresses! DO NOT INITIATE CONNECTIONS HERE!
 public class DefaultDiscovery implements PeerDiscovery {
 
     private static final Logger LOG = Logger.getLogger(DefaultDiscovery.class);
     private final List<InetSocketAddress> defaultHostAddresses;
+    private final PeerObserver observer;
 
-    public DefaultDiscovery() {
+    public DefaultDiscovery(final PeerObserver observer) {
+        this.observer = observer;
         defaultHostAddresses = getDefaultHostAddresses();
     }
 
@@ -69,7 +72,7 @@ public class DefaultDiscovery implements PeerDiscovery {
 
     private Peer connectToPeer(InetSocketAddress address) throws IOException {
         Socket socket = new Socket(address.getHostName(), address.getPort());
-        Peer peer = new Peer(socket);
+        Peer peer = new Peer(socket, observer);
         peer.start();
         return peer;
     }
@@ -85,11 +88,4 @@ public class DefaultDiscovery implements PeerDiscovery {
         }
         throw new PeerDiscoveryException();
     }
-
-
-
-
-
-
-
 }
