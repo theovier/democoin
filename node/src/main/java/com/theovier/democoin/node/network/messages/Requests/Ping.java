@@ -1,13 +1,12 @@
 package com.theovier.democoin.node.network.messages.Requests;
 
 import com.theovier.democoin.node.network.Peer;
-import com.theovier.democoin.node.network.messages.IMessage;
 import com.theovier.democoin.node.network.messages.Request;
 import com.theovier.democoin.node.network.messages.Responses.Pong;
 
 import java.io.IOException;
 
-public class Ping extends Request implements IMessage {
+public class Ping extends Request {
 
     @Override
     public String toString() {

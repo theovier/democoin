@@ -1,13 +1,12 @@
 package com.theovier.democoin.node.network.messages.Responses;
 
 import com.theovier.democoin.node.network.Peer;
-import com.theovier.democoin.node.network.messages.IMessage;
 import com.theovier.democoin.node.network.messages.Response;
 
 import java.io.IOException;
 import java.util.UUID;
 
-public class Pong extends Response implements IMessage {
+public class Pong extends Response {
 
     public Pong(UUID requestID) {
         super(requestID);

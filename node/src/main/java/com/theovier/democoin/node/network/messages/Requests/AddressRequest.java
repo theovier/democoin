@@ -7,7 +7,7 @@ import com.theovier.democoin.node.network.messages.Responses.AddressResponse;
 
 import java.io.IOException;
 
-public class AddressRequest extends Request implements IMessage {
+public class AddressRequest extends Request {
     public static final int MAX_ADDRESSES = 100;
 
     @Override
