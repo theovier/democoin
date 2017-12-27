@@ -8,9 +8,17 @@ import java.util.UUID;
 
 public class AddressResponse extends Response {
 
-    List<InetSocketAddress> addresses;
+    private List<InetSocketAddress> addresses;
 
     public AddressResponse(final UUID requestId) {
         super(requestId);
+    }
+
+    public void setAddresses(List<InetSocketAddress> addresses) {
+        this.addresses = addresses;
+    }
+
+    public List<InetSocketAddress> getAddresses() {
+        return addresses;
     }
 }
