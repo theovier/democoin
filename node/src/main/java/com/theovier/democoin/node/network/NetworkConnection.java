@@ -1,6 +1,6 @@
 package com.theovier.democoin.node.network;
 
-import com.theovier.democoin.node.network.messages.Messagable;
+import com.theovier.democoin.node.network.messages.Message;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -23,15 +23,15 @@ public class NetworkConnection {
         this.remoteAddress = socket.getInetAddress();
     }
 
-    public Messagable readMessage() throws IOException {
+    public Message readMessage() throws IOException {
         try {
-            return (Messagable) in.readObject();
+            return (Message) in.readObject();
         } catch (ClassNotFoundException | ClassCastException e) {
             throw new ProtocolException();
         }
     }
 
-    public void sendMessage(final Messagable message) throws IOException {
+    public void sendMessage(final Message message) throws IOException {
         synchronized (out) {
             out.writeObject(message);
             out.flush();

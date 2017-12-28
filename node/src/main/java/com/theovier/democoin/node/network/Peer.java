@@ -46,7 +46,7 @@ public class Peer implements Runnable {
         Thread.currentThread().setName("peer" + connection);
         try {
             while (isRunning) {
-                Messagable msg = connection.readMessage();
+                Message msg = connection.readMessage();
                 msg.handle(this);
                 LOG.info(String.format("received msg <%s>", msg));
             }
@@ -66,7 +66,7 @@ public class Peer implements Runnable {
         }
     }
 
-    public void sendMessage(Messagable msg) throws IOException {
+    public void sendMessage(Message msg) throws IOException {
         connection.sendMessage(msg);
     }
 

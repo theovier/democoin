@@ -3,7 +3,7 @@ package com.theovier.democoin.node.network;
 import com.theovier.democoin.node.network.discovery.DefaultDiscovery;
 import com.theovier.democoin.node.network.discovery.PeerDiscovery;
 import com.theovier.democoin.node.network.discovery.PeerDiscoveryException;
-import com.theovier.democoin.node.network.messages.Messagable;
+import com.theovier.democoin.node.network.messages.Message;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -68,7 +68,7 @@ public class Node implements PeerObserver {
         executor.shutdown();
     }
 
-    public void broadcastMessage(Messagable msg) {
+    public void broadcastMessage(Message msg) {
         for (Peer peer : connections) {
             try {
                 peer.sendMessage(msg);
