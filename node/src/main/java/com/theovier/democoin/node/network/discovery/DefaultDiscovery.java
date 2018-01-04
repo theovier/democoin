@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.*;
+import java.util.stream.Collectors;
 
-//TODO just return addresses! DO NOT INITIATE CONNECTIONS HERE!
 public class DefaultDiscovery implements PeerDiscovery {
 
     private static final Logger LOG = Logger.getLogger(DefaultDiscovery.class);
@@ -44,11 +44,19 @@ public class DefaultDiscovery implements PeerDiscovery {
 
     @Override
     public List<Peer> discoverAndConnect(final List<Peer> seed, final int maxConnections) throws PeerDiscoveryException {
-        //query each of these nodes for new addresses
-        //check that we are not already connect to those
-        //connect to the newly discovered addresses till we reach max or no addresses are left.
-        //todo
-        return new ArrayList<>();
+        List<InetSocketAddress> alreadyKnown = new ArrayList<>();
+        List<InetSocketAddress> discovered = new ArrayList<>();
+        for (Peer peer : seed) {
+            alreadyKnown.add(peer.getRemoteAddress());
+            discovered.addAll(peer.getAddressesFromLocalNode());
+        }
+        
+        discovered = discovered.stream()
+                .filter(discoveredAddress -> !alreadyKnown.contains(discoveredAddress))
+                .limit(maxConnections)
+                .collect(Collectors.toList());
+
+        return connectToPeersFromAddresses(discovered, maxConnections);
     }
 
     private List<Peer> connectToPeersFromAddresses(List<InetSocketAddress> addresses, final int maxConnections) throws PeerDiscoveryException {
