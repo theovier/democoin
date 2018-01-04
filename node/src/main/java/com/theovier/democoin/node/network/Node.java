@@ -39,6 +39,7 @@ public class Node implements PeerObserver {
 
     private void connectToDefaultPeers() {
         try {
+            LOG.info("trying to connect to default peers...");
             peerDiscovery.connectToDefaultPeers(NetworkParams.MAX_OUT_CONNECTIONS);
         } catch (PeerDiscoveryException e) {
             //pass
@@ -51,7 +52,7 @@ public class Node implements PeerObserver {
         try {
             peerDiscovery.discoverAndConnect(connections, freeSlots);
         } catch (PeerDiscoveryException e) {
-            LOG.warn("could not connect to any discovered hosts");
+            LOG.warn("could not connect to any newly discovered hosts");
         }
     }
 
