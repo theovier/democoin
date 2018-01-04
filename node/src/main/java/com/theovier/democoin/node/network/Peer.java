@@ -90,6 +90,15 @@ public class Peer implements Runnable {
         return addresses;
     }
 
+    public InetSocketAddress getRemoteInetSocketAddress() {
+        return connection.getRemoteAddress();
+    }
+
+    //known addresses from the node which controls this peer. ugly.
+    public List<InetSocketAddress> getAddressesFromLocalNode() {
+        return observer.getConnectedAddresses();
+    }
+
     @Override
     public String toString() {
         return connection.toString();

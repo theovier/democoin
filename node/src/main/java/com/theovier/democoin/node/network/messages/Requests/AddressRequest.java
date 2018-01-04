@@ -5,12 +5,26 @@ import com.theovier.democoin.node.network.messages.Request;
 import com.theovier.democoin.node.network.messages.Responses.AddressResponse;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class AddressRequest extends Request {
-    public static final int MAX_ADDRESSES = 100;
+    private static final int MAX_REQUESTED_ADDRESSES = 5;
 
     @Override
     public void handle(Peer receiver) throws IOException {
-        receiver.sendMessage(new AddressResponse(getID()));
+        AddressResponse response = new AddressResponse(getID());
+        List<InetSocketAddress> knownAddresses = receiver.getAddressesFromLocalNode().stream()
+                .limit(MAX_REQUESTED_ADDRESSES)
+                .unordered()
+                .collect(Collectors.toList());
+        response.setAddresses(knownAddresses);
+        receiver.sendMessage(response);
+    }
+
+    @Override
+    public String toString() {
+        return "AddressRequest";
     }
 }

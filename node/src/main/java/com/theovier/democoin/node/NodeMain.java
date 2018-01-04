@@ -3,6 +3,7 @@ package com.theovier.democoin.node;
 import com.theovier.democoin.node.network.Node;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 
 public class NodeMain {
 
@@ -15,6 +16,11 @@ public class NodeMain {
             node.start();
         } catch (IOException e) {
             node.shutdown();
+        }
+
+        LOG.info("addresses");
+        for (InetSocketAddress inetSocketAddress : node.getConnectedAddresses()) {
+            LOG.info(inetSocketAddress);
         }
 
     }

@@ -7,6 +7,7 @@ import com.theovier.democoin.node.network.messages.Message;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -100,6 +101,13 @@ public class Node implements PeerObserver {
             connections.remove(peer);
             LOG.info("connection closed " + peer);
         }
+    }
+
+    @Override
+    public List<InetSocketAddress> getConnectedAddresses() {
+        List<InetSocketAddress> knownAddresses = new ArrayList<>(connections.size());
+        connections.forEach(peer -> knownAddresses.add(peer.getRemoteInetSocketAddress()));
+        return knownAddresses;
     }
 }
 

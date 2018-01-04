@@ -28,4 +28,9 @@ public class AddressResponse extends Response {
     public void handle(Peer receiver) throws IOException {
         receiver.receivedResponse(this);
     }
+
+    @Override
+    public String toString() {
+        return "AddressResponse";
+    }
 }
