@@ -93,7 +93,7 @@ public class Peer implements Runnable {
     }
 
     //known addresses from the node which controls this peer. ugly.
-    public List<InetSocketAddress> getAddressesFromLocalNode() {
+    public List<InetSocketAddress> getKnownAddressesFromNode() {
         return observer.getConnectedAddresses();
     }
 

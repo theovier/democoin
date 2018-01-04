@@ -48,9 +48,9 @@ public class DefaultDiscovery implements PeerDiscovery {
         List<InetSocketAddress> discovered = new ArrayList<>();
         for (Peer peer : seed) {
             alreadyKnown.add(peer.getRemoteAddress());
-            discovered.addAll(peer.getAddressesFromLocalNode());
+            discovered.addAll(peer.getKnownAddressesFromNode());
         }
-        
+
         discovered = discovered.stream()
                 .filter(discoveredAddress -> !alreadyKnown.contains(discoveredAddress))
                 .limit(maxConnections)

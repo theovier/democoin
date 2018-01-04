@@ -15,7 +15,7 @@ public class AddressRequest extends Request {
     @Override
     public void handle(Peer receiver) throws IOException {
         AddressResponse response = new AddressResponse(getID());
-        List<InetSocketAddress> knownAddresses = receiver.getAddressesFromLocalNode().stream()
+        List<InetSocketAddress> knownAddresses = receiver.getKnownAddressesFromNode().stream()
                 .limit(MAX_REQUESTED_ADDRESSES)
                 .unordered()
                 .collect(Collectors.toList());
