@@ -50,7 +50,9 @@ public class Node implements PeerObserver {
     private void discoverAndConnectToNewPeers() {
         int freeSlots = NetworkParams.MAX_OUT_CONNECTIONS - connections.size();
         try {
-            peerDiscovery.discoverAndConnect(connections, freeSlots);
+            LOG.info("trying to discover new peers by querying default peers");
+            List<Peer> discovered = peerDiscovery.discoverAndConnect(connections, freeSlots);
+            LOG.info(String.format("discovered %d new peers and connected to them", discovered.size()));
         } catch (PeerDiscoveryException e) {
             LOG.warn("could not connect to any newly discovered hosts");
         }
