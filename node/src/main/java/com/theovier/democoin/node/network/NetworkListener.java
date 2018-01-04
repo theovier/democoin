@@ -10,7 +10,7 @@ import java.net.Socket;
  */
 public class NetworkListener implements Runnable {
 
-    private static final Logger LOG = Logger.getLogger(Node.class);
+    private static final Logger LOG = Logger.getLogger(NetworkListener.class);
 
     private boolean isRunning;
     private ServerSocket serverSocket;
