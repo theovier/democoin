@@ -35,7 +35,7 @@ public class UTXOPool {
     }
 
     public static synchronized void add(Transaction transaction) {
-        transaction.getOutputs().forEach(unspentOutputs::add);
+        unspentOutputs.addAll(transaction.getOutputs());
     }
 
     /**
