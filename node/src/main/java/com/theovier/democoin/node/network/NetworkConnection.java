@@ -16,7 +16,7 @@ public class NetworkConnection {
     private final ObjectOutputStream out;
     private final InetSocketAddress remoteAddress;
 
-    public NetworkConnection(final Socket socket) throws IOException {
+    NetworkConnection(final Socket socket) throws IOException {
         this.socket = socket;
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in = new ObjectInputStream(socket.getInputStream());
