@@ -1,7 +1,9 @@
 package com.theovier.democoin.node.network;
 
 import com.theovier.democoin.node.network.messages.*;
+import com.theovier.democoin.node.network.messages.Requests.AddressRequest;
 import com.theovier.democoin.node.network.messages.Requests.Ping;
+import com.theovier.democoin.node.network.messages.Responses.AddressResponse;
 import com.theovier.democoin.node.network.messages.Responses.Pong;
 import org.apache.log4j.Logger;
 
@@ -77,16 +79,13 @@ public class Peer implements Runnable {
         return (Pong)futureResponse.get(); //blocking
     }
 
-    public List<InetSocketAddress> requestAddresses() {
-        //AddressRequest addressRequest = new AddressRequest();
-        //FutureResponse futureResponse = new FutureResponse(addressRequest);
-        //AddressResponse response = futureResponse.get();
-        //sendMessage(addressRequest);
-
-        //just for testing
-        List<InetSocketAddress> addresses = new ArrayList<>();
-        addresses.add(new InetSocketAddress("192.168.1.48", NetworkParams.PORT));
-        return addresses;
+    public List<InetSocketAddress> requestAddresses() throws IOException, InterruptedException {
+        AddressRequest addressRequest = new AddressRequest();
+        FutureResponse futureResponse = new FutureResponse(addressRequest);
+        pendingRequests.add(futureResponse);
+        sendMessage(addressRequest);
+        AddressResponse response = (AddressResponse) futureResponse.get();
+        return response.getAddresses();
     }
 
     public InetSocketAddress getRemoteAddress() {
