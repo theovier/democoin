@@ -106,7 +106,7 @@ public class Node implements PeerObserver {
     @Override
     public List<InetSocketAddress> getConnectedAddresses() {
         List<InetSocketAddress> knownAddresses = new ArrayList<>(connections.size());
-        connections.forEach(peer -> knownAddresses.add(peer.getRemoteInetSocketAddress()));
+        connections.forEach(peer -> knownAddresses.add(peer.getRemoteAddress()));
         return knownAddresses;
     }
 }

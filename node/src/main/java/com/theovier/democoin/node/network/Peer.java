@@ -89,7 +89,7 @@ public class Peer implements Runnable {
         return addresses;
     }
 
-    public InetSocketAddress getRemoteInetSocketAddress() {
+    public InetSocketAddress getRemoteAddress() {
         return connection.getRemoteAddress();
     }
 
