@@ -58,7 +58,7 @@ public class DefaultDiscovery implements PeerDiscovery {
                 Peer peer = connectToPeer(address);
                 peers.add(peer);
             } catch (IOException e) {
-                LOG.error("could not connect to " + address, e);
+                LOG.error("could not connect to " + address);
             }
             if (peers.size() == maxConnections) {
                 return peers;
