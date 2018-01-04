@@ -17,11 +17,5 @@ public class NodeMain {
         } catch (IOException e) {
             node.shutdown();
         }
-
-        LOG.info("addresses");
-        for (InetSocketAddress inetSocketAddress : node.getConnectedAddresses()) {
-            LOG.info(inetSocketAddress);
-        }
-
     }
 }

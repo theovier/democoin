@@ -51,7 +51,6 @@ public class Peer implements Runnable {
                 LOG.info(String.format("received msg <%s>", msg));
             }
         } catch (IOException e) {
-            LOG.error(e);
             disconnect();
         }
     }
