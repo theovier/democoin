@@ -6,6 +6,5 @@ import java.util.List;
 
 public interface PeerDiscovery {
     List<Peer> connectToDefaultPeers(final int maxConnections) throws PeerDiscoveryException;
-    Peer connectToRandomDefaultPeer() throws PeerDiscoveryException;
     List<Peer> discoverAndConnect(final List<Peer> seed, final int maxConnections) throws PeerDiscoveryException;
 }

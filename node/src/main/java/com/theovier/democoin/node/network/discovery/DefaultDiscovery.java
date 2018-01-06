@@ -38,11 +38,6 @@ public class DefaultDiscovery implements PeerDiscovery {
     }
 
     @Override
-    public Peer connectToRandomDefaultPeer() throws PeerDiscoveryException {
-        return connectToRandomPeer(defaultHostAddresses);
-    }
-
-    @Override
     public List<Peer> discoverAndConnect(final List<Peer> seed, final int maxConnections) throws PeerDiscoveryException {
         List<InetSocketAddress> alreadyKnown = new ArrayList<>();
         List<InetSocketAddress> discovered = new ArrayList<>();
@@ -83,17 +78,5 @@ public class DefaultDiscovery implements PeerDiscovery {
         Peer peer = new Peer(socket, observer);
         peer.start();
         return peer;
-    }
-
-    private Peer connectToRandomPeer(List<InetSocketAddress> addresses) throws PeerDiscoveryException {
-        Collections.shuffle(addresses);
-        for (InetSocketAddress randomAddress : addresses) {
-            try {
-                return connectToPeer(randomAddress);
-            } catch (IOException e) {
-                LOG.error(e);
-            }
-        }
-        throw new PeerDiscoveryException();
     }
 }
