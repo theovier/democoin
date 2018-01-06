@@ -62,6 +62,7 @@ public class Peer implements Runnable {
             for (FutureResponse sentRequests : pendingRequests) {
                 if (sentRequests.requestID().equals(response.getRequestID())) {
                     sentRequests.setResult(response);
+                    break;
                 }
             }
         }
