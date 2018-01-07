@@ -2,14 +2,8 @@ package com.theovier.democoin.node.network;
 
 import com.theovier.democoin.common.Blockchain;
 import com.theovier.democoin.node.network.messages.*;
-import com.theovier.democoin.node.network.messages.Requests.AddressRequest;
-import com.theovier.democoin.node.network.messages.Requests.BlockchainHeightRequest;
-import com.theovier.democoin.node.network.messages.Requests.Ping;
-import com.theovier.democoin.node.network.messages.Requests.Request;
-import com.theovier.democoin.node.network.messages.Responses.AddressResponse;
-import com.theovier.democoin.node.network.messages.Responses.BlockchainHeightResponse;
-import com.theovier.democoin.node.network.messages.Responses.Pong;
-import com.theovier.democoin.node.network.messages.Responses.Response;
+import com.theovier.democoin.node.network.messages.Requests.*;
+import com.theovier.democoin.node.network.messages.Responses.*;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -123,6 +117,15 @@ public class Peer implements Runnable {
             LOG.error(e);
         }
         return -1;
+    }
+
+    public void requestBlockchain() throws IOException, InterruptedException {
+        Request request = new BlockchainRequest();
+        FutureResponse futureResponse = new FutureResponse(request);
+        pendingRequests.add(futureResponse);
+        sendMessage(request);
+        BlockchainResponse response = (BlockchainResponse) futureResponse.get();
+        LOG.info(response.getBlockchain().getHeight());
     }
 
 
