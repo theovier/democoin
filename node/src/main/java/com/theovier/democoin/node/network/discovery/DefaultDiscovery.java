@@ -1,6 +1,7 @@
 package com.theovier.democoin.node.network.discovery;
 
 
+import com.theovier.democoin.common.Blockchain;
 import com.theovier.democoin.node.network.NetworkParams;
 import com.theovier.democoin.node.network.Peer;
 import com.theovier.democoin.node.network.PeerObserver;
@@ -17,9 +18,11 @@ public class DefaultDiscovery implements PeerDiscovery {
     private static final Logger LOG = Logger.getLogger(DefaultDiscovery.class);
     private final List<InetSocketAddress> defaultHostAddresses;
     private final PeerObserver observer;
+    private final Blockchain blockchain;
 
-    public DefaultDiscovery(final PeerObserver observer) {
+    public DefaultDiscovery(final PeerObserver observer, final Blockchain blockchain) {
         this.observer = observer;
+        this.blockchain = blockchain;
         defaultHostAddresses = getDefaultHostAddresses();
     }
 
@@ -75,7 +78,7 @@ public class DefaultDiscovery implements PeerDiscovery {
 
     private Peer connectToPeer(InetSocketAddress address) throws IOException {
         Socket socket = new Socket(address.getHostName(), address.getPort());
-        Peer peer = new Peer(socket, observer);
+        Peer peer = new Peer(socket, observer, blockchain);
         peer.start();
         return peer;
     }

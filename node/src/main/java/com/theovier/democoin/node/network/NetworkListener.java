@@ -1,5 +1,6 @@
 package com.theovier.democoin.node.network;
 
+import com.theovier.democoin.common.Blockchain;
 import org.apache.log4j.Logger;
 import java.io.*;
 import java.net.ServerSocket;
@@ -15,9 +16,11 @@ public class NetworkListener implements Runnable {
     private boolean isRunning;
     private ServerSocket serverSocket;
     private final PeerObserver observer;
+    private final Blockchain blockchain;
 
-    public NetworkListener(final PeerObserver observer) {
+    public NetworkListener(final PeerObserver observer, final Blockchain blockchain) {
         this.observer = observer;
+        this.blockchain = blockchain;
     }
 
     public void startAcceptingConnections() throws IOException {
@@ -49,7 +52,7 @@ public class NetworkListener implements Runnable {
             Socket socket = serverSocket.accept(); //blocking
             if (observer.isAcceptingConnections()) {
                 socket.setSoTimeout(0);
-                Peer peer = new Peer(socket, observer);
+                Peer peer = new Peer(socket, observer, blockchain);
                 peer.start();
             } else {
                 socket.close();

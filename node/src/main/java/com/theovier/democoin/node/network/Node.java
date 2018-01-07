@@ -18,13 +18,15 @@ public class Node implements PeerObserver {
 
     private static final Logger LOG = Logger.getLogger(Node.class);
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private final NetworkListener networkListener = new NetworkListener(this);
-    private final PeerDiscovery peerDiscovery = new DefaultDiscovery(this);
+    private final NetworkListener networkListener;
+    private final PeerDiscovery peerDiscovery;
     private final List<Peer> connections = new ArrayList<>(NetworkParams.MAX_CONNECTIONS);
     private final Blockchain blockchain;
 
     public Node(final Blockchain blockchain) {
         this.blockchain = blockchain;
+        networkListener = new NetworkListener(this, blockchain);
+        peerDiscovery = new DefaultDiscovery(this, blockchain);
     }
 
     public void start() throws IOException {

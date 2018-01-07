@@ -1,5 +1,6 @@
 package com.theovier.democoin.node.network;
 
+import com.theovier.democoin.common.Blockchain;
 import com.theovier.democoin.node.network.messages.*;
 import com.theovier.democoin.node.network.messages.Requests.AddressRequest;
 import com.theovier.democoin.node.network.messages.Requests.Ping;
@@ -23,12 +24,13 @@ public class Peer implements Runnable {
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private final NetworkConnection connection;
     private final PeerObserver observer;
-    //private final Blockchain blockchain;
+    private final Blockchain blockchain;
     private final List<FutureResponse> pendingRequests = new ArrayList<>();
 
-    public Peer(final Socket socket, final PeerObserver observer) throws IOException {
+    public Peer(final Socket socket, final PeerObserver observer, final Blockchain blockchain) throws IOException {
         this.connection = new NetworkConnection(socket);
         this.observer = observer;
+        this.blockchain = blockchain;
     }
 
     public void start() {
