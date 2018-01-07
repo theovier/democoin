@@ -3,8 +3,11 @@ package com.theovier.democoin.node.network;
 import com.theovier.democoin.common.Blockchain;
 import com.theovier.democoin.node.network.messages.*;
 import com.theovier.democoin.node.network.messages.Requests.AddressRequest;
+import com.theovier.democoin.node.network.messages.Requests.BlockchainHeightRequest;
 import com.theovier.democoin.node.network.messages.Requests.Ping;
+import com.theovier.democoin.node.network.messages.Requests.Request;
 import com.theovier.democoin.node.network.messages.Responses.AddressResponse;
+import com.theovier.democoin.node.network.messages.Responses.BlockchainHeightResponse;
 import com.theovier.democoin.node.network.messages.Responses.Pong;
 import com.theovier.democoin.node.network.messages.Responses.Response;
 import org.apache.log4j.Logger;
@@ -60,6 +63,7 @@ public class Peer implements Runnable {
         }
     }
 
+    //todo rename
     public void receivedResponse(Response response) {
         synchronized (pendingRequests) {
             for (FutureResponse sentRequests : pendingRequests) {
@@ -90,6 +94,15 @@ public class Peer implements Runnable {
         sendMessage(addressRequest);
         AddressResponse response = (AddressResponse) futureResponse.get();
         return response.getAddresses();
+    }
+
+    public long requestBlockchainHeight() throws IOException, InterruptedException {
+        Request heightRequest = new BlockchainHeightRequest();
+        FutureResponse futureResponse = new FutureResponse(heightRequest);
+        pendingRequests.add(futureResponse);
+        sendMessage(heightRequest);
+        BlockchainHeightResponse response = (BlockchainHeightResponse) futureResponse.get();
+        return response.getHeight();
     }
 
     public InetSocketAddress getRemoteAddress() {

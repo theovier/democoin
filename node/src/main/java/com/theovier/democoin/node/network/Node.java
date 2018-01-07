@@ -68,14 +68,14 @@ public class Node implements PeerObserver {
     }
 
     private void downloadMostRecentBlockchain() {
-        //if connections not empty
-        //select one peer randomly
-        //query this peer for blockchain-height?
-        /*
-            have to only ask for height first?
-            if our height is greater -> send him msg OUR BLOCKCHAIN IS BETTER
-            otherwise -> send msg NEED YOUR BLOCKCHAIN
-         */
+        for (Peer peer : connections) {
+            try {
+                long height = peer.requestBlockchainHeight();
+                LOG.info(height);
+            } catch (IOException | InterruptedException e) {
+                LOG.error(e);
+            }
+        }
     }
 
     private void startListening() throws IOException {
