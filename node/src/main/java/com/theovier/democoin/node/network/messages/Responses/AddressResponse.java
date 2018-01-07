@@ -1,6 +1,5 @@
 package com.theovier.democoin.node.network.messages.Responses;
 
-import com.theovier.democoin.node.network.Peer;
 
 import java.net.InetSocketAddress;
 import java.util.List;
@@ -21,11 +20,6 @@ public class AddressResponse extends Response {
 
     public List<InetSocketAddress> getAddresses() {
         return addresses;
-    }
-
-    @Override
-    public void handle(Peer receiver) {
-        receiver.receivedResponse(this);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.theovier.democoin.node.network.messages.Responses;
 
-import com.theovier.democoin.node.network.Peer;
 
 import java.util.UUID;
 
@@ -15,10 +14,5 @@ public class Pong extends Response {
     @Override
     public String toString() {
         return "pong";
-    }
-
-    @Override
-    public void handle(Peer receiver) {
-        receiver.receivedResponse(this);
     }
 }
