@@ -39,10 +39,6 @@ public class BlockValidator {
             LOG.warn("invalid transaction(s)");
             return false;
         }
-        if (!hasOnlyBroadcastedTransactions(candidate)) {
-            LOG.warn("non broadcasted transaction(s)");
-            return false;
-        }
         if (!hasCoinbaseTx(candidate)) {
             LOG.warn("there is not exactly 1 coinbase transaction");
             return false;
@@ -91,15 +87,7 @@ public class BlockValidator {
                 .filter(tx -> !tx.isCoinBase())
                 .allMatch(TransactionValidator::isValid);
     }
-
-    public static boolean hasOnlyBroadcastedTransactions(Block candidate) {
-        return TransactionPool.containsAll(
-                candidate.getTransactions()
-                        .stream()
-                        .filter(tx -> !tx.isCoinBase())
-                        .collect(Collectors.toList()));
-    }
-
+    
     public static boolean hasCoinbaseTx(Block candidate) {
         return candidate.getTransactions()
                 .stream()
