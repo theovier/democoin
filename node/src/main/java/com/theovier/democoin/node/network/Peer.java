@@ -79,7 +79,20 @@ public class Peer implements Runnable {
         connection.sendMessage(msg);
     }
 
-    public Pong ping() throws IOException, InterruptedException  {
+    public InetSocketAddress getRemoteAddress() {
+        return connection.getRemoteAddress();
+    }
+
+    //known addresses from the node which controls this peer. ugly.
+    public List<InetSocketAddress> getKnownAddressesFromNode() {
+        return observer.getConnectedAddresses();
+    }
+
+    public final Blockchain getBlockchain() {
+        return blockchain;
+    }
+
+    public Pong requestPong() throws IOException, InterruptedException  {
         Ping ping = new Ping();
         FutureResponse futureResponse = new FutureResponse(ping);
         pendingRequests.add(futureResponse);
@@ -112,18 +125,6 @@ public class Peer implements Runnable {
         return -1;
     }
 
-    public InetSocketAddress getRemoteAddress() {
-        return connection.getRemoteAddress();
-    }
-
-    //known addresses from the node which controls this peer. ugly.
-    public List<InetSocketAddress> getKnownAddressesFromNode() {
-        return observer.getConnectedAddresses();
-    }
-
-    public final Blockchain getBlockchain() {
-        return blockchain;
-    }
 
     @Override
     public String toString() {
