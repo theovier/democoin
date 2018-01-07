@@ -49,8 +49,8 @@ public class Peer implements Runnable {
         try {
             while (isRunning) {
                 Message msg = connection.readMessage();
-                msg.handle(this);
                 LOG.info(String.format("received msg <%s> by peer %s", msg, toString()));
+                msg.handle(this);
             }
         } catch (IOException e) {
             LOG.debug(e);
