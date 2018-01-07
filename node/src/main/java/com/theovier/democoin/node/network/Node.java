@@ -70,10 +70,10 @@ public class Node implements PeerObserver {
     private void downloadMostRecentBlockchain() {
         for (Peer peer : connections) {
             try {
-                long height = peer.requestBlockchainHeight();
-                LOG.info(height);
-                if (height < blockchain.getHeight()) {
-                    peer.requestBlockchain();
+                long receivedHeight = peer.requestBlockchainHeight();
+                LOG.info(receivedHeight);
+                if (blockchain.getHeight() < receivedHeight) {
+                    Blockchain remoteBlockchain = peer.requestBlockchain();
                 }
             } catch (IOException e) {
                 peer.disconnect();

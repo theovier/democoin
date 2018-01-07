@@ -114,13 +114,13 @@ public class Peer implements Runnable {
         return response.getHeight();
     }
 
-    public void requestBlockchain() throws IOException, InterruptedException {
+    public Blockchain requestBlockchain() throws IOException, InterruptedException {
         Request request = new BlockchainRequest();
         FutureResponse futureResponse = new FutureResponse(request);
         pendingRequests.add(futureResponse);
         sendMessage(request);
         BlockchainResponse response = (BlockchainResponse) futureResponse.get();
-        LOG.info(response.getBlockchain().getHeight());
+        return response.getBlockchain();
     }
 
 
