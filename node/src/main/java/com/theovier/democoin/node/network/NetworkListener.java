@@ -18,14 +18,14 @@ public class NetworkListener implements Runnable {
     private final PeerObserver observer;
     private final Blockchain blockchain;
 
-    public NetworkListener(final PeerObserver observer, final Blockchain blockchain) {
+    NetworkListener(final PeerObserver observer, final Blockchain blockchain) {
         this.observer = observer;
         this.blockchain = blockchain;
     }
 
     public void startAcceptingConnections() throws IOException {
         isRunning = true;
-        this.serverSocket = new ServerSocket(NetworkParams.PORT);
+        serverSocket = new ServerSocket(NetworkParams.PORT);
     }
 
     public void stop() {
