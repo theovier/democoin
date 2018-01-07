@@ -18,7 +18,7 @@ public class Node implements PeerObserver {
 
     private static final Logger LOG = Logger.getLogger(Node.class);
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private final NetworkListener networkListener = new NetworkListener();
+    private final NetworkListener networkListener = new NetworkListener(this);
     private final PeerDiscovery peerDiscovery = new DefaultDiscovery(this);
     private final List<Peer> connections = new ArrayList<>(NetworkParams.MAX_CONNECTIONS);
     private final Blockchain blockchain;
@@ -76,7 +76,7 @@ public class Node implements PeerObserver {
     }
 
     private void startListening() throws IOException {
-        networkListener.startAcceptingConnections(this);
+        networkListener.startAcceptingConnections();
         executor.execute(networkListener);
     }
 

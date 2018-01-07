@@ -14,11 +14,14 @@ public class NetworkListener implements Runnable {
 
     private boolean isRunning;
     private ServerSocket serverSocket;
-    private PeerObserver observer;
+    private final PeerObserver observer;
 
-    public void startAcceptingConnections(PeerObserver observer) throws IOException {
-        isRunning = true;
+    public NetworkListener(final PeerObserver observer) {
         this.observer = observer;
+    }
+
+    public void startAcceptingConnections() throws IOException {
+        isRunning = true;
         this.serverSocket = new ServerSocket(NetworkParams.PORT);
     }
 
