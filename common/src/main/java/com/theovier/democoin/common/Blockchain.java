@@ -37,7 +37,7 @@ public class Blockchain implements Serializable {
         return false;
     }
 
-    public boolean load() {
+    private boolean load() {
         try {
             FileInputStream fin = new FileInputStream(Config.BLOCKCHAIN_FILE);
             ObjectInputStream ois = new ObjectInputStream(fin);
@@ -104,7 +104,7 @@ public class Blockchain implements Serializable {
         return blockchain.size();
     }
 
-    public synchronized String toXML() {
+    private synchronized String toXML() {
         return template.getFilledTemplate();
     }
 
