@@ -1,5 +1,6 @@
 package com.theovier.democoin.node.network;
 
+import com.theovier.democoin.common.Blockchain;
 import com.theovier.democoin.node.network.discovery.DefaultDiscovery;
 import com.theovier.democoin.node.network.discovery.PeerDiscovery;
 import com.theovier.democoin.node.network.discovery.PeerDiscoveryException;
@@ -20,6 +21,11 @@ public class Node implements PeerObserver {
     private final NetworkListener networkListener = new NetworkListener();
     private final PeerDiscovery peerDiscovery = new DefaultDiscovery(this);
     private final List<Peer> connections = new ArrayList<>(NetworkParams.MAX_CONNECTIONS);
+    private final Blockchain blockchain;
+
+    public Node(final Blockchain blockchain) {
+        this.blockchain = blockchain;
+    }
 
     public void start() throws IOException {
         connectToOtherPeers();
@@ -59,7 +65,14 @@ public class Node implements PeerObserver {
     }
 
     private void downloadMostRecentBlockchain() {
-
+        //if connections not empty
+        //select one peer randomly
+        //query this peer for blockchain-height?
+        /*
+            have to only ask for height first?
+            if our height is greater -> send him msg OUR BLOCKCHAIN IS BETTER
+            otherwise -> send msg NEED YOUR BLOCKCHAIN
+         */
     }
 
     private void startListening() throws IOException {

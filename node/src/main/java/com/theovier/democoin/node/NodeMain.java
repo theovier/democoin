@@ -1,5 +1,6 @@
 package com.theovier.democoin.node;
 
+import com.theovier.democoin.common.Blockchain;
 import com.theovier.democoin.node.network.Node;
 
 import java.io.IOException;
@@ -11,7 +12,8 @@ public class NodeMain {
 
     public static void main(String[] args)  {
 
-        Node node = new Node();
+        Blockchain blockchain = new Blockchain();
+        Node node = new Node(blockchain);
         try {
             node.start();
         } catch (IOException e) {
