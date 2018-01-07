@@ -5,6 +5,7 @@ import com.theovier.democoin.node.network.messages.Requests.AddressRequest;
 import com.theovier.democoin.node.network.messages.Requests.Ping;
 import com.theovier.democoin.node.network.messages.Responses.AddressResponse;
 import com.theovier.democoin.node.network.messages.Responses.Pong;
+import com.theovier.democoin.node.network.messages.Responses.Response;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;

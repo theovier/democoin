@@ -1,7 +1,7 @@
 package com.theovier.democoin.node.network;
 
-import com.theovier.democoin.node.network.messages.Request;
-import com.theovier.democoin.node.network.messages.Response;
+import com.theovier.democoin.node.network.messages.Requests.Request;
+import com.theovier.democoin.node.network.messages.Responses.Response;
 
 import java.util.UUID;
 import java.util.concurrent.*;

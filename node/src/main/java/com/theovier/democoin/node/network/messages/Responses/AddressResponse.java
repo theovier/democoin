@@ -1,7 +1,6 @@
 package com.theovier.democoin.node.network.messages.Responses;
 
 import com.theovier.democoin.node.network.Peer;
-import com.theovier.democoin.node.network.messages.Response;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

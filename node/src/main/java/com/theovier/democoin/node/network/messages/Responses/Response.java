@@ -1,4 +1,6 @@
-package com.theovier.democoin.node.network.messages;
+package com.theovier.democoin.node.network.messages.Responses;
+
+import com.theovier.democoin.node.network.messages.Message;
 
 import java.util.UUID;
 
