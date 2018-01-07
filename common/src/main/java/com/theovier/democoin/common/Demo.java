@@ -13,6 +13,7 @@ public class Demo {
     private Blockchain blockchain = new Blockchain();
 
     public void demoMining() {
+        blockchain.load();
         UTXOPool.compute(blockchain);
 
         Wallet wallet = new Wallet();

@@ -19,7 +19,7 @@ public class Blockchain implements Serializable {
     private List<Block> blockchain = new LinkedList<>();
 
     public Blockchain() {
-        load();
+        appendGensisBlock();
     }
 
     public synchronized boolean save() {
@@ -36,15 +36,15 @@ public class Blockchain implements Serializable {
         return false;
     }
 
-    private void load() {
+    public void load() {
         try {
             FileInputStream fin = new FileInputStream(Config.BLOCKCHAIN_FILE);
             ObjectInputStream ois = new ObjectInputStream(fin);
             this.blockchain = (LinkedList<Block>)ois.readObject();
+            //todo calculate own UTXOPool here
         } catch (Exception e) {
             LOG.warn("could not load blockchain - generating GenesisBlock");
             LOG.debug(e);
-            appendGensisBlock();
         }
     }
 
@@ -75,12 +75,8 @@ public class Blockchain implements Serializable {
         return false;
     }
 
-    public synchronized boolean substitute(Blockchain other) {
-        if (BlockchainValidator.isValid(other)) {
-            this.blockchain = other.getBlocks();
-            return true;
-        }
-        return false;
+    public synchronized void substitute(Blockchain other) {
+        this.blockchain = other.getBlocks();
     }
 
     public synchronized Block getLastBlock() {
