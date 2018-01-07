@@ -69,12 +69,8 @@ public class Node implements PeerObserver {
 
     private void downloadMostRecentBlockchain() {
         for (Peer peer : connections) {
-            try {
-                long height = peer.requestBlockchainHeight();
-                LOG.info(height);
-            } catch (IOException | InterruptedException e) {
-                LOG.error(e);
-            }
+            long height = peer.requestBlockchainHeight();
+            LOG.info(height);
         }
     }
 

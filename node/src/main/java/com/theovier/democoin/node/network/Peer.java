@@ -96,13 +96,20 @@ public class Peer implements Runnable {
         return response.getAddresses();
     }
 
-    public long requestBlockchainHeight() throws IOException, InterruptedException {
+    public long requestBlockchainHeight() {
         Request heightRequest = new BlockchainHeightRequest();
         FutureResponse futureResponse = new FutureResponse(heightRequest);
         pendingRequests.add(futureResponse);
-        sendMessage(heightRequest);
-        BlockchainHeightResponse response = (BlockchainHeightResponse) futureResponse.get();
-        return response.getHeight();
+        try {
+            sendMessage(heightRequest);
+            BlockchainHeightResponse response = (BlockchainHeightResponse) futureResponse.get();
+            return response.getHeight();
+        } catch (IOException e) {
+            disconnect(); //problem with the connection. close it.
+        } catch (InterruptedException e) {
+            LOG.error(e);
+        }
+        return -1;
     }
 
     public InetSocketAddress getRemoteAddress() {
