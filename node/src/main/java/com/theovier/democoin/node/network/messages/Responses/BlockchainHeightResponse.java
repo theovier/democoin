@@ -16,16 +16,8 @@ public class BlockchainHeightResponse extends Response {
     }
 
     @Override
-    public void handle(Peer receiver) throws IOException {
-        long localHeight = receiver.getBlockchain().getHeight();
-
-        if (localHeight < height) {
-            //send BlockchainRequest to obtain the longer Blockchain
-        } else if (localHeight > height) {
-            //inform other Node that our Blockchain is longer (ReplaceBlockchainRequest)
-        } else {
-            //same length - what to do?
-        }
+    public void handle(Peer receiver) {
+        receiver.receivedResponse(this);
     }
 
     public long getHeight() {
