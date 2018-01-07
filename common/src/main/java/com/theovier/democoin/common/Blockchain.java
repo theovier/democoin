@@ -9,15 +9,14 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Blockchain implements Serializable {
 
-    private static final Logger LOG = Logger.getLogger(Blockchain.class);
+    private transient static final Logger LOG = Logger.getLogger(Blockchain.class);
     private static final long serialVersionUID = 5811480394608466057L;
-    private FillableTemplate template = new BlockChainTemplate(this);
+    private transient FillableTemplate template = new BlockChainTemplate(this);
     private List<Block> blockchain = new LinkedList<>();
 
     public Blockchain() {
