@@ -17,7 +17,7 @@ public class Blockchain implements Serializable {
     private transient static final Logger LOG = Logger.getLogger(Blockchain.class);
     private static final long serialVersionUID = 5811480394608466057L;
     private transient FillableTemplate template = new BlockChainTemplate(this);
-    private List<Block> blockchain = new LinkedList<>();
+    private LinkedList<Block> blockchain = new LinkedList<>();
 
     public Blockchain() {
         load();
@@ -78,6 +78,14 @@ public class Blockchain implements Serializable {
         return false;
     }
 
+    public synchronized boolean substitute(Blockchain other) {
+        if (BlockchainValidator.isValid(other)) {
+            this.blockchain = other.getBlocks();
+            return true;
+        }
+        return false;
+    }
+
     public synchronized Block getLastBlock() {
         if (blockchain.isEmpty()) {
             return null;
@@ -85,7 +93,7 @@ public class Blockchain implements Serializable {
         return blockchain.get(blockchain.size() - 1);
     }
 
-    public List<Block> getBlocks() {
+    public LinkedList<Block> getBlocks() {
         return blockchain;
     }
 

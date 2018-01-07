@@ -74,6 +74,11 @@ public class Node implements PeerObserver {
                 LOG.info(receivedHeight);
                 if (blockchain.getHeight() < receivedHeight) {
                     Blockchain remoteBlockchain = peer.requestBlockchain();
+                    boolean substituted = blockchain.substitute(remoteBlockchain);
+                    if (substituted) {
+                        LOG.info("SUBSTITUTED");
+                        break;
+                    }
                 }
             } catch (IOException e) {
                 peer.disconnect();
