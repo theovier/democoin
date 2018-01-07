@@ -40,6 +40,7 @@ public class BlockValidator {
             return false;
         }
         if (!hasOnlyBroadcastedTransactions(candidate)) {
+            LOG.warn("non broadcasted transaction(s)");
             return false;
         }
         if (!hasCoinbaseTx(candidate)) {
