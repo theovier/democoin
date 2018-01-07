@@ -38,6 +38,7 @@ public class Node implements PeerObserver {
 
     public void shutdown() {
         stopListening();
+        connections.forEach(Peer::disconnect);
     }
 
     private void connectToOtherPeers() {
