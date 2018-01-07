@@ -16,7 +16,7 @@ public class Blockchain implements Serializable {
 
     private transient static final Logger LOG = Logger.getLogger(Blockchain.class);
     private static final long serialVersionUID = 5811480394608466057L;
-    private LinkedList<Block> blockchain = new LinkedList<>();
+    private List<Block> blockchain = new LinkedList<>();
 
     public Blockchain() {
         load();
@@ -92,7 +92,7 @@ public class Blockchain implements Serializable {
         return blockchain.get(blockchain.size() - 1);
     }
 
-    public LinkedList<Block> getBlocks() {
+    public List<Block> getBlocks() {
         return blockchain;
     }
 
