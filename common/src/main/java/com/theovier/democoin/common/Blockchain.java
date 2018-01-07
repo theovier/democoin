@@ -16,7 +16,6 @@ public class Blockchain implements Serializable {
 
     private transient static final Logger LOG = Logger.getLogger(Blockchain.class);
     private static final long serialVersionUID = 5811480394608466057L;
-    private transient FillableTemplate template = new BlockChainTemplate(this);
     private LinkedList<Block> blockchain = new LinkedList<>();
 
     public Blockchain() {
@@ -113,7 +112,7 @@ public class Blockchain implements Serializable {
     }
 
     private synchronized String toXML() {
-        return template.getFilledTemplate();
+        return new BlockChainTemplate(this).getFilledTemplate();
     }
 
     @Override
