@@ -49,7 +49,7 @@ public class Peer implements Runnable {
         try {
             while (isRunning) {
                 Message msg = connection.readMessage();
-                LOG.info(String.format("received msg <%s> by peer %s", msg, toString()));
+                LOG.debug(String.format("received msg <%s> by peer %s", msg, toString()));
                 msg.handle(this);
             }
         } catch (IOException e) {
@@ -72,7 +72,7 @@ public class Peer implements Runnable {
 
     public void sendMessage(Message msg) throws IOException {
         connection.sendMessage(msg);
-        LOG.info(String.format("sent msg <%s> to peer %s", msg, toString()));
+        LOG.debug(String.format("sent msg <%s> to peer %s", msg, toString()));
     }
 
     public InetSocketAddress getRemoteAddress() {
