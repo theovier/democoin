@@ -6,9 +6,10 @@ import java.util.UUID;
 
 public abstract class Response extends Message {
 
+    private static final long serialVersionUID = 8784916174047247235L;
     private final UUID requestID;
 
-    public Response(final UUID requestID) {
+    Response(final UUID requestID) {
         this.requestID = requestID;
     }
 

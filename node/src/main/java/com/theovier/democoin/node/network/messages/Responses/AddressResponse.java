@@ -9,6 +9,7 @@ import java.util.UUID;
 
 public class AddressResponse extends Response {
 
+    private static final long serialVersionUID = 5573934517671506034L;
     private List<InetSocketAddress> addresses;
 
     public AddressResponse(final UUID requestId) {

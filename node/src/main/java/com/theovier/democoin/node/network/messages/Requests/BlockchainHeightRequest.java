@@ -8,6 +8,8 @@ import java.io.IOException;
 
 public class BlockchainHeightRequest extends Request {
 
+    private static final long serialVersionUID = 4352255970629892887L;
+
     @Override
     public void handle(Peer receiver) throws IOException {
         long blockchainHeight = receiver.getBlockchain().getHeight();

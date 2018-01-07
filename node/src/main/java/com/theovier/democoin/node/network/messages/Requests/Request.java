@@ -6,9 +6,10 @@ import java.util.UUID;
 
 public abstract class Request extends Message {
 
+    private static final long serialVersionUID = -4231416944257709858L;
     private final UUID ID;
 
-    public Request() {
+    Request() {
         this.ID = UUID.randomUUID();
     }
 

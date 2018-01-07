@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public class BlockchainHeightResponse extends Response {
 
+    private static final long serialVersionUID = -1155053010840163972L;
     private final long height;
 
     public BlockchainHeightResponse(final UUID requestId, final long height) {

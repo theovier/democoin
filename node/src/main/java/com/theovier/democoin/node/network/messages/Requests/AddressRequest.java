@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class AddressRequest extends Request {
+
+    private static final long serialVersionUID = 2929592328302974892L;
     private static final int MAX_REQUESTED_ADDRESSES = 5;
 
     @Override
