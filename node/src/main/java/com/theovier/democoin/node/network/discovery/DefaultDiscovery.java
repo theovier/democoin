@@ -23,7 +23,7 @@ public class DefaultDiscovery implements PeerDiscovery {
     public DefaultDiscovery(final PeerObserver observer, final Blockchain blockchain) {
         this.observer = observer;
         this.blockchain = blockchain;
-        defaultHostAddresses = getDefaultHostAddresses();
+        this.defaultHostAddresses = getDefaultHostAddresses();
     }
 
     private List<InetSocketAddress> getDefaultHostAddresses() {
