@@ -2,7 +2,6 @@ package com.theovier.democoin.node.network.messages.Responses;
 
 import com.theovier.democoin.node.network.Peer;
 
-import java.io.IOException;
 import java.util.UUID;
 
 public class Pong extends Response {
@@ -19,7 +18,7 @@ public class Pong extends Response {
     }
 
     @Override
-    public void handle(Peer receiver) throws IOException {
+    public void handle(Peer receiver) {
         receiver.receivedResponse(this);
     }
 }

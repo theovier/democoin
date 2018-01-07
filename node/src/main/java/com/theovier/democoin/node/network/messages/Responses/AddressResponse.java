@@ -2,7 +2,6 @@ package com.theovier.democoin.node.network.messages.Responses;
 
 import com.theovier.democoin.node.network.Peer;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.UUID;
@@ -25,7 +24,7 @@ public class AddressResponse extends Response {
     }
 
     @Override
-    public void handle(Peer receiver) throws IOException {
+    public void handle(Peer receiver) {
         receiver.receivedResponse(this);
     }
 
