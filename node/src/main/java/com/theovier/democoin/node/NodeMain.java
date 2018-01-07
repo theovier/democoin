@@ -4,7 +4,6 @@ import com.theovier.democoin.common.Blockchain;
 import com.theovier.democoin.node.network.Node;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 
 public class NodeMain {
 
@@ -12,8 +11,7 @@ public class NodeMain {
 
     public static void main(String[] args)  {
 
-        Blockchain blockchain = new Blockchain();
-        blockchain.load();
+        Blockchain blockchain = Blockchain.load();
         Node node = new Node(blockchain);
         try {
             node.start();

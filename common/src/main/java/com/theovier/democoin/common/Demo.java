@@ -1,6 +1,5 @@
 package com.theovier.democoin.common;
 
-import com.theovier.democoin.common.crypto.Sha256Hash;
 import com.theovier.democoin.common.transaction.*;
 import org.apache.log4j.Logger;
 
@@ -10,10 +9,9 @@ import java.security.KeyPair;
 public class Demo {
 
     private static final Logger LOG = Logger.getLogger(Demo.class);
-    private Blockchain blockchain = new Blockchain();
+    private Blockchain blockchain = Blockchain.load();
 
     public void demoMining() {
-        blockchain.load();
         UTXOPool.compute(blockchain);
 
         Wallet wallet = new Wallet();
