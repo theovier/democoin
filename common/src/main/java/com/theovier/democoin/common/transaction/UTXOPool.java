@@ -54,7 +54,7 @@ public class UTXOPool {
         throw new MissingUTXOException(reference);
     }
 
-    public static synchronized TxOutput removeUTXO(TxOutputPointer reference) throws MissingUTXOException {
+    private static synchronized TxOutput removeUTXO(TxOutputPointer reference) throws MissingUTXOException {
         TxOutput utxo = getUTXO(reference);
         unspentOutputs.remove(utxo);
         return utxo;
