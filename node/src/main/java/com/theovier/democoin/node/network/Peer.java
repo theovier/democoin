@@ -101,6 +101,10 @@ public class Peer implements Runnable {
         return observer.getConnectedAddresses();
     }
 
+    public final Blockchain getBlockchain() {
+        return blockchain;
+    }
+
     @Override
     public String toString() {
         return connection.toString();
