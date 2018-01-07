@@ -36,18 +36,16 @@ public class Blockchain implements Serializable {
         return false;
     }
 
-    private boolean load() {
+    private void load() {
         try {
             FileInputStream fin = new FileInputStream(Config.BLOCKCHAIN_FILE);
             ObjectInputStream ois = new ObjectInputStream(fin);
             this.blockchain = (LinkedList<Block>)ois.readObject();
-            return true;
         } catch (Exception e) {
             LOG.warn("could not load blockchain - generating GenesisBlock");
             LOG.debug(e);
             appendGensisBlock();
         }
-        return false;
     }
 
     private void appendGensisBlock() {
