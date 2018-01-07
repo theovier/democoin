@@ -89,7 +89,7 @@ public class Peer implements Runnable {
     }
 
     public Pong requestPong() throws IOException, InterruptedException  {
-        Ping ping = new Ping();
+        Request ping = new Ping();
         FutureResponse futureResponse = new FutureResponse(ping);
         pendingRequests.add(futureResponse);
         sendMessage(ping);
@@ -97,7 +97,7 @@ public class Peer implements Runnable {
     }
 
     public List<InetSocketAddress> requestAddresses() throws IOException, InterruptedException {
-        AddressRequest addressRequest = new AddressRequest();
+        Request addressRequest = new AddressRequest();
         FutureResponse futureResponse = new FutureResponse(addressRequest);
         pendingRequests.add(futureResponse);
         sendMessage(addressRequest);
@@ -105,20 +105,13 @@ public class Peer implements Runnable {
         return response.getAddresses();
     }
 
-    public long requestBlockchainHeight() {
+    public long requestBlockchainHeight() throws IOException, InterruptedException {
         Request heightRequest = new BlockchainHeightRequest();
         FutureResponse futureResponse = new FutureResponse(heightRequest);
         pendingRequests.add(futureResponse);
-        try {
-            sendMessage(heightRequest);
-            BlockchainHeightResponse response = (BlockchainHeightResponse) futureResponse.get();
-            return response.getHeight();
-        } catch (IOException e) {
-            disconnect(); //problem with the connection. close it.
-        } catch (InterruptedException e) {
-            LOG.error(e);
-        }
-        return -1;
+        sendMessage(heightRequest);
+        BlockchainHeightResponse response = (BlockchainHeightResponse) futureResponse.get();
+        return response.getHeight();
     }
 
     public void requestBlockchain() throws IOException, InterruptedException {
