@@ -50,9 +50,10 @@ public class Peer implements Runnable {
             while (isRunning) {
                 Message msg = connection.readMessage();
                 msg.handle(this);
-                LOG.info(String.format("received msg <%s>", msg));
+                LOG.info(String.format("received msg <%s> by peer %s", msg, toString()));
             }
         } catch (IOException e) {
+            LOG.debug(e);
             disconnect();
         }
     }
@@ -71,6 +72,7 @@ public class Peer implements Runnable {
 
     public void sendMessage(Message msg) throws IOException {
         connection.sendMessage(msg);
+        LOG.info(String.format("sent msg <%s> to peer %s", msg, toString()));
     }
 
     public InetSocketAddress getRemoteAddress() {
