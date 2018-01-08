@@ -1,10 +1,11 @@
 package com.theovier.democoin.common.transaction;
 
 import com.theovier.democoin.common.ConsensusParams;
+import com.theovier.democoin.common.Validator;
 
 import java.util.List;
 
-public class TransactionValidator {
+public class TransactionValidator implements Validator<Transaction> {
 
     /**
      * Adapt to https://en.bitcoin.it/wiki/Protocol_rules#.22tx.22_messages
@@ -16,7 +17,7 @@ public class TransactionValidator {
         this.UTXOPool = UTXOPool;
     }
 
-    public boolean isValid(CoinbaseTransaction tx, long totalBlockFee) {
+    public static boolean isValid(CoinbaseTransaction tx, long totalBlockFee) {
         if (tx.getInputs().size() != 0) {
             return false;
         }
@@ -32,6 +33,7 @@ public class TransactionValidator {
         return true;
     }
 
+    @Override
     public boolean isValid(Transaction tx) {
         if (!hasOnlyValidTxInputs(tx)) {
             return false;

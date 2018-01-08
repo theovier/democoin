@@ -1,14 +1,16 @@
 package com.theovier.democoin.common.transaction;
 
+import com.theovier.democoin.common.Validator;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class TransactionPool {
 
     private final Set<Transaction> pendingTransactions = new HashSet<>();
-    private final TransactionValidator validator;
+    private final Validator<Transaction> validator;
 
-    public TransactionPool(final TransactionValidator validator) {
+    public TransactionPool(final Validator<Transaction> validator) {
         this.validator = validator;
     }
 

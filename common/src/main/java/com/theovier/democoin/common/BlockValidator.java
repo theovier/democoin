@@ -5,18 +5,19 @@ import org.apache.log4j.Logger;
 
 import java.util.stream.Collectors;
 
-public class BlockValidator {
+public class BlockValidator implements Validator<Block> {
 
     private static final Logger LOG = Logger.getLogger(BlockValidator.class);
 
     private final Blockchain blockchain;
-    private final TransactionValidator txValidator;
+    private final Validator<Transaction> txValidator;
 
-    public BlockValidator(final Blockchain blockchain, final TransactionValidator txValidator) {
+    public BlockValidator(final Blockchain blockchain, final Validator<Transaction> txValidator) {
         this.blockchain = blockchain;
         this.txValidator = txValidator;
     }
 
+    @Override
     public boolean isValid(final Block candidate) {
         Block prevBlock = blockchain.getLastBlock();
         if (!hasValidProofOfWork(candidate, blockchain)) {
@@ -107,6 +108,6 @@ public class BlockValidator {
         long txFee = candidate.getTransactions().stream().mapToLong(Transaction::getTransactionFee).sum();
         CoinbaseTransaction coinbaseTx = candidate.getCoinbaseTx();
         coinbaseTx.addTransactionFees(txFee);
-        return txValidator.isValid(coinbaseTx, txFee);
+        return TransactionValidator.isValid(coinbaseTx, txFee);
     }
 }

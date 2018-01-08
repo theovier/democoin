@@ -7,11 +7,11 @@ import java.util.List;
 /**
  * validates an entire blockchain recursively.
  */
-public class BlockchainValidator {
+public class BlockchainValidator implements Validator<Blockchain> {
 
     private transient static final Logger LOG = Logger.getLogger(BlockchainValidator.class);
 
-    public static boolean isValid(final Blockchain blockchain) {
+    public boolean isValid(final Blockchain blockchain) {
         Blockchain stepByStepCopy = new Blockchain();
         List<Block> blocks = blockchain.getBlocks();
 

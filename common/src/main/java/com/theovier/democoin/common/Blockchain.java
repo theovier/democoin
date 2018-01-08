@@ -1,10 +1,7 @@
 package com.theovier.democoin.common;
 
 import com.theovier.democoin.common.templates.BlockChainTemplate;
-import com.theovier.democoin.common.transaction.MissingUTXOException;
-import com.theovier.democoin.common.transaction.TransactionPool;
-import com.theovier.democoin.common.transaction.TransactionValidator;
-import com.theovier.democoin.common.transaction.UTXOPool;
+import com.theovier.democoin.common.transaction.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
@@ -18,9 +15,10 @@ public final class Blockchain implements Serializable {
     private static final long serialVersionUID = 5811480394608466057L;
     private List<Block> blockchain = new LinkedList<>();
     private transient final UTXOPool UTXOPool = new UTXOPool(this);
-    private transient final TransactionValidator transactionValidator = new TransactionValidator(UTXOPool);
-    private transient final BlockValidator blockValidator = new BlockValidator(this, transactionValidator);
-    private transient final TransactionPool memPool = new TransactionPool(transactionValidator);
+    private transient final Validator<Transaction> txValidator = new TransactionValidator(UTXOPool);
+    private transient final Validator<Block> blockValidator = new BlockValidator(this, txValidator);
+    private transient final Validator<Blockchain> blockchainValidator = new BlockchainValidator();
+    private transient final TransactionPool memPool = new TransactionPool(txValidator);
 
     public Blockchain() {
         appendGensisBlock();
@@ -125,7 +123,7 @@ public final class Blockchain implements Serializable {
     }
 
     public boolean isValid() {
-        return BlockchainValidator.isValid(this);
+        return blockchainValidator.isValid(this);
     }
 
     private synchronized String toXML() {
