@@ -62,7 +62,7 @@ public class Block implements Serializable {
     //GenesisBlock, always the same.
     private Block() {
         this.index = 0;
-        this.timestamp = Instant.now().getEpochSecond();
+        this.timestamp = 1513629500; //Instant.now().getEpochSecond();
         this.previousBlockHash = Sha256Hash.ZERO_HASH;
         this.nonce =  684848142333899113L;
         this.powTarget = ConsensusParams.MIN_DIFFICULTY;

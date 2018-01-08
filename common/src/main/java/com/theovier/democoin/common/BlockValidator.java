@@ -9,43 +9,51 @@ public class BlockValidator {
 
     private static final Logger LOG = Logger.getLogger(BlockValidator.class);
 
-    public static boolean isValid(final Block candidate, final Blockchain blockchain) {
+    private final Blockchain blockchain;
+    private final TransactionValidator txValidator;
+
+    public BlockValidator(final Blockchain blockchain, final TransactionValidator txValidator) {
+        this.blockchain = blockchain;
+        this.txValidator = txValidator;
+    }
+
+    public boolean isValid(final Block candidate) {
         Block prevBlock = blockchain.getLastBlock();
         if (!hasValidProofOfWork(candidate, blockchain)) {
-            LOG.warn("pow missing");
+            LOG.warn("pow missing " + candidate);
             return false;
         }
         if (!hasValidIndex(candidate, prevBlock)) {
-            LOG.warn("invalid block index");
+            LOG.warn("invalid block index " + candidate);
             return false;
         }
         if (!hasValidHashChain(candidate, prevBlock)) {
-            LOG.warn("not referring to the previous block");
+            LOG.warn("not referring to the previous block " + candidate);
             return false;
         }
         if (!hasValidMerkleRoot(candidate)) {
-            LOG.warn("invalid merkle root");
+            LOG.warn("invalid merkle root " + candidate);
             return false;
         }
         if (!hasValidBlockHash(candidate)) {
-            LOG.warn("invalid blockhash");
+            LOG.warn("invalid blockhash " + candidate);
             return false;
         }
         if (!hasValidTransactionCount(candidate)) {
-            LOG.warn("there are too many transactions in this block");
+            LOG.warn("there are too many transactions in this block " + candidate);
            return false;
         }
         if (!hasOnlyValidTransactions(candidate)) {
-            LOG.warn("invalid transaction(s)");
+            LOG.warn("invalid transaction(s) " + candidate);
             return false;
         }
         if (!hasCoinbaseTx(candidate)) {
-            LOG.warn("there is not exactly 1 coinbase transaction");
+            LOG.warn("there is not exactly 1 coinbase transaction " + candidate);
             return false;
         }
         //has to be called after regular transaction validation. because this sets the correct output reference.
         if (!hasValidCoinbaseTx(candidate)) {
-            LOG.warn("coinbase output value is not calculated honestly.");
+            LOG.warn("coinbase output value is not calculated honestly. " + candidate);
             return false;
         }
         return true;
@@ -81,11 +89,11 @@ public class BlockValidator {
         return candidate.getTransactions().size() <= ConsensusParams.MAX_TRANSACTIONS_PER_BLOCK;
     }
 
-    public static boolean hasOnlyValidTransactions(Block candidate) {
+    public boolean hasOnlyValidTransactions(Block candidate) {
         return candidate.getTransactions()
                 .stream()
                 .filter(tx -> !tx.isCoinBase())
-                .allMatch(TransactionValidator::isValid);
+                .allMatch(txValidator::isValid);
     }
     
     public static boolean hasCoinbaseTx(Block candidate) {
@@ -95,10 +103,10 @@ public class BlockValidator {
                 .count() == 1;
     }
 
-    public static boolean hasValidCoinbaseTx(Block candidate) {
+    public boolean hasValidCoinbaseTx(Block candidate) {
         long txFee = candidate.getTransactions().stream().mapToLong(Transaction::getTransactionFee).sum();
         CoinbaseTransaction coinbaseTx = candidate.getCoinbaseTx();
         coinbaseTx.addTransactionFees(txFee);
-        return TransactionValidator.isValid(coinbaseTx, txFee);
+        return txValidator.isValid(coinbaseTx, txFee);
     }
 }

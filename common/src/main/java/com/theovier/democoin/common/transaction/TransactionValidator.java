@@ -10,7 +10,13 @@ public class TransactionValidator {
      * Adapt to https://en.bitcoin.it/wiki/Protocol_rules#.22tx.22_messages
      */
 
-    public static boolean isValid(CoinbaseTransaction tx, long totalBlockFee) {
+    private final UTXOPool UTXOPool;
+
+    public TransactionValidator(final UTXOPool UTXOPool) {
+        this.UTXOPool = UTXOPool;
+    }
+
+    public boolean isValid(CoinbaseTransaction tx, long totalBlockFee) {
         if (tx.getInputs().size() != 0) {
             return false;
         }
@@ -26,7 +32,7 @@ public class TransactionValidator {
         return true;
     }
 
-    public static boolean isValid(Transaction tx) {
+    public boolean isValid(Transaction tx) {
         if (!hasOnlyValidTxInputs(tx)) {
             return false;
         }
@@ -44,12 +50,12 @@ public class TransactionValidator {
         return true;
     }
 
-    public static boolean hasOnlyValidTxInputs(Transaction tx) {
+    private boolean hasOnlyValidTxInputs(Transaction tx) {
         List<TxInput> inputs = tx.getInputs();
         if (inputs.size() <= 0) {
             return false;
         }
-        if (!inputs.stream().allMatch(TransactionValidator::isValidTxInput)) {
+        if (!inputs.stream().allMatch(this::isValidTxInput)) {
             return false;
         }
         //if we are here, we can be sure that every input has a referenced output.
@@ -66,7 +72,7 @@ public class TransactionValidator {
     /**
      * attention: side-effect! sets the referenced output.
      */
-    public static boolean isValidTxInput(TxInput in) {
+    private boolean isValidTxInput(TxInput in) {
         try {
             TxOutputPointer pointer = in.getPrevOutputInfo();
             TxOutput out = UTXOPool.getUTXO(pointer);
@@ -77,19 +83,19 @@ public class TransactionValidator {
         }
     }
 
-    public static boolean areAllInputsInLegalMoneyRange(List<TxInput> inputs) {
+    private static boolean areAllInputsInLegalMoneyRange(List<TxInput> inputs) {
         return inputs.stream().allMatch(TransactionValidator::isValueInLegalMoneyRange);
     }
 
-    public static boolean isValueInLegalMoneyRange(TxInput in) {
+    private static boolean isValueInLegalMoneyRange(TxInput in) {
         return isInLegalMoneyRange(in.getClaimedValue());
     }
 
-    public static boolean isInLegalMoneyRange(long value) {
+    private static boolean isInLegalMoneyRange(long value) {
         return 0 < value && value <= ConsensusParams.MAX_COINS;
     }
 
-    public static boolean isValueSumInLegalMoneyRange(List<TxInput> inputs) {
+    private static boolean isValueSumInLegalMoneyRange(List<TxInput> inputs) {
         long sumInValues = inputs.stream().mapToLong(TxInput::getClaimedValue).sum();
         if (isInLegalMoneyRange(sumInValues)) {
             return true;
@@ -97,7 +103,7 @@ public class TransactionValidator {
         return false;
     }
 
-    public static boolean hasOnlyValidTxOutputs(Transaction tx) {
+    private static boolean hasOnlyValidTxOutputs(Transaction tx) {
         if (tx.getOutputs().size() <= 0) {
             return false;
         }
@@ -110,7 +116,7 @@ public class TransactionValidator {
         return true;
     }
 
-    public static boolean isValidTxOutput(TxOutput out) {
+    private static boolean isValidTxOutput(TxOutput out) {
         if (out.getValue() > ConsensusParams.MAX_COINS) {
             return false;
         }

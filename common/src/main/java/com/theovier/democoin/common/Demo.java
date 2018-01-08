@@ -12,7 +12,8 @@ public class Demo {
     private Blockchain blockchain = Blockchain.load();
 
     public void demoMining() {
-        UTXOPool.compute(blockchain);
+
+        LOG.info(blockchain.isValid());
 
         Wallet wallet = new Wallet();
         KeyPair keypair = wallet.getKeyPair();
@@ -34,7 +35,7 @@ public class Demo {
         LOG.info(TransactionPool.add(tx1));
         */
 
-        Miner miner = new Miner(blockchain, target, "mined by theo's computer");
-        miner.start();
+        //Miner miner = new Miner(blockchain, target, "mined by theo's computer");
+        //miner.start();
     }
 }

@@ -9,11 +9,18 @@ import java.util.*;
 public class UTXOPool {
 
     private static final Logger LOG = Logger.getLogger(UTXOPool.class);
-    private static Set<TxOutput> unspentOutputs = new HashSet<>();
+    private Set<TxOutput> unspentOutputs = new HashSet<>();
 
-    public static void compute(Blockchain blockchain) {
+    private final Blockchain blockchain;
+
+    public UTXOPool(final Blockchain blockchain) {
+        this.blockchain = blockchain;
+    }
+
+    public synchronized void compute() {
+        unspentOutputs.clear();
+
         //todo make this better and faster.
-
         HashMap<TxOutputPointer, TxOutput> outputs = new HashMap<>();
         List<Block> blocks = blockchain.getBlocks();
         for (Block block : blocks) {
@@ -29,19 +36,19 @@ public class UTXOPool {
             }
         }
         for (TxOutputPointer key : outputs.keySet()) {
-            LOG.info(key);
+            //LOG.info(key);
         }
         unspentOutputs.addAll(outputs.values());
     }
 
-    public static synchronized void add(Transaction transaction) {
+    public synchronized void add(Transaction transaction) {
         unspentOutputs.addAll(transaction.getOutputs());
     }
 
     /**
      * gets the referenced TxOutput. Throws an error if the output is not in the UTXO-set.
      */
-    public static synchronized TxOutput getUTXO(TxOutputPointer reference) throws MissingUTXOException {
+    public synchronized TxOutput getUTXO(TxOutputPointer reference) throws MissingUTXOException {
         Optional<TxOutput> result = unspentOutputs
                 .stream()
                 .filter(utxo -> utxo.getParentTransaction().getTxId().equals(reference.getTransactionHash()))
@@ -54,13 +61,13 @@ public class UTXOPool {
         throw new MissingUTXOException(reference);
     }
 
-    private static synchronized TxOutput removeUTXO(TxOutputPointer reference) throws MissingUTXOException {
+    private synchronized TxOutput removeUTXO(TxOutputPointer reference) throws MissingUTXOException {
         TxOutput utxo = getUTXO(reference);
         unspentOutputs.remove(utxo);
         return utxo;
     }
 
-    public static synchronized TxOutput removeUTXO(TxInput input) throws MissingUTXOException {
+    public synchronized TxOutput removeUTXO(TxInput input) throws MissingUTXOException {
         return removeUTXO(input.getPrevOutputInfo());
     }
 }

@@ -4,6 +4,7 @@ import com.theovier.democoin.common.templates.BlockChainTemplate;
 import com.theovier.democoin.common.templates.FillableTemplate;
 import com.theovier.democoin.common.transaction.MissingUTXOException;
 import com.theovier.democoin.common.transaction.TransactionPool;
+import com.theovier.democoin.common.transaction.TransactionValidator;
 import com.theovier.democoin.common.transaction.UTXOPool;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -12,11 +13,15 @@ import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Blockchain implements Serializable {
+public final class Blockchain implements Serializable {
 
     private transient static final Logger LOG = Logger.getLogger(Blockchain.class);
     private static final long serialVersionUID = 5811480394608466057L;
     private List<Block> blockchain = new LinkedList<>();
+    private transient final UTXOPool UTXOPool = new UTXOPool(this);
+    private transient final TransactionValidator transactionValidator = new TransactionValidator(UTXOPool);
+    private transient final BlockValidator blockValidator = new BlockValidator(this, transactionValidator);
+    private transient final TransactionPool memPool = new TransactionPool(transactionValidator);
 
     public Blockchain() {
         appendGensisBlock();
@@ -24,7 +29,7 @@ public class Blockchain implements Serializable {
 
     private Blockchain(final List<Block> blocks) {
         this.blockchain = blocks;
-        //todo calculate own UTXOPool here
+        UTXOPool.compute();
     }
 
     public synchronized boolean save() {
@@ -61,19 +66,19 @@ public class Blockchain implements Serializable {
     }
 
     public synchronized boolean append(Block block) {
-        if (BlockValidator.isValid(block, this)) {
+        if (blockValidator.isValid(block)) {
             blockchain.add(block);
-            block.getTransactions().forEach(TransactionPool::remove);//remove included transactions from (pending) transaction pool
+            block.getTransactions().forEach(memPool::remove);//remove included transactions from (pending) transaction pool
             block.getTransactions().forEach(UTXOPool::add); //add transactions outputs to the UTXO.
 
             //todo make this pretty.
             block.getTransactions().forEach(
                     tx -> tx.getInputs().forEach(in -> {
-                            try {
-                                UTXOPool.removeUTXO(in);
-                            } catch (MissingUTXOException e) {
-                                throw new IllegalStateException("validation must be broken");
-                            }
+                        try {
+                            UTXOPool.removeUTXO(in);
+                        } catch (MissingUTXOException e) {
+                            throw new IllegalStateException("validation must be broken");
+                        }
                     })); //remove transaction inputs from the UTXO.
 
             return true;
@@ -81,8 +86,12 @@ public class Blockchain implements Serializable {
         return false;
     }
 
+    /** called when there is a valid, longer blockchain.
+     *  we change our status to represent that blockchain
+     */
     public synchronized void substitute(Blockchain other) {
         this.blockchain = other.getBlocks();
+        this.UTXOPool.compute();
     }
 
     public synchronized Block getLastBlock() {
@@ -109,6 +118,14 @@ public class Blockchain implements Serializable {
 
     public synchronized int getHeight() {
         return blockchain.size();
+    }
+
+    public TransactionPool getMemPool() {
+        return memPool;
+    }
+
+    public boolean isValid() {
+        return BlockchainValidator.isValid(this);
     }
 
     private synchronized String toXML() {

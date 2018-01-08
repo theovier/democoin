@@ -1,28 +1,45 @@
 package com.theovier.democoin.common.transaction;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TransactionPool {
 
-    private static Set<Transaction> pendingTransactions = new HashSet<>();
+    private final Set<Transaction> pendingTransactions = new HashSet<>();
+    private final TransactionValidator validator;
 
-    public static synchronized boolean add(Transaction transaction) {
-        if (TransactionValidator.isValid(transaction)) {
+    public TransactionPool(final TransactionValidator validator) {
+        this.validator = validator;
+    }
+
+    /** check if all containing transactions are indeed valid.
+        returns the amount of invalid transactions that were removed.
+     */
+    public synchronized int purge() {
+        Set<Transaction> invalidPendingTransactions = pendingTransactions.stream()
+                .filter(tx -> !validator.isValid(tx))
+                .collect(Collectors.toSet());
+        pendingTransactions.removeAll(invalidPendingTransactions);
+        return invalidPendingTransactions.size();
+    }
+
+    public synchronized boolean add(final Transaction transaction) {
+        if (validator.isValid(transaction)) {
             pendingTransactions.add(transaction);
             return true;
         }
         return false;
     }
 
-    public static synchronized void remove(Transaction transaction) {
+    public synchronized void remove(final Transaction transaction) {
         pendingTransactions.remove(transaction);
     }
 
-    public static synchronized boolean containsAll(Collection<Transaction> transactions) {
+    public synchronized boolean containsAll(final Collection<Transaction> transactions) {
         return pendingTransactions.containsAll(transactions);
     }
 
-    public static synchronized Set<Transaction> getPendingTransactions() {
+    public synchronized Set<Transaction> getPendingTransactions() {
         return pendingTransactions;
     }
 }

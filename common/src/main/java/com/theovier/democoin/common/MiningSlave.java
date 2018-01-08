@@ -57,7 +57,7 @@ public class MiningSlave implements Runnable {
 
             String difficultyTarget = Pow.getNextWorkRequired(blockchain);
 
-            Set<Transaction> transactions = TransactionPool.getPendingTransactions()
+            Set<Transaction> transactions = blockchain.getMemPool().getPendingTransactions()
                     .stream()
                     .limit(ConsensusParams.MAX_TRANSACTIONS_PER_BLOCK)
                     .collect(Collectors.toSet());
