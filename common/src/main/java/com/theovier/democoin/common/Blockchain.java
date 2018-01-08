@@ -11,27 +11,31 @@ import java.util.List;
 
 public final class Blockchain implements Serializable {
 
-    private transient static final Logger LOG = Logger.getLogger(Blockchain.class);
+    private static final Logger LOG = Logger.getLogger(Blockchain.class);
     private static final long serialVersionUID = 5811480394608466057L;
     private List<Block> blockchain = new LinkedList<>();
-    private transient final UTXOPool UTXOPool;
-    private transient final Validator<Block> blockValidator;
-    private transient final Validator<Blockchain> blockchainValidator;
-    private transient final TransactionPool memPool;
+    private transient final UTXOPool UTXOPool = new UTXOPool(this);
+    private transient final Validator<Transaction> txValidator = new TransactionValidator(UTXOPool);
+    private transient final Validator<Block> blockValidator = new BlockValidator(this, txValidator);
+    private transient final Validator<Blockchain> blockchainValidator = new BlockchainValidator();
+    private transient final TransactionPool memPool = new TransactionPool(txValidator);
 
     public Blockchain() {
-        this.UTXOPool = new UTXOPool(this);
-        final Validator<Transaction> txValidator = new TransactionValidator(UTXOPool);
-        this.blockValidator = new BlockValidator(this, txValidator);
-        this.blockchainValidator = new BlockchainValidator();
-        this.memPool = new TransactionPool(txValidator);
         appendGensisBlock();
     }
 
     private Blockchain(final List<Block> blocks) {
-        this();
         this.blockchain = blocks;
         this.UTXOPool.compute();
+    }
+
+    //copy constructor for deserialization
+    private Blockchain(final Blockchain copy) {
+        this.blockchain = copy.getBlocks();
+    }
+
+    private Object readResolve() {
+        return new Blockchain();
     }
 
     public synchronized boolean saveToDisc() {
