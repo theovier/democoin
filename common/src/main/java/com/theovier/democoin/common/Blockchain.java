@@ -1,7 +1,6 @@
 package com.theovier.democoin.common;
 
 import com.theovier.democoin.common.templates.BlockChainTemplate;
-import com.theovier.democoin.common.templates.FillableTemplate;
 import com.theovier.democoin.common.transaction.MissingUTXOException;
 import com.theovier.democoin.common.transaction.TransactionPool;
 import com.theovier.democoin.common.transaction.TransactionValidator;
@@ -50,6 +49,7 @@ public final class Blockchain implements Serializable {
         try {
             FileInputStream fin = new FileInputStream(Config.BLOCKCHAIN_FILE);
             ObjectInputStream ois = new ObjectInputStream(fin);
+            @SuppressWarnings("unchecked")
             List<Block> blocks = (LinkedList<Block>)ois.readObject();
             return new Blockchain(blocks);
         } catch (Exception e) {
