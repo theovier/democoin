@@ -1,6 +1,5 @@
 package com.theovier.democoin.common;
 
-import com.theovier.democoin.common.transaction.*;
 import org.apache.log4j.Logger;
 
 import java.security.KeyPair;
@@ -9,7 +8,7 @@ import java.security.KeyPair;
 public class Demo {
 
     private static final Logger LOG = Logger.getLogger(Demo.class);
-    private Blockchain blockchain = Blockchain.load();
+    private Blockchain blockchain = Blockchain.loadFromDisc();
 
     public void demoMining() {
 

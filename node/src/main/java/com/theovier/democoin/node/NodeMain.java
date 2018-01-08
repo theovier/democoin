@@ -11,7 +11,7 @@ public class NodeMain {
 
     public static void main(String[] args)  {
 
-        Blockchain blockchain = Blockchain.load();
+        Blockchain blockchain = Blockchain.loadFromDisc();
         Node node = new Node(blockchain);
         try {
             node.start();

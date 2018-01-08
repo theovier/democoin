@@ -1,10 +1,8 @@
 package com.theovier.democoin.common;
 
 import com.theovier.democoin.common.transaction.Transaction;
-import com.theovier.democoin.common.transaction.TransactionPool;
 import org.apache.log4j.Logger;
 
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -44,7 +42,7 @@ public class MiningSlave implements Runnable {
             if (block != null) {
                 if (blockchain.append(block)) {
                     //master.stop(); //todo remove this. just for testing.
-                    blockchain.save();
+                    blockchain.saveToDisc();
                     //todo broadcast
                 }
             }

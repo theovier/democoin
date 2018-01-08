@@ -32,7 +32,7 @@ public final class Blockchain implements Serializable {
         UTXOPool.compute();
     }
 
-    public synchronized boolean save() {
+    public synchronized boolean saveToDisc() {
         try {
             FileOutputStream fout = new FileOutputStream(Config.BLOCKCHAIN_FILE);
             ObjectOutputStream oos = new ObjectOutputStream(fout);
@@ -46,14 +46,14 @@ public final class Blockchain implements Serializable {
         return false;
     }
 
-    public static Blockchain load() {
+    public static Blockchain loadFromDisc() {
         try {
             FileInputStream fin = new FileInputStream(Config.BLOCKCHAIN_FILE);
             ObjectInputStream ois = new ObjectInputStream(fin);
             List<Block> blocks = (LinkedList<Block>)ois.readObject();
             return new Blockchain(blocks);
         } catch (Exception e) {
-            LOG.warn("could not load blockchain - generating GenesisBlock");
+            LOG.warn("could not loadFromDisc blockchain - generating GenesisBlock");
             LOG.debug(e);
             return new Blockchain();
         }
