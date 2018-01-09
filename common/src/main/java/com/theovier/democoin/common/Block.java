@@ -15,14 +15,14 @@ public class Block implements Serializable {
 
     private static final long serialVersionUID = 1113799434508676095L;
 
-    private long index;
-    private long timestamp;
-    private long nonce;
-    private String powTarget;
-    private Sha256Hash previousBlockHash;
-    private Sha256Hash merkleRoot;
-    private Set<Transaction> transactions = new HashSet<>();
-    private CoinbaseTransaction coinbaseTx;
+    private final long index;
+    private final long timestamp;
+    private final long nonce;
+    private final String powTarget;
+    private final Sha256Hash previousBlockHash;
+    private final Sha256Hash merkleRoot;
+    private final Set<Transaction> transactions = new HashSet<>();
+    private final CoinbaseTransaction coinbaseTx;
     private Sha256Hash hash;
 
     public Block(final Block predecessor, final long nonce, final String powTarget, final Address coinbaseRecipient, final String coinbaseMsg, final Collection<Transaction> transactions) {
@@ -85,7 +85,7 @@ public class Block implements Serializable {
     }
 
     //todo if only 1 element hash with duplicate -> atm. genesis block merkle root = tx hash.
-    public Sha256Hash computeMerkleRoot() {
+    public final Sha256Hash computeMerkleRoot() {
         Queue<Sha256Hash> hashQueue = new LinkedList<>(transactions.stream().map(Transaction::getTxId).collect(Collectors.toList()));
         while (hashQueue.size() > 1) {
             String hashableData = hashQueue.poll().toString() + hashQueue.poll().toString();
