@@ -16,10 +16,10 @@ import java.util.Objects;
 public class Transaction implements Serializable {
     private static final long serialVersionUID = -3564602822987321657L;
 
-    protected Sha256Hash txId;
+    private Sha256Hash txId;
     private long timestamp;
     private String msg;
-    protected boolean isCoinBase;
+    boolean isCoinBase;
     private ArrayList<TxInput> inputs = new ArrayList<>();
     private ArrayList<TxOutput> outputs = new ArrayList<>();
 
