@@ -2,9 +2,12 @@ package com.theovier.democoin.common.transaction;
 
 
 import com.theovier.democoin.common.Address;
+import com.theovier.democoin.common.Blockchain;
 import com.theovier.democoin.common.Utils;
 import com.theovier.democoin.common.crypto.Sha256Hash;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.security.KeyPair;
 import java.time.Instant;
@@ -20,12 +23,19 @@ public class Transaction implements Serializable {
     private String msg;
     private ArrayList<TxInput> inputs = new ArrayList<>();
     private ArrayList<TxOutput> outputs = new ArrayList<>();
-
     private long transactionFee = 0;
 
     public Transaction(String msg) {
         this.msg = Utils.escapeText(msg);
         this.timestamp = Instant.now().getEpochSecond();
+    }
+
+    //used for deserialization
+    private Object readResolve() {
+        //we don't save the TxOutput parent references in xml, so set them manually.
+        this.inputs.forEach(in -> in.setParentTransaction(this));
+        this.outputs.forEach(out -> out.setParentTransaction(this));
+        return this;
     }
 
     public void build() {

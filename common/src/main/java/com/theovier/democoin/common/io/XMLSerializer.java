@@ -24,6 +24,7 @@ public final class XMLSerializer {
         initAliases();
         initAliasFields();
         initAttributes();
+        omitFields();
         addImplicitCollections();
         addImmutableTypes();
         setupSecurity();
@@ -49,11 +50,9 @@ public final class XMLSerializer {
     private void initAliasFields() {
         xstream.aliasField("target", Block.class, "powTarget");
         xstream.aliasField("fee", Transaction.class, "transactionFee");
-        xstream.aliasField("parentTX", TxInput.class, "parentTransaction");
         xstream.aliasField("referencedOutput", TxInput.class, "prevOutputInfo");
         xstream.aliasField("txId", TxOutputPointer.class, "transactionHash");
         xstream.aliasField("index", TxOutputPointer.class, "outputIndex");
-        xstream.aliasField("parentTX", TxOutput.class, "parentTransaction");
         xstream.aliasField("address", TxOutput.class, "recipientAddress");
     }
 
@@ -62,6 +61,11 @@ public final class XMLSerializer {
         xstream.useAttributeFor(Transaction.class, "txId");
         xstream.useAttributeFor(TxOutputPointer.class, "transactionHash");
         xstream.useAttributeFor(TxOutputPointer.class, "outputIndex");
+    }
+
+    private void omitFields() {
+        xstream.omitField(TxOutput.class, "parentTransaction");
+        xstream.omitField(TxInput.class, "parentTransaction");
     }
 
     private void addImplicitCollections() {

@@ -13,6 +13,7 @@ public class CoinbaseTransaction extends Transaction {
     */
 
     public static final String COINBASE_MSG = "It's a gift from the Gods!";
+    private static final long serialVersionUID = -1720855678162093827L;
 
     public CoinbaseTransaction(final Address recipientAddress) {
         super(COINBASE_MSG);
@@ -29,4 +30,12 @@ public class CoinbaseTransaction extends Transaction {
     public void addTransactionFees(final long fees) {
         getFirstOutput().setValue(ConsensusParams.COINBASE_REWARD + fees);
     }
+
+    //used for deserialization
+    private Object readResolve() {
+        getInputs().forEach(in -> in.setParentTransaction(this));
+        getOutputs().forEach(out -> out.setParentTransaction(this));
+        return this;
+    }
+
 }

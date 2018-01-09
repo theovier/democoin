@@ -16,7 +16,7 @@ public class TxOutput implements Serializable {
 
     private Address recipientAddress; //was recipientPublicKey; //org: scriptPubKey
     private long value;
-    private Transaction parentTransaction;
+    private transient Transaction parentTransaction;
 
     public TxOutput(final Address recipientAddress, final long value) {
         this.recipientAddress = recipientAddress;

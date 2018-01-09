@@ -20,7 +20,7 @@ public class TxInput implements Serializable {
     private String signature;
     private PublicKey publicKey;
     private TxOutput from;
-    private Transaction parentTransaction;
+    private transient Transaction parentTransaction;
 
     public TxInput(TxOutput from) {
         this.prevOutputInfo = new TxOutputPointer(from);

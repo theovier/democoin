@@ -32,6 +32,7 @@ public final class Blockchain implements Serializable {
         this.UTXOPool.compute();
     }
 
+    //used for deserialization
     private Object readResolve() {
         return new Blockchain(this);
     }
@@ -50,7 +51,7 @@ public final class Blockchain implements Serializable {
     public static Blockchain loadFromDisc() {
         try {
             return new Blockchain((Blockchain) printer.loadFromXML(Config.BLOCKCHAIN_FILE));
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOG.debug(e);
             LOG.warn("could not load blockchain -> generating GenesisBlock");
             return new Blockchain();
