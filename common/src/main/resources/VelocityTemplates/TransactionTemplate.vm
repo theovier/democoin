@@ -1,7 +1,6 @@
             <transaction txId="${txid}">
                 <timestamp>${timestamp}</timestamp>
                 <msg>${msg}</msg>
-                <coinbase>${coinbase}</coinbase>
 #if(!${coinbase})
                 <inputs>
 #foreach($input in $inputs)

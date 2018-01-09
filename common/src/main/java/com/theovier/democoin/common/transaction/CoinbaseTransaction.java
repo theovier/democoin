@@ -16,14 +16,12 @@ public class CoinbaseTransaction extends Transaction {
 
     public CoinbaseTransaction(final Address recipientAddress) {
         super(COINBASE_MSG);
-        this.isCoinBase = true;
         addOutput(new TxOutput(recipientAddress, ConsensusParams.COINBASE_REWARD));
         build();
     }
 
     public CoinbaseTransaction(final Address recipientAddress, final String msg) {
         super(msg);
-        this.isCoinBase = true;
         addOutput(new TxOutput(recipientAddress, ConsensusParams.COINBASE_REWARD));
         build();
     }

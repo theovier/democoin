@@ -33,7 +33,6 @@ public class TransactionTemplate extends Template {
         this.context.put( TXID, transaction.getTxId() );
         this.context.put( TIMESTAMP, transaction.getTimestamp() );
         this.context.put( MSG, transaction.getMessage());
-        this.context.put( COINBASE, transaction.isCoinBase());
         this.context.put( INPUTS, transaction.getInputs() );
         this.context.put( OUTPUTS, transaction.getOutputs() );
     }

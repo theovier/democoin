@@ -93,14 +93,14 @@ public class BlockValidator implements Validator<Block> {
     public boolean hasOnlyValidTransactions(Block candidate) {
         return candidate.getTransactions()
                 .stream()
-                .filter(tx -> !tx.isCoinBase())
+                .filter(tx -> !(tx instanceof CoinbaseTransaction))
                 .allMatch(txValidator::isValid);
     }
     
     public static boolean hasCoinbaseTx(Block candidate) {
         return candidate.getTransactions()
                 .stream()
-                .filter(Transaction::isCoinBase)
+                .filter(tx -> tx instanceof CoinbaseTransaction)
                 .count() == 1;
     }
 

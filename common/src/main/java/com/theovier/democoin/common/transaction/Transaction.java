@@ -19,7 +19,6 @@ public class Transaction implements Serializable {
     private Sha256Hash txId;
     private long timestamp;
     private String msg;
-    boolean isCoinBase;
     private ArrayList<TxInput> inputs = new ArrayList<>();
     private ArrayList<TxOutput> outputs = new ArrayList<>();
 
@@ -28,7 +27,6 @@ public class Transaction implements Serializable {
     public Transaction(String msg) {
         this.msg = Utils.escapeText(msg);
         this.timestamp = Instant.now().getEpochSecond();
-        this.isCoinBase = false;
     }
 
     public void build() {
@@ -68,7 +66,6 @@ public class Transaction implements Serializable {
         StringBuilder sb = new StringBuilder();
         sb.append(timestamp);
         sb.append(msg);
-        sb.append(isCoinBase);
         inputs.forEach(input -> sb.append(input.unsigned()));
         outputs.forEach(output -> sb.append(output));
         return Sha256Hash.create(sb.toString());
@@ -78,14 +75,9 @@ public class Transaction implements Serializable {
         StringBuilder txContent = new StringBuilder();
         txContent.append(timestamp);
         txContent.append(msg);
-        txContent.append(isCoinBase);
         txContent.append(inputs);
         txContent.append(outputs);
         return Sha256Hash.create(txContent.toString());
-    }
-
-    public boolean isCoinBase() {
-        return isCoinBase;
     }
 
     public Sha256Hash getTxId() {
@@ -158,7 +150,6 @@ public class Transaction implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Transaction that = (Transaction) o;
         return timestamp == that.timestamp &&
-                isCoinBase == that.isCoinBase &&
                 transactionFee == that.transactionFee &&
                 Objects.equals(txId, that.txId) &&
                 Objects.equals(msg, that.msg) &&
@@ -169,7 +160,7 @@ public class Transaction implements Serializable {
     @Override
     public int hashCode() {
 
-        return Objects.hash(txId, timestamp, msg, isCoinBase, inputs, outputs, transactionFee);
+        return Objects.hash(txId, timestamp, msg, inputs, outputs, transactionFee);
     }
 
     @Override
@@ -177,7 +168,6 @@ public class Transaction implements Serializable {
         return "TX{" +
                 "timestamp=" + timestamp +
                 ", txId=" + txId +
-                ", isCoinBase=" + isCoinBase +
                 ", msg='" + msg + '\'' +
                 ", inputs=" + inputs +
                 ", outputs=" + outputs +
