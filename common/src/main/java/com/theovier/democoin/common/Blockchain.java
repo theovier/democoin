@@ -2,7 +2,6 @@ package com.theovier.democoin.common;
 
 import com.theovier.democoin.common.io.Config;
 import com.theovier.democoin.common.io.XMLSerializer;
-import com.theovier.democoin.common.templates.BlockChainTemplate;
 import com.theovier.democoin.common.transaction.*;
 import org.apache.log4j.Logger;
 
@@ -124,10 +123,6 @@ public final class Blockchain implements Serializable {
 
     public boolean isValid() {
         return blockchainValidator.isValid(this);
-    }
-
-    private synchronized String toXML() {
-        return new BlockChainTemplate(this).getFilledTemplate();
     }
 
     @Override

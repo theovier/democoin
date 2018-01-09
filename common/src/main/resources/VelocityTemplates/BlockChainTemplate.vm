@@ -1,5 +1,0 @@
-<blockchain>
-#foreach($block in $blocks)
-${block.toXML()}
-#end
-</blockchain>

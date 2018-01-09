@@ -4,7 +4,6 @@ package com.theovier.democoin.common.transaction;
 import com.theovier.democoin.common.Address;
 import com.theovier.democoin.common.Utils;
 import com.theovier.democoin.common.crypto.Sha256Hash;
-import com.theovier.democoin.common.templates.TransactionTemplate;
 
 import java.io.Serializable;
 import java.security.KeyPair;
@@ -138,10 +137,6 @@ public class Transaction implements Serializable {
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
         build();
-    }
-
-    public String toXML() {
-        return new TransactionTemplate(this).getFilledTemplate();
     }
 
     @Override

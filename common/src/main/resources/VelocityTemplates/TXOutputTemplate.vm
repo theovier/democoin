@@ -1,4 +1,0 @@
-                    <output>
-                        <address>${address}</address>
-                        <value>${value}</value>
-                    </output>

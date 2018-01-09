@@ -3,8 +3,6 @@ package com.theovier.democoin.common.transaction;
 import com.theovier.democoin.common.Address;
 import com.theovier.democoin.common.crypto.Sha256Hash;
 import com.theovier.democoin.common.crypto.SignatureUtils;
-import com.theovier.democoin.common.templates.FillableTemplate;
-import com.theovier.democoin.common.templates.TxInputTemplate;
 import org.apache.log4j.Logger;
 
 import java.io.Serializable;
@@ -92,10 +90,6 @@ public class TxInput implements Serializable {
 
     public long getClaimedValue() {
         return from.getValue();
-    }
-
-    public String toXML() {
-        return new TxInputTemplate(this).getFilledTemplate();
     }
 
     @Override

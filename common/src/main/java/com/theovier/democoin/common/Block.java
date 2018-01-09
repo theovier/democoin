@@ -1,7 +1,6 @@
 package com.theovier.democoin.common;
 
 import com.theovier.democoin.common.crypto.Sha256Hash;
-import com.theovier.democoin.common.templates.BlockTemplate;
 import com.theovier.democoin.common.transaction.CoinbaseTransaction;
 import com.theovier.democoin.common.transaction.Transaction;
 import org.apache.commons.lang3.StringUtils;
@@ -134,11 +133,6 @@ public class Block implements Serializable {
 
     public String getPowTarget() {
         return powTarget;
-    }
-
-    //used by the velocity template
-    public String toXML() {
-        return new BlockTemplate(this).getFilledTemplate();
     }
 
     @Override
