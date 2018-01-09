@@ -29,6 +29,7 @@ public final class Blockchain implements Serializable {
     //copy constructor for deserialization
     private Blockchain(final Blockchain copy) {
         this.blockchain = copy.getBlocks();
+        this.UTXOPool.compute();
     }
 
     private Object readResolve() {
@@ -48,7 +49,7 @@ public final class Blockchain implements Serializable {
 
     public static Blockchain loadFromDisc() {
         try {
-            return (Blockchain) printer.loadFromXML(Config.BLOCKCHAIN_FILE);
+            return new Blockchain((Blockchain) printer.loadFromXML(Config.BLOCKCHAIN_FILE));
         } catch (Exception e) {
             LOG.debug(e);
             LOG.warn("could not load blockchain -> generating GenesisBlock");
@@ -123,6 +124,10 @@ public final class Blockchain implements Serializable {
 
     public boolean isValid() {
         return blockchainValidator.isValid(this);
+    }
+
+    public boolean addToMemPool(Transaction tx) {
+        return memPool.add(tx);
     }
 
     @Override
