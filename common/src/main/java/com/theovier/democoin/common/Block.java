@@ -21,7 +21,7 @@ public class Block implements Serializable {
     private final String powTarget;
     private final Sha256Hash previousBlockHash;
     private final Sha256Hash merkleRoot;
-    private final Set<Transaction> transactions = new HashSet<>();
+    private final List<Transaction> transactions = new ArrayList<>();
     private final CoinbaseTransaction coinbaseTx;
     private Sha256Hash hash;
 
@@ -121,7 +121,7 @@ public class Block implements Serializable {
         return nonce;
     }
 
-    public Set<Transaction> getTransactions() {
+    public List<Transaction> getTransactions() {
         return transactions;
     }
 
