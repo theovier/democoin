@@ -22,7 +22,6 @@ public class Block implements Serializable {
     private final Sha256Hash previousBlockHash;
     private final Sha256Hash merkleRoot;
     private final List<Transaction> transactions = new ArrayList<>();
-    private final CoinbaseTransaction coinbaseTx;
     private Sha256Hash hash;
 
     public Block(final Block predecessor, final long nonce, final String powTarget, final Address coinbaseRecipient, final String coinbaseMsg, final Collection<Transaction> transactions) {
@@ -31,7 +30,7 @@ public class Block implements Serializable {
         this.previousBlockHash = predecessor.getHash();
         this.nonce = nonce;
         this.powTarget = powTarget;
-        this.coinbaseTx = new CoinbaseTransaction(coinbaseRecipient, coinbaseMsg);
+        CoinbaseTransaction coinbaseTx = new CoinbaseTransaction(coinbaseRecipient, coinbaseMsg);
         this.transactions.add(coinbaseTx);
         this.transactions.addAll(transactions);
         this.merkleRoot = computeMerkleRoot();
@@ -44,7 +43,7 @@ public class Block implements Serializable {
         this.previousBlockHash = predecessor.getHash();
         this.nonce = nonce;
         this.powTarget = powTarget;
-        this.coinbaseTx = new CoinbaseTransaction(coinbaseRecipient);
+        CoinbaseTransaction coinbaseTx = new CoinbaseTransaction(coinbaseRecipient);
         this.transactions.add(coinbaseTx);
         this.transactions.addAll(transactions);
         this.merkleRoot = computeMerkleRoot();
@@ -66,8 +65,8 @@ public class Block implements Serializable {
         this.previousBlockHash = Sha256Hash.ZERO_HASH;
         this.nonce =  684848142333899113L;
         this.powTarget = ConsensusParams.MIN_DIFFICULTY;
-        this.coinbaseTx = new CoinbaseTransaction(ConsensusParams.GENESIS_ADDRESS, "GENESIS");
-        this.coinbaseTx.setTimestamp(1513428657);
+        CoinbaseTransaction coinbaseTx = new CoinbaseTransaction(ConsensusParams.GENESIS_ADDRESS, "GENESIS");
+        coinbaseTx.setTimestamp(1513428657);
         this.transactions.add(coinbaseTx);
         this.merkleRoot = computeMerkleRoot();
         this.hash = computeHash();
@@ -130,7 +129,7 @@ public class Block implements Serializable {
     }
 
     public CoinbaseTransaction getCoinbaseTx() {
-        return coinbaseTx;
+        return (CoinbaseTransaction) transactions.get(0);
     }
 
     public String getPowTarget() {
