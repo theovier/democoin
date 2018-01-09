@@ -70,6 +70,9 @@ public final class XMLSerializer {
 
     private void addImmutableTypes() {
         xstream.addImmutableType(Address.class, false);
+        xstream.addImmutableType(PublicKey.class, false);
+        xstream.addImmutableType(BCECPublicKey.class, false);
+        xstream.addImmutableType(TxOutput.class, false);
     }
 
     private void setupSecurity() {
