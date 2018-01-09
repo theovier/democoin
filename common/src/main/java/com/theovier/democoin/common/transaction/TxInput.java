@@ -18,12 +18,11 @@ public class TxInput implements Serializable {
     private static final Logger LOG = Logger.getLogger(TxInput.class);
     private static final long serialVersionUID = 478420474849537539L;
 
-    private Transaction parentTransaction;
-
     private TxOutputPointer prevOutputInfo;
     private String signature;
     private PublicKey publicKey;
     private TxOutput from;
+    private Transaction parentTransaction;
 
     public TxInput(TxOutput from) {
         this.prevOutputInfo = new TxOutputPointer(from);

@@ -16,8 +16,8 @@ public class TxOutput implements Serializable {
 
     private static final long serialVersionUID = -4403978077387051602L;
 
-    private long value;
     private Address recipientAddress; //was recipientPublicKey; //org: scriptPubKey
+    private long value;
     private Transaction parentTransaction;
 
     public TxOutput(final Address recipientAddress, final long value) {
