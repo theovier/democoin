@@ -113,8 +113,7 @@ public class TxInput implements Serializable {
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(parentTransaction, prevOutputInfo, signature, publicKey, from);
+        return Objects.hash(parentTransaction.getTxId(), prevOutputInfo, signature, publicKey, from);
     }
 
     @Override
