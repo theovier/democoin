@@ -33,15 +33,10 @@ public class MiningSlave implements Runnable {
     @Override
     public void run() {
         while (isRunning.get()) {
-
-            if (blockchain.getHeight() >= 30) {
-                master.stop();
-            }
-
             Block block = mineBlock();
             if (block != null) {
                 if (blockchain.append(block)) {
-                    //master.stop(); //todo remove this. just for testing.
+                    master.stop(); //todo remove this. just for testing.
                     blockchain.saveToDisc();
                     //todo broadcast
                 }

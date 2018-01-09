@@ -45,7 +45,6 @@ public class Miner {
 
     public synchronized void stop() {
         LOG.info("stop mining.");
-        blockchain.saveToDisc(); //todo remove. just for testing
         stopMiningSlaves();
     }
 
