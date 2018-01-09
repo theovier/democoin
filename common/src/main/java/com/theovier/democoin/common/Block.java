@@ -17,13 +17,13 @@ public class Block implements Serializable {
 
     private long index;
     private long timestamp;
-    private Sha256Hash previousBlockHash;
-    private Sha256Hash hash;
     private long nonce;
+    private String powTarget;
+    private Sha256Hash previousBlockHash;
+    private Sha256Hash merkleRoot;
     private Set<Transaction> transactions = new HashSet<>();
     private CoinbaseTransaction coinbaseTx;
-    private Sha256Hash merkleRoot;
-    private String powTarget;
+    private Sha256Hash hash;
 
     public Block(final Block predecessor, final long nonce, final String powTarget, final Address coinbaseRecipient, final String coinbaseMsg, final Collection<Transaction> transactions) {
         this.index = predecessor.getIndex() + 1;
