@@ -2,6 +2,7 @@ package com.theovier.democoin.common.transaction;
 
 import com.theovier.democoin.common.ConsensusParams;
 import com.theovier.democoin.common.Validator;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ public class TransactionValidator implements Validator<Transaction> {
      * Adapt to https://en.bitcoin.it/wiki/Protocol_rules#.22tx.22_messages
      */
 
+    private static final Logger LOG = Logger.getLogger(TransactionValidator.class);
     private final UTXOPool UTXOPool;
 
     public TransactionValidator(final UTXOPool UTXOPool) {
@@ -36,15 +38,18 @@ public class TransactionValidator implements Validator<Transaction> {
     @Override
     public boolean isValid(Transaction tx) {
         if (!hasOnlyValidTxInputs(tx)) {
+            LOG.debug("input(s) invalid " + tx);
             return false;
         }
         if (!hasOnlyValidTxOutputs(tx)) {
+            LOG.debug("output(s) invalid " + tx);
             return false;
         }
 
         long sumInputs = tx.calculateSumInputs();
         long sumOutputs = tx.calculateSumOutputs();
         if (sumInputs < sumOutputs) {
+            LOG.debug("invalid: inputs < outputs" + tx);
             return false;
         }
         tx.calculateTransactionFee();
