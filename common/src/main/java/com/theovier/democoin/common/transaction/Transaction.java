@@ -11,6 +11,7 @@ import java.security.KeyPair;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Transaction implements Serializable {
     private static final long serialVersionUID = -3564602822987321657L;
@@ -149,6 +150,26 @@ public class Transaction implements Serializable {
 
     public String toXML() {
         return new TransactionTemplate(this).getFilledTemplate();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Transaction that = (Transaction) o;
+        return timestamp == that.timestamp &&
+                isCoinBase == that.isCoinBase &&
+                transactionFee == that.transactionFee &&
+                Objects.equals(txId, that.txId) &&
+                Objects.equals(msg, that.msg) &&
+                Objects.equals(inputs, that.inputs) &&
+                Objects.equals(outputs, that.outputs);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(txId, timestamp, msg, isCoinBase, inputs, outputs, transactionFee);
     }
 
     @Override

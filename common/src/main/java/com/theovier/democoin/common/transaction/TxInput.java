@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.PublicKey;
+import java.util.Objects;
 
 public class TxInput implements Serializable {
 
@@ -96,6 +97,24 @@ public class TxInput implements Serializable {
 
     public String toXML() {
         return new TxInputTemplate(this).getFilledTemplate();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TxInput txInput = (TxInput) o;
+        return Objects.equals(parentTransaction.getTxId(), txInput.parentTransaction.getTxId()) &&
+                Objects.equals(prevOutputInfo, txInput.prevOutputInfo) &&
+                Objects.equals(signature, txInput.signature) &&
+                Objects.equals(publicKey, txInput.publicKey) &&
+                Objects.equals(from, txInput.from);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(parentTransaction, prevOutputInfo, signature, publicKey, from);
     }
 
     @Override

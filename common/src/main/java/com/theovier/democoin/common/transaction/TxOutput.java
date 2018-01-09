@@ -6,6 +6,7 @@ import com.theovier.democoin.common.templates.TxOutputTemplate;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 public class TxOutput implements Serializable {
 
@@ -65,6 +66,22 @@ public class TxOutput implements Serializable {
 
     public String toXML() {
         return new TxOutputTemplate(this).getFilledTemplate();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TxOutput txOutput = (TxOutput) o;
+        return value == txOutput.value &&
+                Objects.equals(recipientAddress, txOutput.recipientAddress) &&
+                Objects.equals(parentTransaction.getTxId(), txOutput.parentTransaction.getTxId());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(value, recipientAddress, parentTransaction);
     }
 
     @Override
