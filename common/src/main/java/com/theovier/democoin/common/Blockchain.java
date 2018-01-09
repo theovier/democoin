@@ -1,13 +1,15 @@
 package com.theovier.democoin.common;
 
+import com.theovier.democoin.common.io.Config;
+import com.theovier.democoin.common.io.XMLSerializer;
 import com.theovier.democoin.common.templates.BlockChainTemplate;
 import com.theovier.democoin.common.transaction.*;
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public final class Blockchain implements Serializable {
 
@@ -19,14 +21,10 @@ public final class Blockchain implements Serializable {
     private transient final Validator<Block> blockValidator = new BlockValidator(this, txValidator);
     private transient final Validator<Blockchain> blockchainValidator = new BlockchainValidator();
     private transient final TransactionPool memPool = new TransactionPool(txValidator);
+    private static transient final XMLSerializer printer = new XMLSerializer();
 
     public Blockchain() {
         appendGensisBlock();
-    }
-
-    private Blockchain(final List<Block> blocks) {
-        this.blockchain = blocks;
-        this.UTXOPool.compute();
     }
 
     //copy constructor for deserialization
@@ -40,28 +38,21 @@ public final class Blockchain implements Serializable {
 
     public synchronized boolean saveToDisc() {
         try {
-            FileOutputStream fout = new FileOutputStream(Config.BLOCKCHAIN_FILE);
-            ObjectOutputStream oos = new ObjectOutputStream(fout);
-            oos.writeObject(blockchain);
+            printer.saveAsXML(this, Config.BLOCKCHAIN_FILE);
             LOG.info(String.format("saved blockchain, height: %d", getHeight()));
-            FileUtils.writeStringToFile(new File("blockchain.xml"), toXML(), "UTF-8");
-            return true;
-        } catch (Exception e) {
-            LOG.error(e);
+        } catch (IOException e) {
+            LOG.error("could not save blockchain", e);
+            return false;
         }
-        return false;
+       return true;
     }
 
     public static Blockchain loadFromDisc() {
         try {
-            FileInputStream fin = new FileInputStream(Config.BLOCKCHAIN_FILE);
-            ObjectInputStream ois = new ObjectInputStream(fin);
-            @SuppressWarnings("unchecked")
-            List<Block> blocks = (LinkedList<Block>)ois.readObject();
-            return new Blockchain(blocks);
+            return (Blockchain) printer.loadFromXML(Config.BLOCKCHAIN_FILE);
         } catch (Exception e) {
-            LOG.warn("could not loadFromDisc blockchain - generating GenesisBlock");
             LOG.debug(e);
+            LOG.warn("could not load blockchain -> generating GenesisBlock");
             return new Blockchain();
         }
     }
@@ -140,7 +131,22 @@ public final class Blockchain implements Serializable {
     }
 
     @Override
-    public synchronized String toString() {
-        return toXML();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Blockchain that = (Blockchain) o;
+        return Objects.equals(blockchain, that.blockchain);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(blockchain);
+    }
+
+    @Override
+    public String toString() {
+        return "Blockchain{" +
+                "blockchain=" + blockchain +
+                '}';
     }
 }
