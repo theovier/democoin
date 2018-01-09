@@ -35,7 +35,7 @@ public final class Blockchain implements Serializable {
     }
 
     private Object readResolve() {
-        return new Blockchain();
+        return new Blockchain(this);
     }
 
     public synchronized boolean saveToDisc() {
