@@ -14,6 +14,9 @@ public abstract class ConsensusParams {
     //number of blocks a coinbaseTx must wait to be spend.
     public static final int COINBASE_MATURITY = 1;
 
+    //default coinbase message
+    public static final String COINBASE_MSG = "It's a gift from the Gods!";
+
     //includes the coinbaseTx.
     public static final int MAX_TRANSACTIONS_PER_BLOCK = 5;
 
