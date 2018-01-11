@@ -18,12 +18,12 @@ public class TxOutput implements Serializable {
     private final long value;
     private transient Transaction parentTransaction;
 
-    public TxOutput(final Address recipientAddress, final long value) {
+    TxOutput(final Address recipientAddress, final long value) {
         this.recipientAddress = recipientAddress;
         this.value = value;
     }
 
-    public TxOutput(Transaction parentTransaction, final Address recipientAddress, final long value) {
+    TxOutput(Transaction parentTransaction, final Address recipientAddress, final long value) {
         this.parentTransaction = parentTransaction;
         this.recipientAddress = recipientAddress;
         this.value = value;
