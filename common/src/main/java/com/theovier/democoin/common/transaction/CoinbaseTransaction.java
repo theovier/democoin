@@ -17,18 +17,27 @@ public class CoinbaseTransaction extends Transaction {
 
     public CoinbaseTransaction(final Address recipientAddress) {
         super(COINBASE_MSG);
-        addOutput(new TxOutput(recipientAddress, ConsensusParams.COINBASE_REWARD));
+        addOutput(new TxOutput(recipientAddress, 100));
         build();
     }
 
     public CoinbaseTransaction(final Address recipientAddress, final String msg) {
         super(msg);
-        addOutput(new TxOutput(recipientAddress, ConsensusParams.COINBASE_REWARD));
+        addOutput(new TxOutput(recipientAddress, 100));
         build();
     }
 
-    public void addTransactionFees(final long fees) {
+    public void addTransactionFeeReward(final long fees) {
         getFirstOutput().setValue(ConsensusParams.COINBASE_REWARD + fees);
+    }
+
+    public void setReward(long reward) {
+        //TxOutput value can be final again if we do this instead of the constructor call.
+        //addOutput(new TxOutput(recipientAddress, reward));
+    }
+
+    public long getReward() {
+        return getFirstOutput().getValue();
     }
 
     //used for deserialization

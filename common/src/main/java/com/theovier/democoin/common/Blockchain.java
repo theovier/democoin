@@ -69,6 +69,7 @@ public final class Blockchain implements Serializable {
             blockchain.add(block);
             block.getTransactions().forEach(memPool::remove);//remove included transactions from (pending) transaction pool
             block.getTransactions().forEach(UTXOPool::add); //add transactions outputs to the UTXO.
+            block.reward();
 
             //todo make this pretty.
             block.getTransactions().forEach(

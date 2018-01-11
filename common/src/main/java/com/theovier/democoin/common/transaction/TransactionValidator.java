@@ -26,11 +26,11 @@ public class TransactionValidator implements Validator<Transaction> {
         if (tx.getOutputs().size() != 1) {
             return false;
         }
-        if (tx.getFirstOutput().getValue() < 0 || tx.getFirstOutput().getValue() > ConsensusParams.MAX_COINS) {
+        if (tx.getReward() < 0 || tx.getReward() > ConsensusParams.MAX_COINS) {
             return false;
         }
-        if (tx.getFirstOutput().getValue() != (ConsensusParams.COINBASE_REWARD + totalBlockFee)) {
-            //return false;
+        if (tx.getReward() != (ConsensusParams.COINBASE_REWARD + totalBlockFee)) {
+            return false;
         }
         return true;
     }
@@ -38,11 +38,11 @@ public class TransactionValidator implements Validator<Transaction> {
     @Override
     public boolean isValid(Transaction tx) {
         if (!hasOnlyValidTxInputs(tx)) {
-            LOG.debug("input(s) invalid " + tx);
+            LOG.debug("invalid input(s) @" + tx);
             return false;
         }
         if (!hasOnlyValidTxOutputs(tx)) {
-            LOG.debug("output(s) invalid " + tx);
+            LOG.debug("invalid output(s) @" + tx);
             return false;
         }
 

@@ -11,6 +11,7 @@ public class BlockchainValidator implements Validator<Blockchain> {
 
     private transient static final Logger LOG = Logger.getLogger(BlockchainValidator.class);
 
+    //todo check if genesis block is valid. Request BlockValidator as constructor param.
     public boolean isValid(final Blockchain blockchain) {
         Blockchain stepByStepCopy = new Blockchain();
         List<Block> blocks = blockchain.getBlocks();

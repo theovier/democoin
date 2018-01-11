@@ -52,7 +52,7 @@ public class BlockValidator implements Validator<Block> {
             LOG.warn("there is not exactly 1 coinbase transaction " + candidate);
             return false;
         }
-        //has to be called after regular transaction validation. because this sets the correct output reference.
+        //has to be called after regular transaction validations, because these set the correct output reference.
         if (!hasValidCoinbaseTx(candidate)) {
             LOG.warn("coinbase output value is not calculated honestly. " + candidate);
             return false;
@@ -104,10 +104,13 @@ public class BlockValidator implements Validator<Block> {
                 .count() == 1;
     }
 
+    /**
+     * attention: side-effect! sets the coinbase reward.
+     * We can't do this earlier, because we have to validate each TX first in order to avoid
+     * possible nullpointers (invalid referenced UTXOs when accessing the Fees).
+     */
     public boolean hasValidCoinbaseTx(Block candidate) {
         long txFee = candidate.getTransactions().stream().mapToLong(Transaction::getTransactionFee).sum();
-        CoinbaseTransaction coinbaseTx = candidate.getCoinbaseTx();
-        coinbaseTx.addTransactionFees(txFee);
-        return TransactionValidator.isValid(coinbaseTx, txFee);
+        return TransactionValidator.isValid(candidate.getCoinbaseTx(), txFee);
     }
 }

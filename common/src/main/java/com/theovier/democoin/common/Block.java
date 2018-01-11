@@ -71,6 +71,22 @@ public class Block implements Serializable {
         this.hash = computeHash();
     }
 
+    /**
+     * called when the block was validated.
+     * block reward = txFees + CoinbaseReward
+     */
+    public void reward() {
+        try {
+            //calculate txfees here?
+            long txFee = transactions.stream().mapToLong(Transaction::getTransactionFee).sum();
+            getCoinbaseTx().addTransactionFeeReward(txFee);
+            //getCoinbaseTx.setReward(txFee + ConsensusParams.COINBASE_REWARD);
+        } catch (NullPointerException e) {
+            throw new IllegalStateException("could not get referenced UTXO while trying to access the txFees." +
+                    "try to validate the block first before calling reward", e);
+        }
+    }
+
     public Sha256Hash computeHash() {
         StringBuilder blockContent = new StringBuilder();
         blockContent.append(index);
