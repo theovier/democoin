@@ -22,12 +22,12 @@ public class TxInput implements Serializable {
     private TxOutput from;
     private transient Transaction parentTransaction;
 
-    TxInput(TxOutput from) {
+    public TxInput(TxOutput from) {
         this.prevOutputInfo = new TxOutputPointer(from);
         this.from = from;
     }
 
-    TxInput(Sha256Hash prevTXHash, int prevTxOutputIndex) {
+    public TxInput(Sha256Hash prevTXHash, int prevTxOutputIndex) {
         this.prevOutputInfo = new TxOutputPointer(prevTXHash, prevTxOutputIndex);
     }
 
