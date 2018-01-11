@@ -84,7 +84,7 @@ public class TransactionValidator implements Validator<Transaction> {
             TxOutputPointer pointer = in.getPrevOutputInfo();
             TxOutput out = UTXOPool.getUTXO(pointer);
             in.setReferencedOutput(out);
-            return in.verify(out);
+            return in.verify();
         } catch (MissingUTXOException e) {
             return false;
         }

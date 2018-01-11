@@ -47,16 +47,16 @@ public class TxInput implements Serializable {
         return false;
     }
 
-    public boolean verify(TxOutput output) {
-        if (publicKey == null) {
+    public boolean verify() {
+        if (publicKey == null || from == null) {
             return false;
         }
         Address myAddress = Address.generateAddress(publicKey);
-        if (!output.getRecipientAddress().equals(myAddress)) {
+        if (!from.getRecipientAddress().equals(myAddress)) {
             return false;
         }
         try {
-            return SignatureUtils.verify(getSignature(), publicKey, parentTransaction.getSignableHash());
+            return SignatureUtils.verify(signature, publicKey, parentTransaction.getSignableHash());
         } catch (GeneralSecurityException e) {
             LOG.error("failed to verify txInput", e);
         }
