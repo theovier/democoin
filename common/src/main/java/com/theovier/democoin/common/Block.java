@@ -23,30 +23,26 @@ public class Block implements Serializable {
     private final List<Transaction> transactions = new ArrayList<>();
     private Sha256Hash hash;
 
+    /**
+     * the given transactions need to be taken out of a memPool or be at least validated once!
+     * Otherwise we could face nullpointers in the coinbaseTX because of falsely referenced TxInputs.
+     */
     public Block(final Block predecessor, final long nonce, final String powTarget, final Address coinbaseRecipient, final String coinbaseMsg, final Collection<Transaction> transactions) {
         this.index = predecessor.getIndex() + 1;
         this.timestamp = Instant.now().getEpochSecond();
         this.previousBlockHash = predecessor.getHash();
         this.nonce = nonce;
         this.powTarget = powTarget;
-        CoinbaseTransaction coinbaseTx = new CoinbaseTransaction(coinbaseRecipient, coinbaseMsg);
-        this.transactions.add(coinbaseTx);
+        long txFee = transactions.stream().mapToLong(Transaction::getTransactionFee).sum(); //will cause NPE if tx not from memPool.
+        long reward = ConsensusParams.COINBASE_REWARD + txFee;
+        this.transactions.add(new CoinbaseTransaction(coinbaseRecipient, reward, coinbaseMsg));
         this.transactions.addAll(transactions);
         this.merkleRoot = computeMerkleRoot();
         this.hash = computeHash();
     }
 
     public Block(final Block predecessor, final long nonce, final String powTarget, final Address coinbaseRecipient, final Collection<Transaction> transactions) {
-        this.index = predecessor.getIndex() + 1;
-        this.timestamp = Instant.now().getEpochSecond();
-        this.previousBlockHash = predecessor.getHash();
-        this.nonce = nonce;
-        this.powTarget = powTarget;
-        CoinbaseTransaction coinbaseTx = new CoinbaseTransaction(coinbaseRecipient);
-        this.transactions.add(coinbaseTx);
-        this.transactions.addAll(transactions);
-        this.merkleRoot = computeMerkleRoot();
-        this.hash = computeHash();
+        this(predecessor, nonce, powTarget, coinbaseRecipient, ConsensusParams.COINBASE_MSG, transactions);
     }
 
     public Block(final Block predecessor, final long nonce, final String powTarget, final Address coinbaseRecipient, final Transaction... transactions) {
@@ -64,27 +60,11 @@ public class Block implements Serializable {
         this.previousBlockHash = Sha256Hash.ZERO_HASH;
         this.nonce =  684848142333899113L;
         this.powTarget = ConsensusParams.MIN_DIFFICULTY;
-        CoinbaseTransaction coinbaseTx = new CoinbaseTransaction(ConsensusParams.GENESIS_ADDRESS, "GENESIS");
+        CoinbaseTransaction coinbaseTx = new CoinbaseTransaction(ConsensusParams.GENESIS_ADDRESS, ConsensusParams.COINBASE_REWARD, "GENESIS");
         coinbaseTx.setTimestamp(1513428657);
         this.transactions.add(coinbaseTx);
         this.merkleRoot = computeMerkleRoot();
         this.hash = computeHash();
-    }
-
-    /**
-     * called when the block was validated.
-     * block reward = txFees + CoinbaseReward
-     */
-    public void reward() {
-        try {
-            //calculate txfees here?
-            long txFee = transactions.stream().mapToLong(Transaction::getTransactionFee).sum();
-            getCoinbaseTx().addTransactionFeeReward(txFee);
-            //getCoinbaseTx.setReward(txFee + ConsensusParams.COINBASE_REWARD);
-        } catch (NullPointerException e) {
-            throw new IllegalStateException("could not get referenced UTXO while trying to access the txFees." +
-                    "try to validate the block first before calling reward", e);
-        }
     }
 
     public Sha256Hash computeHash() {

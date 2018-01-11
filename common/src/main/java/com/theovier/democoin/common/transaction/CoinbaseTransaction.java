@@ -12,28 +12,12 @@ public class CoinbaseTransaction extends Transaction {
      *  -only one output.
     */
 
-    public static final String COINBASE_MSG = "It's a gift from the Gods!";
     private static final long serialVersionUID = -1720855678162093827L;
 
-    public CoinbaseTransaction(final Address recipientAddress) {
-        super(COINBASE_MSG);
-        addOutput(new TxOutput(recipientAddress, 100));
-        build();
-    }
-
-    public CoinbaseTransaction(final Address recipientAddress, final String msg) {
+    public CoinbaseTransaction(final Address recipientAddress, final long reward, final String msg) {
         super(msg);
-        addOutput(new TxOutput(recipientAddress, 100));
+        addOutput(new TxOutput(recipientAddress, reward));
         build();
-    }
-
-    public void addTransactionFeeReward(final long fees) {
-        getFirstOutput().setValue(ConsensusParams.COINBASE_REWARD + fees);
-    }
-
-    public void setReward(long reward) {
-        //TxOutput value can be final again if we do this instead of the constructor call.
-        //addOutput(new TxOutput(recipientAddress, reward));
     }
 
     public long getReward() {

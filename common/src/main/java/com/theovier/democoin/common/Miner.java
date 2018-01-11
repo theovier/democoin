@@ -1,6 +1,5 @@
 package com.theovier.democoin.common;
 
-import com.theovier.democoin.common.transaction.CoinbaseTransaction;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.log4j.Logger;
 
@@ -29,7 +28,7 @@ public class Miner {
     public Miner(final Blockchain blockchain, final Address payoutAddress) {
         this.blockchain = blockchain;
         this.payoutAddress = payoutAddress;
-        this.coinbaseMsg = CoinbaseTransaction.COINBASE_MSG;
+        this.coinbaseMsg = ConsensusParams.COINBASE_MSG;
     }
 
     public Miner(final Blockchain blockchain, final Address payoutAddress, final String optionalCoinbaseMsg) {

@@ -15,7 +15,7 @@ public class TxOutput implements Serializable {
     private static final long serialVersionUID = -4403978077387051602L;
 
     private Address recipientAddress; //was recipientPublicKey; //org: scriptPubKey
-    private long value;
+    private final long value;
     private transient Transaction parentTransaction;
 
     public TxOutput(final Address recipientAddress, final long value) {
@@ -31,10 +31,6 @@ public class TxOutput implements Serializable {
 
     public void setParentTransaction(Transaction parentTransaction) {
         this.parentTransaction = parentTransaction;
-    }
-
-    public void setValue(long value) {
-        this.value = value;
     }
 
     public long getValue() {
