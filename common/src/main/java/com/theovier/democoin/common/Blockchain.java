@@ -50,12 +50,18 @@ public final class Blockchain implements Serializable {
 
     public static Blockchain loadFromDisc() {
         try {
-            return new Blockchain((Blockchain) printer.loadFromXML(Config.BLOCKCHAIN_FILE));
+            Blockchain loadedBlockchain = new Blockchain((Blockchain) printer.loadFromXML(Config.BLOCKCHAIN_FILE));
+            if (loadedBlockchain.isValid()) {
+                LOG.debug(String.format("load of blockchain with height %d was successful.", loadedBlockchain.getHeight()));
+                return loadedBlockchain;
+            }
         } catch (IOException e) {
             LOG.debug(e);
             LOG.warn("could not load blockchain -> generating GenesisBlock");
             return new Blockchain();
         }
+        LOG.warn("blockchain file has been corrupted -> generating GenesisBlock");
+        return new Blockchain();
     }
 
     private void appendGensisBlock() {
