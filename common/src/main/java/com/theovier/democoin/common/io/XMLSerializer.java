@@ -64,8 +64,10 @@ public final class XMLSerializer {
     }
 
     private void omitFields() {
+        xstream.omitField(Transaction.class, "transactionFee");
         xstream.omitField(TxOutput.class, "parentTransaction");
         xstream.omitField(TxInput.class, "parentTransaction");
+        xstream.omitField(TxInput.class, "from");
     }
 
     private void addImplicitCollections() {
