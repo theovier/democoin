@@ -69,6 +69,10 @@ public final class Blockchain implements Serializable {
         return new Blockchain();
     }
 
+    public static Blockchain loadFromFile(final File file) throws IOException {
+        return new Blockchain((Blockchain) printer.loadFromXMLFile(file));
+    }
+
     private void appendGensisBlock() {
         Block genesis = Block.generateGenesisBlock();
         blockchain.add(genesis);
