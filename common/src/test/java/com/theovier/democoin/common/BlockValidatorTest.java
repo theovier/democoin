@@ -89,7 +89,10 @@ class BlockValidatorTest {
 
     @Test
     void hasCoinbaseTx() throws IOException {
-        //todo
+        File file = new File(getClass().getResource("/invalidBlockchains/invalid_missingCoinbase.xml").getFile());
+        Blockchain invalidBlockchain = Blockchain.loadFromFile(file);
+        Block invalidBlock = invalidBlockchain.get(1);
+        assertFalse(BlockValidator.hasCoinbaseTx(invalidBlock));
     }
 
     @Test
