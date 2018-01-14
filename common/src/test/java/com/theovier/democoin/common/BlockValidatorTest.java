@@ -100,6 +100,9 @@ class BlockValidatorTest {
 
     @Test
     void hasValidCoinbaseTx() throws IOException {
-        //todo
+        //this does not prove the coinbase is invalid, but the xml is valid except for the invalid coinbase
+        File xmlFile = new File(getClass().getResource("/invalidBlockchains/invalid_coinbase.xml").getFile());
+        Blockchain blockchain = Blockchain.loadFromFile(xmlFile);
+        assertFalse(blockchain.isValid());
     }
 }
