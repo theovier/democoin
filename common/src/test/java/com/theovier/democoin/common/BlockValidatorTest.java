@@ -84,7 +84,10 @@ class BlockValidatorTest {
 
     @Test
     void hasOnlyValidTransactions() throws IOException {
-        //todo
+        //this does not prove the transactions are invalid, but the xml is valid except for the txinput
+        File xmlFile = new File(getClass().getResource("/invalidBlockchains/invalid_txInput.xml").getFile());
+        Blockchain blockchain = Blockchain.loadFromFile(xmlFile);
+        assertFalse(blockchain.isValid());
     }
 
     @Test
