@@ -1,6 +1,5 @@
 <blockchain>
-    <block hash="7cd38dc3ceb2f6b292c8946c179d8e619443c10898702d1a4d005a929e61a9e3">
-        <index>0</index>
+    <block index="0" hash="7cd38dc3ceb2f6b292c8946c179d8e619443c10898702d1a4d005a929e61a9e3">
         <timestamp>1513629500</timestamp>
         <nonce>684848142333899113</nonce>
         <target>000000F000000000000000000000000000000000000000000000000000000000</target>

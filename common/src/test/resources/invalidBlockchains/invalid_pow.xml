@@ -1,6 +1,5 @@
 <blockchain>
-    <block hash="7cd38dc3ceb2f6b292c8946c179d8e619443c10898702d1a4d005a929e61a9e3">
-        <index>0</index>
+    <block index="0" hash="7cd38dc3ceb2f6b292c8946c179d8e619443c10898702d1a4d005a929e61a9e3">
         <timestamp>1513629500</timestamp>
         <nonce>684848142333899113</nonce>
         <target>000000F000000000000000000000000000000000000000000000000000000000</target>
@@ -20,8 +19,7 @@
             </coinbaseTX>
         </transactions>
     </block>
-    <block hash="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff">
-        <index>1</index>
+    <block index="1" hash="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff">
         <timestamp>1515783001</timestamp>
         <nonce>2160904486901410213</nonce>
         <target>000000F000000000000000000000000000000000000000000000000000000000</target>
@@ -44,7 +42,7 @@
                 <msg>my message</msg>
                 <inputs>
                     <input>
-                        <referencedOutput txId="9d359f05f53053aaa0618d4f0894abd364b94dcc4d18b0fd937244dc49f646bf" index="0"/>
+                        <referencedOutput txId="9d359f05f53053aaa0618d4f0894abd364b94dcc4d18b0fd937244dc49f646bf" outputIndex="0"/>
                         <signature>3045022000a94ac4ab3fb49ed4e2e0fa602bec597bd45e6dc90db36357e2e42e2cd21ed3022100877a233d8b1c3fd7a0c94cfa43a0563dae176c85f667f6803eadfdf215a1333e</signature>
                         <publicKey>3059301306072a8648ce3d020106082a8648ce3d03010703420004436c5599484474241b38df054af89fabbd48a5920c4e6f4af7372f72aefca08c2b72844252ddc7cbf37efe2e2d766b36d6121a3edc06a68065932f3fb3c8d308</publicKey>
                     </input>

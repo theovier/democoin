@@ -52,12 +52,12 @@ public final class XMLSerializer {
         xstream.aliasField("fee", Transaction.class, "transactionFee");
         xstream.aliasField("referencedOutput", TxInput.class, "prevOutputInfo");
         xstream.aliasField("txId", TxOutputPointer.class, "transactionHash");
-        xstream.aliasField("index", TxOutputPointer.class, "outputIndex");
         xstream.aliasField("address", TxOutput.class, "recipientAddress");
     }
 
     private void initAttributes() {
         xstream.useAttributeFor(Block.class, "hash");
+        xstream.useAttributeFor(Block.class, "index");
         xstream.useAttributeFor(Transaction.class, "txId");
         xstream.useAttributeFor(TxOutputPointer.class, "transactionHash");
         xstream.useAttributeFor(TxOutputPointer.class, "outputIndex");
