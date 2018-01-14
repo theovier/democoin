@@ -1,0 +1,23 @@
+<blockchain>
+    <block hash="7cd38dc3ceb2f6b292c8946c179d8e619443c10898702d1a4d005a929e61a9e3">
+        <index>0</index>
+        <timestamp>1513629500</timestamp>
+        <nonce>684848142333899113</nonce>
+        <target>000000F000000000000000000000000000000000000000000000000000000000</target>
+        <previousBlockHash>66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925</previousBlockHash>
+        <merkleRoot>9d359f05f53053aaa0618d4f0894abd364b94dcc4d18b0fd937244dc49f646bf</merkleRoot>
+        <transactions>
+            <coinbaseTX txId="9d359f05f53053aaa0618d4f0894abd364b94dcc4d18b0fd937244dc49f646bf">
+                <timestamp>1513428657</timestamp>
+                <msg>GENESIS</msg>
+                <inputs/>
+                <outputs>
+                    <output>
+                        <address>1AVuQjcnquXEaXgggJx7TsyMBjbatiBtNB</address>
+                        <value>100</value>
+                    </output>
+                </outputs>
+            </coinbaseTX>
+        </transactions>
+    </block>
+</blockchain>
