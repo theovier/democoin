@@ -99,9 +99,11 @@ public final class XMLSerializer {
         }
     }
 
-    public Object loadFromXML(final String filename) throws IOException {
+    public Object loadFromXMLFile(final File file) throws IOException {
         Reader in = new BufferedReader(new InputStreamReader(
-                        new FileInputStream(filename), "UTF-8"));
-        return xstream.fromXML(in);
+                        new FileInputStream(file), "UTF-8"));
+        Object obj = xstream.fromXML(in);
+        in.close();
+        return obj;
     }
 }

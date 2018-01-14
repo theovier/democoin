@@ -54,7 +54,8 @@ public final class Blockchain implements Serializable {
 
     public static Blockchain loadFromDisc() {
         try {
-            Blockchain loadedBlockchain = new Blockchain((Blockchain) printer.loadFromXML(Config.BLOCKCHAIN_FILE));
+            File blockchainXML = new File(Config.BLOCKCHAIN_FILE);
+            Blockchain loadedBlockchain = new Blockchain((Blockchain) printer.loadFromXMLFile(blockchainXML));
             if (loadedBlockchain.isValid()) {
                 LOG.debug(String.format("blockchain with height %d successfully loaded.", loadedBlockchain.getHeight()));
                 return loadedBlockchain;
