@@ -94,7 +94,6 @@ public final class Blockchain implements Serializable {
                             throw new IllegalStateException("validation must be broken");
                         }
                     })); //remove transaction inputs from the UTXO.
-            saveToDisc();
             return true;
         }
         return false;
