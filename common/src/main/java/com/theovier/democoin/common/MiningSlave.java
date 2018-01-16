@@ -16,13 +16,10 @@ public class MiningSlave implements Runnable {
     private final Blockchain blockchain;
     private final String coinbaseMsg;
 
-    //todo remove this. just for testing
-    private final Miner master;
 
-    public MiningSlave(final Blockchain blockchain, final Address payoutAddress, final String coinbaseMsg, final Miner master) {
+    public MiningSlave(final Blockchain blockchain, final Address payoutAddress, final String coinbaseMsg) {
         this.blockchain = blockchain;
         this.payoutAddress = payoutAddress;
-        this.master = master;
         this.coinbaseMsg = coinbaseMsg;
     }
 
@@ -36,7 +33,6 @@ public class MiningSlave implements Runnable {
             Block block = mineBlock();
             if (block != null) {
                 if (blockchain.append(block)) {
-                    master.stop(); //todo remove this. just for testing.
                     //todo broadcast
                 }
             }
