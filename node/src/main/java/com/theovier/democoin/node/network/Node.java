@@ -37,7 +37,6 @@ public class Node implements PeerObserver, BlockFoundListener {
         downloadMostRecentBlockchain();
         startListening();
         startMining();
-        LOG.info("outgoing connection count: " + connections.size());
     }
 
     public void shutdown() {
@@ -111,7 +110,6 @@ public class Node implements PeerObserver, BlockFoundListener {
                 peer.sendMessage(msg);
             } catch (IOException e) {
                 peer.disconnect();
-                connections.remove(peer);
             }
         }
     }
