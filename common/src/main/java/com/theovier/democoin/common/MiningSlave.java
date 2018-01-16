@@ -37,7 +37,6 @@ public class MiningSlave implements Runnable {
             if (block != null) {
                 if (blockchain.append(block)) {
                     master.stop(); //todo remove this. just for testing.
-                    blockchain.saveToDisc();
                     //todo broadcast
                 }
             }
