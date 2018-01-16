@@ -1,6 +1,7 @@
 package com.theovier.democoin.node;
 
 import com.theovier.democoin.common.Blockchain;
+import com.theovier.democoin.common.Miner;
 import com.theovier.democoin.node.network.Node;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 

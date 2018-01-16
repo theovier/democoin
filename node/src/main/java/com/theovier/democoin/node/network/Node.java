@@ -1,6 +1,6 @@
 package com.theovier.democoin.node.network;
 
-import com.theovier.democoin.common.Blockchain;
+import com.theovier.democoin.common.*;
 import com.theovier.democoin.node.network.discovery.DefaultDiscovery;
 import com.theovier.democoin.node.network.discovery.PeerDiscovery;
 import com.theovier.democoin.node.network.discovery.PeerDiscoveryException;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Node implements PeerObserver {
+public class Node implements PeerObserver, BlockFoundListener {
 
     private static final Logger LOG = Logger.getLogger(Node.class);
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -22,17 +22,20 @@ public class Node implements PeerObserver {
     private final NetworkListener networkListener;
     private final List<Peer> connections = new ArrayList<>(NetworkParams.MAX_CONNECTIONS);
     private final Blockchain blockchain;
+    private final Miner miner;
 
     public Node(final Blockchain blockchain) {
         this.blockchain = blockchain;
         this.peerDiscovery = new DefaultDiscovery(this, blockchain);
         this.networkListener = new NetworkListener(this, blockchain);
+        this.miner = new Miner(blockchain, ConsensusParams.GENESIS_ADDRESS);
     }
 
     public void start() throws IOException {
         connectToOtherPeers();
         downloadMostRecentBlockchain();
         startListening();
+        startMining();
         LOG.info("outgoing connection count: " + connections.size());
     }
 
@@ -74,11 +77,9 @@ public class Node implements PeerObserver {
                 LOG.info(receivedHeight);
                 if (blockchain.getHeight() < receivedHeight) {
                     Blockchain remoteBlockchain = peer.requestBlockchain();
-                    boolean substituted = blockchain.substitute(remoteBlockchain);
-                    if (substituted) {
-                        LOG.info("SUBSTITUTED");
-                        break;
-                    }
+                    blockchain.substitute(remoteBlockchain);
+                    blockchain.saveToDisc();
+                    break;
                 }
             } catch (IOException e) {
                 peer.disconnect();
@@ -96,6 +97,11 @@ public class Node implements PeerObserver {
     private void stopListening() {
         networkListener.stop();
         executor.shutdown();
+    }
+
+    private void startMining() {
+        miner.registerBlockFoundListener(this);
+        miner.start();
     }
 
     public void broadcastMessage(Message msg) {
@@ -137,6 +143,11 @@ public class Node implements PeerObserver {
         List<InetSocketAddress> knownAddresses = new ArrayList<>(connections.size());
         connections.forEach(peer -> knownAddresses.add(peer.getRemoteAddress()));
         return knownAddresses;
+    }
+
+    @Override
+    public void onBlockFound(Block block) {
+        LOG.info("found block"); //todo
     }
 }
 

@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 
-public class Miner {
+public class Miner implements BlockFinder, BlockFoundListener {
 
     private static final Logger LOG = Logger.getLogger(Miner.class);
     private static final int SLAVE_POOL_SIZE = 10;
@@ -24,6 +24,7 @@ public class Miner {
     private final Address payoutAddress;
     private final Blockchain blockchain;
     private final String coinbaseMsg;
+    private final List<BlockFoundListener> listeners = new ArrayList<>();
 
     public Miner(final Blockchain blockchain, final Address payoutAddress) {
         this.blockchain = blockchain;
@@ -65,5 +66,26 @@ public class Miner {
         } catch (InterruptedException e) {
             LOG.error(e);
         }
+    }
+
+    @Override
+    public void registerBlockFoundListener(BlockFoundListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void unregisterBlockFoundListener(BlockFoundListener listener) {
+        listeners.remove(listener);
+    }
+
+    @Override
+    public void notifyBlockFoundListeners(Block block) {
+        listeners.forEach(listener -> listener.onBlockFound(block));
+    }
+
+    @Override
+    public void onBlockFound(Block block) {
+        notifyBlockFoundListeners(block);
+        stop(); //todo testing only. remove this.
     }
 }

@@ -15,12 +15,13 @@ public class MiningSlave implements Runnable {
     private final Address payoutAddress;
     private final Blockchain blockchain;
     private final String coinbaseMsg;
+    private final BlockFoundListener minerMaster;
 
-
-    public MiningSlave(final Blockchain blockchain, final Address payoutAddress, final String coinbaseMsg) {
+    public MiningSlave(final Blockchain blockchain, final Address payoutAddress, final String coinbaseMsg, final BlockFoundListener minerMaster) {
         this.blockchain = blockchain;
         this.payoutAddress = payoutAddress;
         this.coinbaseMsg = coinbaseMsg;
+        this.minerMaster = minerMaster;
     }
 
     public void stop() {
@@ -33,7 +34,8 @@ public class MiningSlave implements Runnable {
             Block block = mineBlock();
             if (block != null) {
                 if (blockchain.append(block)) {
-                    //todo broadcast
+                    blockchain.saveToDisc();
+                    minerMaster.onBlockFound(block);
                 }
             }
         }
