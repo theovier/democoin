@@ -5,7 +5,7 @@ import com.theovier.democoin.node.network.discovery.DefaultDiscovery;
 import com.theovier.democoin.node.network.discovery.PeerDiscovery;
 import com.theovier.democoin.node.network.discovery.PeerDiscoveryException;
 import com.theovier.democoin.node.network.messages.Message;
-import com.theovier.democoin.node.network.messages.Requests.BlockFoundNotification;
+import com.theovier.democoin.node.network.messages.Notifications.BlockFoundNotification;
 import org.apache.log4j.Logger;
 
 import java.io.*;
