@@ -5,6 +5,7 @@ import com.theovier.democoin.node.network.discovery.DefaultDiscovery;
 import com.theovier.democoin.node.network.discovery.PeerDiscovery;
 import com.theovier.democoin.node.network.discovery.PeerDiscoveryException;
 import com.theovier.democoin.node.network.messages.Message;
+import com.theovier.democoin.node.network.messages.Requests.BlockFoundNotification;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -104,13 +105,13 @@ public class Node implements PeerObserver, BlockFoundListener {
         miner.start();
     }
 
-    public void broadcastMessage(Message msg) {
+    private void broadcastMessage(Message msg) {
         for (Peer peer : connections) {
             try {
                 peer.sendMessage(msg);
             } catch (IOException e) {
-                LOG.error(e);
-                //remove peer if unable to receive messages.
+                peer.disconnect();
+                connections.remove(peer);
             }
         }
     }
@@ -147,7 +148,8 @@ public class Node implements PeerObserver, BlockFoundListener {
 
     @Override
     public void onBlockFound(Block block) {
-        LOG.info("found block"); //todo
+        LOG.info("found block");
+        broadcastMessage(new BlockFoundNotification(block));
     }
 }
 
