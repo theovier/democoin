@@ -102,9 +102,17 @@ public final class Blockchain implements Serializable {
     /** called when there is a valid, longer blockchain.
      *  we change our status to represent that blockchain
      */
-    public synchronized void substitute(Blockchain other) {
+    private synchronized void copy(Blockchain other) {
         this.blockchain = other.getBlocks();
         this.UTXOPool.compute();
+    }
+
+    public boolean substitute(Blockchain other) {
+        if (getHeight() < other.getHeight() && other.isValid()) {
+            copy(other);
+            return true;
+        }
+        return false;
     }
 
     public synchronized Block getLastBlock() {
