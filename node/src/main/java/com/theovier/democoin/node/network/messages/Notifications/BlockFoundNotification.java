@@ -37,9 +37,15 @@ public final class BlockFoundNotification extends Notification {
             Blockchain other = peer.requestBlockchain();
             if (current.substitute(other)) {
                 current.saveToDisc();
+                LOG.info("substituted blockchain");
             }
         } catch (IOException | InterruptedException e) {
             LOG.error(e);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "BlockFoundNotification";
     }
 }
