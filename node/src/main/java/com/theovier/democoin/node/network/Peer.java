@@ -58,8 +58,7 @@ public class Peer implements Runnable {
         }
     }
 
-    //todo rename
-    public void receivedResponse(Response response) {
+    public void onResponseReceived(Response response) {
         synchronized (pendingRequests) {
             for (FutureResponse sentRequests : pendingRequests) {
                 if (sentRequests.requestID().equals(response.getRequestID())) {

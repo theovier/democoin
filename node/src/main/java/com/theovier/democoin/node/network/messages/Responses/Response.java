@@ -3,7 +3,6 @@ package com.theovier.democoin.node.network.messages.Responses;
 import com.theovier.democoin.node.network.Peer;
 import com.theovier.democoin.node.network.messages.Message;
 
-import java.io.IOException;
 import java.util.UUID;
 
 public abstract class Response extends Message {
@@ -17,7 +16,7 @@ public abstract class Response extends Message {
 
     @Override
     public void handle(Peer receiver) {
-        receiver.receivedResponse(this);
+        receiver.onResponseReceived(this);
     }
 
     public UUID getRequestID() {
