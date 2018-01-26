@@ -79,7 +79,6 @@ public class Peer implements Runnable {
         return connection.getRemoteAddress();
     }
 
-    //known addresses from the node which controls this peer. ugly.
     public List<InetSocketAddress> getKnownAddressesFromNode() {
         return observer.getConnectedAddresses();
     }
