@@ -87,6 +87,10 @@ public class Peer implements Runnable {
         return blockchain;
     }
 
+    public void broadcast(final Message message) {
+        observer.broadcast(message, this);
+    }
+
     public Pong requestPong() throws IOException, InterruptedException  {
         Request ping = new Ping();
         FutureResponse futureResponse = new FutureResponse(ping);
@@ -121,7 +125,6 @@ public class Peer implements Runnable {
         BlockchainResponse response = (BlockchainResponse) futureResponse.get();
         return response.getBlockchain();
     }
-
 
     @Override
     public String toString() {
