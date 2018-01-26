@@ -26,9 +26,9 @@ public final class BlockFoundNotification extends Notification {
         if (index > currentIndex + 1) {
             downloadLongerBlockchain(receiver, blockchain);
         } else if (blockchain.append(foundBlock)) {
+            //accepting the block
             blockchain.saveToDisc();
             receiver.broadcast(this);
-            LOG.info("received valid block... appended...");
         }
     }
 

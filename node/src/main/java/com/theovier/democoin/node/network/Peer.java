@@ -19,6 +19,7 @@ public class Peer implements Runnable {
     private static final Logger LOG = Logger.getLogger(Peer.class);
     private boolean isRunning;
     private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private ExecutorService messageHandler = Executors.newCachedThreadPool();
     private final NetworkConnection connection;
     private final PeerObserver observer;
     private final Blockchain blockchain;
@@ -50,7 +51,7 @@ public class Peer implements Runnable {
             while (isRunning) {
                 Message msg = connection.readMessage();
                 LOG.debug(String.format("received msg <%s> by peer %s", msg, toString()));
-                msg.handle(this);
+                messageHandler.execute(new MessageDispatcher(msg, this));
             }
         } catch (IOException e) {
             LOG.debug(e);
