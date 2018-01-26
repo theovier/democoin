@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 
-public class MessageDispatcher implements Runnable {
+public final class MessageDispatcher implements Runnable {
 
     private static final Logger LOG = Logger.getLogger(MessageDispatcher.class);
     private final Message message;
