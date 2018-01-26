@@ -104,7 +104,7 @@ public class Node implements PeerObserver, BlockFoundListener {
         miner.start();
     }
 
-    private void broadcastMessage(Message msg) {
+    private void broadcast(Message msg) {
         for (Peer peer : connections) {
             try {
                 peer.sendMessage(msg);
@@ -145,9 +145,23 @@ public class Node implements PeerObserver, BlockFoundListener {
     }
 
     @Override
+    public void broadcast(Message msg, Peer sender) {
+        for (Peer peer : connections) {
+            if (peer.equals(sender)) {
+                continue;
+            }
+            try {
+                peer.sendMessage(msg);
+            } catch (IOException e) {
+                peer.disconnect();
+            }
+        }
+    }
+
+    @Override
     public void onBlockFound(Block block) {
         LOG.info("found block");
-        broadcastMessage(new BlockFoundNotification(block));
+        broadcast(new BlockFoundNotification(block));
     }
 }
 
