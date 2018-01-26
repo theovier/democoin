@@ -46,7 +46,9 @@ public class Node implements PeerObserver, BlockFoundListener {
 
     private void connectToOtherPeers() {
         connectToDefaultPeers();
-        discoverAndConnectToNewPeers();
+        if (!connections.isEmpty()) {
+            discoverAndConnectToNewPeers();
+        }
     }
 
     private void connectToDefaultPeers() {
@@ -54,7 +56,6 @@ public class Node implements PeerObserver, BlockFoundListener {
             LOG.info("trying to connect to default peers...");
             peerDiscovery.connectToDefaultPeers(NetworkParams.MAX_OUT_CONNECTIONS);
         } catch (PeerDiscoveryException e) {
-            //pass
             LOG.warn("could not connect to any known host. seems we are the first one.");
         }
     }
