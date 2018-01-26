@@ -75,7 +75,6 @@ public class Node implements PeerObserver, BlockFoundListener {
         for (Peer peer : connections) {
             try {
                 long receivedHeight = peer.requestBlockchainHeight();
-                LOG.info(receivedHeight);
                 if (blockchain.getHeight() < receivedHeight) {
                     Blockchain remoteBlockchain = peer.requestBlockchain();
                     blockchain.substitute(remoteBlockchain);
