@@ -41,7 +41,7 @@ public final class Blockchain implements Serializable {
         try {
             if (isValid()) {
                 printer.saveAsXML(this, Config.BLOCKCHAIN_FILE);
-                LOG.info(String.format("saved blockchain, height: %d", getHeight()));
+                LOG.debug(String.format("saved blockchain, height: %d", getHeight()));
             } else {
                 throw new IllegalStateException("blockchain is not valid and therefore can't be saved");
             }
