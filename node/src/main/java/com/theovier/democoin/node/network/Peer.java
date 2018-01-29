@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class Peer implements Runnable {
 
@@ -115,6 +117,21 @@ public class Peer implements Runnable {
         sendMessage(heightRequest);
         BlockchainHeightResponse response = (BlockchainHeightResponse) futureResponse.get();
         return response.getHeight();
+    }
+
+    public long requestBlockchainHeight(long timeout, TimeUnit unit) {
+        Request heightRequest = new BlockchainHeightRequest();
+        FutureResponse futureResponse = new FutureResponse(heightRequest);
+        pendingRequests.add(futureResponse);
+        try {
+            sendMessage(heightRequest);
+            BlockchainHeightResponse response = (BlockchainHeightResponse) futureResponse.get(timeout, unit);
+            return response.getHeight();
+        } catch (IOException | InterruptedException | TimeoutException e) {
+            LOG.error(e);
+            pendingRequests.remove(futureResponse);
+            return 0;
+        }
     }
 
     public Blockchain requestBlockchain() throws IOException, InterruptedException {
