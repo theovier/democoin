@@ -142,6 +142,21 @@ public class Peer implements Runnable {
         BlockchainResponse response = (BlockchainResponse) futureResponse.get();
         return response.getBlockchain();
     }
+    
+    public Blockchain requestBlockchain(long timeout, TimeUnit unit) {
+        Request request = new BlockchainRequest();
+        FutureResponse futureResponse = new FutureResponse(request);
+        pendingRequests.add(futureResponse);
+        try {
+            sendMessage(request);
+            BlockchainResponse response = (BlockchainResponse) futureResponse.get(timeout, unit);
+            return response.getBlockchain();
+        } catch (IOException | InterruptedException | TimeoutException e) {
+            LOG.error(e);
+            pendingRequests.remove(futureResponse);
+            return new Blockchain();
+        }
+    }
 
     @Override
     public String toString() {

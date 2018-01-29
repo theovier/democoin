@@ -13,6 +13,7 @@ import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Node implements PeerObserver, BlockFoundListener {
 
@@ -71,7 +72,7 @@ public class Node implements PeerObserver, BlockFoundListener {
     }
 
     private void downloadMostRecentBlockchain() {
-        InitialBlockchainDownloader.downloadLongestBlockchain(blockchain, connections);
+        InitialBlockchainDownloader.downloadLongestBlockchain(blockchain, connections, 10, TimeUnit.SECONDS);
     }
 
     private void startListening() throws IOException {
