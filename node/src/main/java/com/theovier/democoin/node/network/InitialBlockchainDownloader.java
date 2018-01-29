@@ -17,13 +17,13 @@ public final class InitialBlockchainDownloader {
 
     /**
      * This DOES modify the blockchain, if a longer blockchain is obtained.
-     * 1) ask all peers for their blockchain height
-     * 2) sort peers by height
+     * 1) ask all peersToDownloadFrom for their blockchain height
+     * 2) sort peersToDownloadFrom by height
      * 3) ask the one with the greatest height for its chain
-     * 4) iterate over the peers until we receive a valid chain
+     * 4) iterate over the peersToDownloadFrom until we receive a valid chain
      */
-    public static void downloadMostRecentBlockchain(final Blockchain currentBlockchain, final List<Peer> peers) {
-        Map<Peer, Long> sortedPeers = getPeersSortedByHeightDesc(currentBlockchain, peers);
+    public static void downloadLongestBlockchain(final Blockchain currentBlockchain, final List<Peer> peersToDownloadFrom) {
+        Map<Peer, Long> sortedPeers = getPeersSortedByHeightDesc(currentBlockchain, peersToDownloadFrom);
         for (Peer peer : sortedPeers.keySet()) {
             try {
                 Blockchain remoteBlockchain = peer.requestBlockchain();
