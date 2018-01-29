@@ -147,7 +147,7 @@ public class Node implements PeerObserver, BlockFoundListener {
 
     @Override
     public void onBlockFound(Block block) {
-        LOG.info("found block");
+        LOG.info("found block #" + block.getIndex());
         broadcast(new BlockFoundNotification(block));
     }
 }
