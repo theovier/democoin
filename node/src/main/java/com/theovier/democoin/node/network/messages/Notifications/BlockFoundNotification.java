@@ -25,8 +25,8 @@ public final class BlockFoundNotification extends Notification {
         long currentIndex = blockchain.getHeight() - 1;
         if (index > currentIndex + 1) {
             downloadLongerBlockchain(receiver, blockchain);
+            receiver.broadcast(this);
         } else if (blockchain.append(foundBlock)) {
-            //accepting the block
             blockchain.saveToDisc();
             receiver.broadcast(this);
         }
@@ -37,7 +37,6 @@ public final class BlockFoundNotification extends Notification {
             Blockchain other = peer.requestBlockchain();
             if (current.substitute(other)) {
                 current.saveToDisc();
-                LOG.info("substituted blockchain");
             }
         } catch (IOException | InterruptedException e) {
             LOG.error(e);
