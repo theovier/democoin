@@ -73,6 +73,7 @@ public class Node implements PeerObserver, BlockFoundListener {
 
     private void downloadMostRecentBlockchain() {
         InitialBlockchainDownloader.downloadLongestBlockchain(blockchain, connections, 10, TimeUnit.SECONDS);
+        broadcast(new BlockFoundNotification(blockchain.getLastBlock())); //try to spread the longest blockchains
     }
 
     private void startListening() throws IOException {
