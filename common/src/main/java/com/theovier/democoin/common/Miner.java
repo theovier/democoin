@@ -86,6 +86,6 @@ public class Miner implements BlockFinder, BlockFoundListener {
     @Override
     public void onBlockFound(Block block) {
         notifyBlockFoundListeners(block);
-        stop(); //todo testing only. remove this.
+        stop();
     }
 }
