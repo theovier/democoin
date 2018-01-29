@@ -10,8 +10,7 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -72,21 +71,7 @@ public class Node implements PeerObserver, BlockFoundListener {
     }
 
     private void downloadMostRecentBlockchain() {
-        for (Peer peer : connections) {
-            try {
-                long receivedHeight = peer.requestBlockchainHeight();
-                if (blockchain.getHeight() < receivedHeight) {
-                    Blockchain remoteBlockchain = peer.requestBlockchain();
-                    blockchain.substitute(remoteBlockchain);
-                    blockchain.saveToDisc();
-                    break;
-                }
-            } catch (IOException e) {
-                peer.disconnect();
-            } catch (InterruptedException e) {
-                LOG.error(e);
-            }
-        }
+        InitialBlockchainDownloader.downloadMostRecentBlockchain(blockchain, connections);
     }
 
     private void startListening() throws IOException {
