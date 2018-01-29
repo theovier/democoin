@@ -56,12 +56,12 @@ public class Block implements Serializable {
     //GenesisBlock, always the same.
     private Block() {
         this.index = 0;
-        this.timestamp = 1513629500; //Instant.now().getEpochSecond();
+        this.timestamp = 1517222262;
         this.previousBlockHash = Sha256Hash.ZERO_HASH;
-        this.nonce =  684848142333899113L;
+        this.nonce =  5618052822434636751L;
         this.powTarget = ConsensusParams.MIN_DIFFICULTY;
         CoinbaseTransaction coinbaseTx = new CoinbaseTransaction(ConsensusParams.GENESIS_ADDRESS, ConsensusParams.COINBASE_REWARD, "GENESIS");
-        coinbaseTx.setTimestamp(1513428657);
+        coinbaseTx.setTimestamp(timestamp);
         this.transactions.add(coinbaseTx);
         this.merkleRoot = computeMerkleRoot();
         this.hash = computeHash();
@@ -78,9 +78,14 @@ public class Block implements Serializable {
         return Sha256Hash.create(blockContent.toString());
     }
 
-    //todo if only 1 element hash with duplicate -> atm. genesis block merkle root = tx hash.
     public final Sha256Hash computeMerkleRoot() {
-        Queue<Sha256Hash> hashQueue = new LinkedList<>(transactions.stream().map(Transaction::getTxId).collect(Collectors.toList()));
+        LinkedList<Sha256Hash> hashQueue = transactions.stream().
+                map(Transaction::getTxId).
+                collect(Collectors.toCollection(LinkedList::new));
+        boolean isOddNumbered = (hashQueue.size() & 1) != 0;
+        if (isOddNumbered) {
+            hashQueue.add(hashQueue.getLast());
+        }
         while (hashQueue.size() > 1) {
             String hashableData = hashQueue.poll().toString() + hashQueue.poll().toString();
             hashQueue.add(Sha256Hash.create(hashableData));
