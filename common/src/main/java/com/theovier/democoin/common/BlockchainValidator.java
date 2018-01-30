@@ -9,12 +9,21 @@ import java.util.List;
  */
 public class BlockchainValidator implements Validator<Blockchain> {
 
-    private transient static final Logger LOG = Logger.getLogger(BlockchainValidator.class);
+    private static final Logger LOG = Logger.getLogger(BlockchainValidator.class);
 
-    //todo check if genesis block is valid. Request BlockValidator as constructor param.
     public boolean isValid(final Blockchain blockchain) {
         Blockchain stepByStepCopy = new Blockchain();
         List<Block> blocks = blockchain.getBlocks();
+
+        if (blocks.isEmpty()) {
+            LOG.debug("invalid blockchain. no blocks found.");
+            return false;
+        }
+
+        if (!blocks.get(0).equals(Block.generateGenesisBlock())) {
+            LOG.debug("invalid genesis block.");
+            return false;
+        }
 
         for (int i = 1; i < blocks.size(); i++) {
             Block block = blocks.get(i);
