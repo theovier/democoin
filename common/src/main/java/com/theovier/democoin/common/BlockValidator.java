@@ -21,40 +21,40 @@ public class BlockValidator implements Validator<Block> {
     public boolean isValid(final Block candidate) {
         Block prevBlock = blockchain.getLastBlock();
         if (!hasValidProofOfWork(candidate, blockchain)) {
-            LOG.warn("pow missing " + candidate);
+            LOG.debug("pow missing " + candidate);
             return false;
         }
         if (!hasValidIndex(candidate, prevBlock)) {
-            LOG.warn("invalid block index " + candidate);
+            LOG.debug("invalid block index " + candidate);
             return false;
         }
         if (!hasValidHashChain(candidate, prevBlock)) {
-            LOG.warn("not referring to the previous block " + candidate);
+            LOG.debug("not referring to the previous block " + candidate);
             return false;
         }
         if (!hasValidMerkleRoot(candidate)) {
-            LOG.warn("invalid merkle root " + candidate);
+            LOG.debug("invalid merkle root " + candidate);
             return false;
         }
         if (!hasValidBlockHash(candidate)) {
-            LOG.warn("invalid blockhash " + candidate);
+            LOG.debug("invalid blockhash " + candidate);
             return false;
         }
         if (!hasValidTransactionCount(candidate)) {
-            LOG.warn("there are too many transactions in this block " + candidate);
+            LOG.debug("there are too many transactions in this block " + candidate);
            return false;
         }
         if (!hasOnlyValidTransactions(candidate)) {
-            LOG.warn("invalid transaction(s) " + candidate);
+            LOG.debug("invalid transaction(s) " + candidate);
             return false;
         }
         if (!hasCoinbaseTx(candidate)) {
-            LOG.warn("there is not exactly 1 coinbase transaction " + candidate);
+            LOG.debug("there is not exactly 1 coinbase transaction " + candidate);
             return false;
         }
         //has to be called after regular transaction validations, because these set the correct output reference.
         if (!hasValidCoinbaseTx(candidate)) {
-            LOG.warn("coinbase output value is not calculated honestly. " + candidate);
+            LOG.debug("coinbase output value is not calculated honestly. " + candidate);
             return false;
         }
         return true;
