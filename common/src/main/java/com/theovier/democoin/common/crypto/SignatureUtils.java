@@ -51,14 +51,6 @@ public class SignatureUtils {
         return new KeyPair(publicKey, privateKey);
     }
 
-    public static byte[] sign(byte[] data, byte[] pkcs8key) throws GeneralSecurityException {
-        PrivateKey privateKey = getPrivateKey(pkcs8key);
-        Signature ecdsaSign = Signature.getInstance("SHA256withECDSA", "BC");
-        ecdsaSign.initSign(privateKey);
-        ecdsaSign.update(data);
-        return ecdsaSign.sign();
-    }
-
     public static byte[] sign(byte[] data, PrivateKey privateKey) throws GeneralSecurityException {
         Signature ecdsaSign = Signature.getInstance("SHA256withECDSA", "BC");
         ecdsaSign.initSign(privateKey);
@@ -66,29 +58,17 @@ public class SignatureUtils {
         return ecdsaSign.sign();
     }
 
+    public static byte[] sign(byte[] data, byte[] pkcs8key) throws GeneralSecurityException {
+        PrivateKey privateKey = getPrivateKey(pkcs8key);
+        return sign(data, privateKey);
+    }
+
     public static String signHex(byte[] data, PrivateKey privateKey) throws GeneralSecurityException {
-        Signature ecdsaSign = Signature.getInstance("SHA256withECDSA", "BC");
-        ecdsaSign.initSign(privateKey);
-        ecdsaSign.update(data);
-        byte[] signature = ecdsaSign.sign();
-        return Hex.toHexString(signature);
+        return Hex.toHexString(sign(data, privateKey));
     }
 
     public static String signHex(Sha256Hash hash, PrivateKey privateKey) throws GeneralSecurityException {
-        Signature ecdsaSign = Signature.getInstance("SHA256withECDSA", "BC");
-        byte[] hashBytes = hash.getBytes();
-        ecdsaSign.initSign(privateKey);
-        ecdsaSign.update(hashBytes);
-        byte[] signature = ecdsaSign.sign();
-        return Hex.toHexString(signature);
-    }
-
-    public static boolean verify(byte[] signedData, byte[] x509key, byte[] unsignedData) throws GeneralSecurityException {
-        PublicKey publicKey = getPublicKey(x509key);
-        Signature ecdsaVerify = Signature.getInstance("SHA256withECDSA", "BC");
-        ecdsaVerify.initVerify(publicKey);
-        ecdsaVerify.update(unsignedData);
-        return ecdsaVerify.verify(signedData);
+        return signHex(hash.getBytes(), privateKey);
     }
 
     public static boolean verify(byte[] signedData, PublicKey publicKey, byte[] unsignedData) throws GeneralSecurityException {
@@ -98,22 +78,24 @@ public class SignatureUtils {
         return ecdsaVerify.verify(signedData);
     }
 
-    public static boolean verify(String signedDataHex, PublicKey publicKey, Sha256Hash unsignedDataHash) throws GeneralSecurityException {
-        Signature ecdsaVerify = Signature.getInstance("SHA256withECDSA", "BC");
-        byte[] signedData = Hex.decode(signedDataHex);
-        byte[] unsignedData = unsignedDataHash.getBytes();
-        ecdsaVerify.initVerify(publicKey);
-        ecdsaVerify.update(unsignedData);
-        return ecdsaVerify.verify(signedData);
+    public static boolean verify(byte[] signedData, byte[] x509key, byte[] unsignedData) throws GeneralSecurityException {
+        PublicKey publicKey = getPublicKey(x509key);
+        return verify(signedData, publicKey, unsignedData);
     }
 
-    private static PrivateKey getPrivateKey(byte[] pkcs8key) throws GeneralSecurityException {
+    public static boolean verify(String signedDataHex, PublicKey publicKey, Sha256Hash unsignedDataHash) throws GeneralSecurityException {
+        byte[] signedData = Hex.decode(signedDataHex);
+        byte[] unsignedData = unsignedDataHash.getBytes();
+        return verify(signedData, publicKey, unsignedData);
+    }
+
+    public static PrivateKey getPrivateKey(byte[] pkcs8key) throws GeneralSecurityException {
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(pkcs8key);
         KeyFactory keyFactory = KeyFactory.getInstance("ECDSA", "BC");
         return keyFactory.generatePrivate(spec);
     }
 
-    private static PublicKey getPublicKey(byte[] x509key) throws GeneralSecurityException {
+    public static PublicKey getPublicKey(byte[] x509key) throws GeneralSecurityException {
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(x509key);
         KeyFactory keyFactory = KeyFactory.getInstance("ECDSA");
         return keyFactory.generatePublic(keySpec);
