@@ -1,15 +1,24 @@
 package com.theovier.democoin.common.crypto;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
+import org.bouncycastle.asn1.eac.ECDSAPublicKey;
+import org.bouncycastle.crypto.KeyGenerationParameters;
+import org.bouncycastle.crypto.generators.ECKeyPairGenerator;
+import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECParameterSpec;
+import org.bouncycastle.jce.spec.ECPublicKeySpec;
+import org.bouncycastle.math.ec.ECPoint;
+import org.bouncycastle.math.ec.FixedPointCombMultiplier;
 import org.bouncycastle.util.encoders.Hex;
 
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.*;
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.ECPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
@@ -22,6 +31,18 @@ public class SignatureUtils {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("ECDSA", "BC");
         keyGen.initialize(ecSpec, new SecureRandom());
         return keyGen.generateKeyPair();
+    }
+
+    public static KeyPair getKeyPairFromPrivateKey(ECPrivateKey privateKey) throws GeneralSecurityException {
+        PublicKey publicKey = getPublicKeyFromPrivateKey(privateKey);
+        return new KeyPair(publicKey, privateKey);
+    }
+
+    public static PublicKey getPublicKeyFromPrivateKey(ECPrivateKey privateKey) throws GeneralSecurityException {
+        ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec("secp256r1");
+        ECPoint Q = ecSpec.getG().multiply(privateKey.getS());
+        return KeyFactory.getInstance("ECDSA", "BC").
+                generatePublic(new ECPublicKeySpec(Q, ecSpec));
     }
 
     public static KeyPair getKeyPair(byte[] x509pubKey, byte[] pkcs8privKey) throws GeneralSecurityException {
@@ -161,26 +182,4 @@ public class SignatureUtils {
         LOG.info(verify(signedData, publicFromHex, unsignedData));
     }
 
-    public static void main(String[] args) throws Exception {
-        Security.addProvider(new BouncyCastleProvider());
-        byte[] privateKeyBytes = Files.readAllBytes(Paths.get("key.priv"));
-        byte[] publicKeyBytes = Files.readAllBytes(Paths.get("key.pub"));
-
-        KeyPair kp = getKeyPair(publicKeyBytes, privateKeyBytes);
-
-        Sha256Hash s = Sha256Hash.create("hi");
-
-
-        byte[] unsignedData = "SIGN ME".getBytes("UTF-8");
-        byte[] signedData = sign(unsignedData, privateKeyBytes);
-        LOG.info("signed data: " + Hex.toHexString(signedData));
-
-        String x = signHex(s, kp.getPrivate());
-
-
-        LOG.info(verify(signedData, kp.getPublic(), unsignedData));
-        LOG.info(verify(x, kp.getPublic(), s));
-
-
-    }
 }
