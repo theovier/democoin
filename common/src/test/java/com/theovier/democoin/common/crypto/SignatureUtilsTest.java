@@ -54,12 +54,21 @@ class SignatureUtilsTest {
     }
 
     @Test
-    void getPublicKeyOrNull() throws GeneralSecurityException {
+    void getPublicKeyFromHex() throws GeneralSecurityException {
         KeyPair pair = generateKeyPair();
         PublicKey publicKey = pair.getPublic();
         String publicKeyHex = Hex.toHexString(publicKey.getEncoded());
         PublicKey copy = SignatureUtils.getPublicKey(publicKeyHex);
         assertEquals(publicKey, copy);
+    }
+
+    @Test
+    void getPrivateKeyFromHex() throws GeneralSecurityException {
+        KeyPair pair = generateKeyPair();
+        PrivateKey privateKey = pair.getPrivate();
+        String privateKeyHex = Hex.toHexString(privateKey.getEncoded());
+        PrivateKey copy = SignatureUtils.getPrivateKey(privateKeyHex);
+        assertEquals(privateKey, copy);
     }
 
     @Test

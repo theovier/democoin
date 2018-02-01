@@ -83,6 +83,11 @@ public class SignatureUtils {
         return keyFactory.generatePrivate(spec);
     }
 
+    public static PrivateKey getPrivateKey(String hex) throws GeneralSecurityException {
+        byte[] pkcs8key = Hex.decode(hex);
+        return getPrivateKey(pkcs8key);
+    }
+
     public static PublicKey getPublicKey(byte[] x509key) throws GeneralSecurityException {
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(x509key);
         KeyFactory keyFactory = KeyFactory.getInstance("ECDSA");
