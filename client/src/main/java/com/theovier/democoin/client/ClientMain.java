@@ -9,6 +9,8 @@ import com.theovier.democoin.common.transaction.TxOutput;
 import org.apache.commons.cli.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.Security;
 import java.util.*;
@@ -121,7 +123,15 @@ public class ClientMain {
         int outputIndex = parseAsInteger(args.get(1));
         String privateKey = args.get(2);
         TxInput input = new TxInput(new Sha256Hash(txId), outputIndex);
-        return new InputKeyHelper(input, privateKey);
+        try {
+            return new InputKeyHelper(input, privateKey);
+        } catch (IOException e) {
+            LOG.error(e);
+            throw new ParseException("could not read the privateKeyFile");
+        } catch (GeneralSecurityException e) {
+            LOG.error(e);
+            throw new ParseException("file does not contain  not a valid ecdsa key");
+        }
     }
 
     private static List<TxOutput> createOutputs(String[] outputArgs) throws ParseException {
