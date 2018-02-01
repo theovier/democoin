@@ -58,7 +58,7 @@ class SignatureUtilsTest {
         KeyPair pair = generateKeyPair();
         PublicKey publicKey = pair.getPublic();
         String publicKeyHex = Hex.toHexString(publicKey.getEncoded());
-        PublicKey copy = SignatureUtils.getPublicKeyOrNull(publicKeyHex);
+        PublicKey copy = SignatureUtils.getPublicKey(publicKeyHex);
         assertEquals(publicKey, copy);
     }
 

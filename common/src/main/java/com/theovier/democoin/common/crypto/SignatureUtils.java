@@ -89,13 +89,9 @@ public class SignatureUtils {
         return keyFactory.generatePublic(keySpec);
     }
 
-    public static PublicKey getPublicKeyOrNull(String hex) {
-        try {
-            byte[] x509key = Hex.decode(hex);
-            return getPublicKey(x509key);
-        } catch (GeneralSecurityException e) {
-            return null;
-        }
+    public static PublicKey getPublicKey(String hex) throws GeneralSecurityException {
+        byte[] x509key = Hex.decode(hex);
+        return getPublicKey(x509key);
     }
 
 }

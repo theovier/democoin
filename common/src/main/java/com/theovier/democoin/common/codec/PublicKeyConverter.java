@@ -5,6 +5,7 @@ import com.thoughtworks.xstream.converters.SingleValueConverter;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.bouncycastle.util.encoders.Hex;
 
+import java.security.GeneralSecurityException;
 import java.security.PublicKey;
 
 
@@ -18,7 +19,11 @@ public class PublicKeyConverter implements SingleValueConverter {
 
     @Override
     public Object fromString(String hex) {
-        return SignatureUtils.getPublicKeyOrNull(hex);
+        try {
+            return SignatureUtils.getPublicKey(hex);
+        } catch (GeneralSecurityException e) {
+            return null;
+        }
     }
 
     @Override
