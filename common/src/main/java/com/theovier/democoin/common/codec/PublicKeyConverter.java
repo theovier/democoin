@@ -1,6 +1,6 @@
 package com.theovier.democoin.common.codec;
 
-import com.theovier.democoin.common.crypto.SignatureUtils;
+import com.theovier.democoin.common.crypto.KeyGenerator;
 import com.thoughtworks.xstream.converters.SingleValueConverter;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.bouncycastle.util.encoders.Hex;
@@ -20,7 +20,7 @@ public class PublicKeyConverter implements SingleValueConverter {
     @Override
     public Object fromString(String hex) {
         try {
-            return SignatureUtils.getPublicKey(hex);
+            return KeyGenerator.getPublicKey(hex);
         } catch (GeneralSecurityException e) {
             return null;
         }
