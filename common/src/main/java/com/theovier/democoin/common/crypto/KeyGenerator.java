@@ -2,10 +2,12 @@ package com.theovier.democoin.common.crypto;
 
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.spec.ECParameterSpec;
+import org.bouncycastle.jce.spec.ECPrivateKeySpec;
 import org.bouncycastle.jce.spec.ECPublicKeySpec;
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.util.encoders.Hex;
 
+import java.math.BigInteger;
 import java.security.*;
 import java.security.interfaces.ECPrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -20,9 +22,20 @@ public class KeyGenerator {
         return keyGen.generateKeyPair();
     }
 
-    public static KeyPair getKeyPairFromPrivateKey(String privateKeyHex) throws GeneralSecurityException {
-        ECPrivateKey privateKey = (ECPrivateKey) getPrivateKey(privateKeyHex);
-        return getKeyPairFromPrivateKey(privateKey);
+    public static KeyPair getKeyPairFromPrivateKeyHex(String privateKeyHex) throws GeneralSecurityException {
+        BigInteger d = new BigInteger(privateKeyHex, 16);
+        return getKeyPairFromPrivateNumber(d);
+    }
+
+    public static KeyPair getKeyPairFromPrivateNumber(BigInteger d) throws GeneralSecurityException {
+        PrivateKey privateKey = getPrivateKeyFromPrivateNumber(d);
+        return getKeyPairFromPrivateKey((ECPrivateKey) privateKey);
+    }
+
+    public static PrivateKey getPrivateKeyFromPrivateNumber(BigInteger d) throws GeneralSecurityException {
+        ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec("secp256r1");
+        return KeyFactory.getInstance("ECDSA", "BC").
+                generatePrivate(new ECPrivateKeySpec(d, ecSpec));
     }
 
     public static KeyPair getKeyPairFromPrivateKey(ECPrivateKey privateKey) throws GeneralSecurityException {
@@ -35,23 +48,6 @@ public class KeyGenerator {
         ECPoint Q = ecSpec.getG().multiply(privateKey.getS());
         return KeyFactory.getInstance("ECDSA", "BC").
                 generatePublic(new ECPublicKeySpec(Q, ecSpec));
-    }
-
-    public static KeyPair getKeyPair(byte[] x509pubKey, byte[] pkcs8privKey) throws GeneralSecurityException {
-        PublicKey publicKey = getPublicKey(x509pubKey);
-        PrivateKey privateKey = getPrivateKey(pkcs8privKey);
-        return new KeyPair(publicKey, privateKey);
-    }
-
-    public static PrivateKey getPrivateKey(byte[] pkcs8key) throws GeneralSecurityException {
-        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(pkcs8key);
-        KeyFactory keyFactory = KeyFactory.getInstance("ECDSA", "BC");
-        return keyFactory.generatePrivate(spec);
-    }
-
-    public static PrivateKey getPrivateKey(String hex) throws GeneralSecurityException {
-        byte[] pkcs8key = Hex.decode(hex);
-        return getPrivateKey(pkcs8key);
     }
 
     public static PublicKey getPublicKey(byte[] x509key) throws GeneralSecurityException {

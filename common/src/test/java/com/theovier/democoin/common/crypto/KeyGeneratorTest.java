@@ -19,11 +19,13 @@ class KeyGeneratorTest {
     }
 
     @Test
-    void getPublicKeyFromPrivateKey() throws GeneralSecurityException {
+    void getKeyPairFromPrivateKeyHex() throws GeneralSecurityException {
         KeyPair pair = generateKeyPair();
-        PublicKey publicKey = pair.getPublic();
-        PublicKey copy = KeyGenerator.getPublicKeyFromPrivateKey((ECPrivateKey)pair.getPrivate());
-        assertEquals(publicKey, copy);
+        ECPrivateKey privateKey = (ECPrivateKey) pair.getPrivate();
+        String privateHex = Hex.toHexString(privateKey.getS().toByteArray());
+        KeyPair copyPair = KeyGenerator.getKeyPairFromPrivateKeyHex(privateHex);
+        assertEquals(pair.getPublic(), copyPair.getPublic());
+        assertEquals(pair.getPrivate(), copyPair.getPrivate());
     }
 
     @Test
@@ -35,47 +37,18 @@ class KeyGeneratorTest {
     }
 
     @Test
-    void getKeyPairFromPrivateKeyHex() throws GeneralSecurityException {
-        KeyPair pair = generateKeyPair();
-        String privateKeyHex = Hex.toHexString(pair.getPrivate().getEncoded());
-        KeyPair copy = KeyGenerator.getKeyPairFromPrivateKey(privateKeyHex);
-        assertEquals(pair.getPublic(), copy.getPublic());
-        assertEquals(pair.getPrivate(), copy.getPrivate());
-    }
-
-    @Test
-    void getPublicKey() throws GeneralSecurityException {
+    void getPublicKeyFromPrivateKey() throws GeneralSecurityException {
         KeyPair pair = generateKeyPair();
         PublicKey publicKey = pair.getPublic();
-        byte[] x509key = publicKey.getEncoded();
-        PublicKey copy = KeyGenerator.getPublicKey(x509key);
+        PublicKey copy = KeyGenerator.getPublicKeyFromPrivateKey((ECPrivateKey)pair.getPrivate());
         assertEquals(publicKey, copy);
-    }
-
-    @Test
-    void getPrivateKey() throws GeneralSecurityException {
-        KeyPair pair = generateKeyPair();
-        PrivateKey privateKey = pair.getPrivate();
-        byte[] pkcs8key = privateKey.getEncoded();
-        PrivateKey copy = KeyGenerator.getPrivateKey(pkcs8key);
-        assertEquals(privateKey, copy);
     }
 
     @Test
     void getPublicKeyFromHex() throws GeneralSecurityException {
         KeyPair pair = generateKeyPair();
-        PublicKey publicKey = pair.getPublic();
-        String publicKeyHex = Hex.toHexString(publicKey.getEncoded());
-        PublicKey copy = KeyGenerator.getPublicKey(publicKeyHex);
-        assertEquals(publicKey, copy);
-    }
-
-    @Test
-    void getPrivateKeyFromHex() throws GeneralSecurityException {
-        KeyPair pair = generateKeyPair();
-        PrivateKey privateKey = pair.getPrivate();
-        String privateKeyHex = Hex.toHexString(privateKey.getEncoded());
-        PrivateKey copy = KeyGenerator.getPrivateKey(privateKeyHex);
-        assertEquals(privateKey, copy);
+        String publicHex = Hex.toHexString(pair.getPublic().getEncoded());
+        PublicKey copy = KeyGenerator.getPublicKey(publicHex);
+        assertEquals(pair.getPublic(), copy);
     }
 }
