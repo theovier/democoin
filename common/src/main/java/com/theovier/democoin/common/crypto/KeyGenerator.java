@@ -20,6 +20,11 @@ public class KeyGenerator {
         return keyGen.generateKeyPair();
     }
 
+    public static KeyPair getKeyPairFromPrivateKey(String privateKeyHex) throws GeneralSecurityException {
+        ECPrivateKey privateKey = (ECPrivateKey) getPrivateKey(privateKeyHex);
+        return getKeyPairFromPrivateKey(privateKey);
+    }
+
     public static KeyPair getKeyPairFromPrivateKey(ECPrivateKey privateKey) throws GeneralSecurityException {
         PublicKey publicKey = getPublicKeyFromPrivateKey(privateKey);
         return new KeyPair(publicKey, privateKey);

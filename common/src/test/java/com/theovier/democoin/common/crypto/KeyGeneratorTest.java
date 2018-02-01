@@ -35,6 +35,15 @@ class KeyGeneratorTest {
     }
 
     @Test
+    void getKeyPairFromPrivateKeyHex() throws GeneralSecurityException {
+        KeyPair pair = generateKeyPair();
+        String privateKeyHex = Hex.toHexString(pair.getPrivate().getEncoded());
+        KeyPair copy = KeyGenerator.getKeyPairFromPrivateKey(privateKeyHex);
+        assertEquals(pair.getPublic(), copy.getPublic());
+        assertEquals(pair.getPrivate(), copy.getPrivate());
+    }
+
+    @Test
     void getPublicKey() throws GeneralSecurityException {
         KeyPair pair = generateKeyPair();
         PublicKey publicKey = pair.getPublic();
