@@ -19,10 +19,8 @@ class SignatureUtilsTest {
     @Test
     void signAndVerify() throws GeneralSecurityException, UnsupportedEncodingException {
         KeyPair pair = KeyGenerator.generateKeyPair();
-        byte[] publicKeyBytes = pair.getPublic().getEncoded();
-        byte[] privateKeyBytes = pair.getPrivate().getEncoded();
         byte[] unsignedData = "SIGNME".getBytes("UTF-8");
-        byte[] signedData = SignatureUtils.sign(unsignedData, privateKeyBytes);
-        assertTrue(SignatureUtils.verify(signedData, publicKeyBytes, unsignedData));
+        byte[] signedData = SignatureUtils.sign(unsignedData, pair.getPrivate());
+        assertTrue(SignatureUtils.verify(signedData, pair.getPublic(), unsignedData));
     }
 }

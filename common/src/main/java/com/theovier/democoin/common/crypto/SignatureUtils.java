@@ -14,11 +14,6 @@ public class SignatureUtils {
         return ecdsaSign.sign();
     }
 
-    public static byte[] sign(byte[] data, byte[] pkcs8key) throws GeneralSecurityException {
-        PrivateKey privateKey = KeyGenerator.getPrivateKey(pkcs8key);
-        return sign(data, privateKey);
-    }
-
     public static String signHex(byte[] data, PrivateKey privateKey) throws GeneralSecurityException {
         return Hex.toHexString(sign(data, privateKey));
     }
@@ -32,11 +27,6 @@ public class SignatureUtils {
         ecdsaVerify.initVerify(publicKey);
         ecdsaVerify.update(unsignedData);
         return ecdsaVerify.verify(signedData);
-    }
-
-    public static boolean verify(byte[] signedData, byte[] x509key, byte[] unsignedData) throws GeneralSecurityException {
-        PublicKey publicKey = KeyGenerator.getPublicKey(x509key);
-        return verify(signedData, publicKey, unsignedData);
     }
 
     public static boolean verify(String signedDataHex, PublicKey publicKey, Sha256Hash unsignedDataHash) throws GeneralSecurityException {
