@@ -5,6 +5,7 @@ import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.UnsupportedEncodingException;
 import java.security.*;
 import java.security.interfaces.ECPrivateKey;
 
@@ -62,13 +63,12 @@ class SignatureUtilsTest {
     }
 
     @Test
-    void sign() throws GeneralSecurityException {
-
+    void signAndVerify() throws GeneralSecurityException, UnsupportedEncodingException {
+        KeyPair pair = generateKeyPair();
+        byte[] publicKeyBytes = pair.getPublic().getEncoded();
+        byte[] privateKeyBytes = pair.getPrivate().getEncoded();
+        byte[] unsignedData = "SIGNME".getBytes("UTF-8");
+        byte[] signedData = SignatureUtils.sign(unsignedData, privateKeyBytes);
+        assertTrue(SignatureUtils.verify(signedData, publicKeyBytes, unsignedData));
     }
-
-    @Test
-    void verify() throws GeneralSecurityException {
-
-    }
-
 }
