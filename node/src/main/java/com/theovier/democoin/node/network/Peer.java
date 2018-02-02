@@ -59,7 +59,6 @@ public class Peer implements Runnable {
                 messageHandler.execute(new MessageDispatcher(msg, this));
             }
         } catch (IOException e) {
-            LOG.debug(e);
             disconnect();
         }
     }
