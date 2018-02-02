@@ -20,6 +20,7 @@ public class Peer implements Runnable {
 
     private static final Logger LOG = Logger.getLogger(Peer.class);
     private boolean isRunning;
+    private final boolean isLightweight;
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private ExecutorService messageHandler = Executors.newCachedThreadPool();
     private final NetworkConnection connection;
@@ -31,6 +32,14 @@ public class Peer implements Runnable {
         this.connection = new NetworkConnection(socket);
         this.observer = observer;
         this.blockchain = blockchain;
+        this.isLightweight = false;
+    }
+
+    public Peer(final Socket socket, final PeerObserver observer, final Blockchain blockchain, final boolean isLightweight) throws IOException {
+        this.connection = new NetworkConnection(socket);
+        this.observer = observer;
+        this.blockchain = blockchain;
+        this.isLightweight = isLightweight;
     }
 
     public void start() {
@@ -89,6 +98,10 @@ public class Peer implements Runnable {
 
     public final Blockchain getBlockchain() {
         return blockchain;
+    }
+
+    public final boolean isLightweight() {
+        return isLightweight;
     }
 
     public void broadcast(final Message message) {

@@ -20,6 +20,10 @@ public final class BlockFoundNotification extends Notification {
 
     @Override
     public void handle(Peer receiver) {
+        if(receiver.isLightweight()) {
+            return;
+        }
+
         Blockchain blockchain = receiver.getBlockchain();
         long index = foundBlock.getIndex();
         long currentIndex = blockchain.getHeight() - 1;
