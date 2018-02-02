@@ -30,6 +30,11 @@ public class Transaction implements Serializable {
         this.timestamp = Instant.now().getEpochSecond();
     }
 
+    public Transaction() {
+        this.msg = Utils.escapeText("default message");
+        this.timestamp = Instant.now().getEpochSecond();
+    }
+
     //used for deserialization
     private Object readResolve() {
         //we don't save the TxOutput parent references in xml, so set them manually.
@@ -147,6 +152,10 @@ public class Transaction implements Serializable {
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
         build();
+    }
+
+    public void setMessage(final String msg) {
+        this.msg = Utils.escapeText(msg);
     }
 
     @Override
