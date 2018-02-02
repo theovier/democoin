@@ -17,18 +17,11 @@ public class ClientMain {
     static final int NUMBER_OUTPUT_ARGS = 2;
 
     public static void main (String[] args) {
-        String[] testArgs = {
-                "-in", "986afc4e482ff3fec2527cfa1140e2991bc500aa4022b30a4e8719f5e1eebb71", "0", "./1AVuQjcnquXEaXgggJx7TsyMBjbatiBtNB.key",
-                "-out", "1AVuQjcnquXEaXgggJx7TsyMBjbatiBtNB", "130",
-                "-msg", "my Message",
-                "-host", "192.168.1.48",
-        };
-
         Security.addProvider(new BouncyCastleProvider());
         CommandLineParser parser = new DefaultParser();
         Options options = createOptions();
         try {
-            CommandLine cmd = parser.parse(options, testArgs);
+            CommandLine cmd = parser.parse(options, args);
             Transaction tx = assembleTransaction(cmd);
             sendTransactionToHost(tx, cmd.getOptionValue("h"));
         } catch (ParseException e) {
