@@ -1,6 +1,7 @@
 package com.theovier.democoin.node.network;
 
 import com.theovier.democoin.common.Blockchain;
+import com.theovier.democoin.common.transaction.Transaction;
 import com.theovier.democoin.node.network.messages.*;
 import com.theovier.democoin.node.network.messages.Requests.*;
 import com.theovier.democoin.node.network.messages.Responses.*;
@@ -172,6 +173,18 @@ public class Peer implements Runnable {
             return new Blockchain();
         }
     }
+
+    public boolean requestTransactionBroadcast(final Transaction tx) throws IOException, InterruptedException {
+        Request request = new TransactionBroadcastRequest(tx);
+        FutureResponse futureResponse = new FutureResponse(request);
+        pendingRequests.add(futureResponse);
+        sendMessage(request);
+        TransactionBroadcastResponse response = (TransactionBroadcastResponse) futureResponse.get();
+        return response.isValidTx();
+    }
+
+
+
 
     @Override
     public String toString() {
