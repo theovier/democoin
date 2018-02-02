@@ -17,6 +17,9 @@ public abstract class ConsensusParams {
     //default coinbase message
     public static final String COINBASE_MSG = "It's a gift from the Gods!";
 
+    //default message in a transaction
+    public static final String DEFAULT_TX_MSG = "default";
+
     //includes the coinbaseTx.
     public static final int MAX_TRANSACTIONS_PER_BLOCK = 5;
 

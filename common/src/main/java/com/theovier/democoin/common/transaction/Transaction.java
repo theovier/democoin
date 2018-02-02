@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.theovier.democoin.common.ConsensusParams.DEFAULT_TX_MSG;
+
 public class Transaction implements Serializable {
     private static final long serialVersionUID = -3564602822987321657L;
 
@@ -31,7 +33,7 @@ public class Transaction implements Serializable {
     }
 
     public Transaction() {
-        this.msg = Utils.escapeText("default message");
+        this.msg = Utils.escapeText(DEFAULT_TX_MSG);
         this.timestamp = Instant.now().getEpochSecond();
     }
 
