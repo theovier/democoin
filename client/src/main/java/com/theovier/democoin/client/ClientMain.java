@@ -27,7 +27,7 @@ public class ClientMain {
         } catch (ParseException e) {
             LOG.info("some arguments could not be read or were missing");
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("s", options , true);
+            formatter.printHelp("spend transaction", options , true);
         }
     }
 
