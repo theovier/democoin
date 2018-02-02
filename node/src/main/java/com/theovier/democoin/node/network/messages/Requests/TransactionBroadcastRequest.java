@@ -3,6 +3,7 @@ package com.theovier.democoin.node.network.messages.Requests;
 import com.theovier.democoin.common.Blockchain;
 import com.theovier.democoin.common.transaction.Transaction;
 import com.theovier.democoin.node.network.Peer;
+import com.theovier.democoin.node.network.messages.Notifications.TransactionNotification;
 import com.theovier.democoin.node.network.messages.Responses.TransactionBroadcastResponse;
 
 import java.io.IOException;
@@ -23,7 +24,7 @@ public class TransactionBroadcastRequest extends Request {
         Blockchain blockchain = receiver.getBlockchain();
         boolean accepted = blockchain.addToMemPool(tx);
         if (accepted) {
-            receiver.broadcast(this);
+            receiver.broadcast(new TransactionNotification(tx));
         }
         receiver.sendMessage(new TransactionBroadcastResponse(this.getID(), accepted));
     }
