@@ -40,10 +40,13 @@ public class Peer implements Runnable {
     }
 
     public void disconnect() {
-        isRunning = false;
-        connection.close();
-        observer.onPeerConnectionClosed(this);
-        executor.shutdown();
+        if (isRunning) {
+            isRunning = false;
+            connection.close();
+            observer.onPeerConnectionClosed(this);
+            executor.shutdown();
+            messageHandler.shutdown();
+        }
     }
 
     @Override
