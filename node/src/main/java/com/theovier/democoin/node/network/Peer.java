@@ -183,7 +183,19 @@ public class Peer implements Runnable {
         return response.isValidTx();
     }
 
-
+    /** disconnects if the version does not match or the answer takes too long */
+    public void verifyUseOfSameVersion(long timeout, TimeUnit unit) {
+        Request request = new VersionRequest();
+        FutureResponse futureResponse = new FutureResponse(request);
+        pendingRequests.add(futureResponse);
+        try {
+            sendMessage(request);
+            futureResponse.get(timeout, unit);
+        } catch (IOException | InterruptedException | TimeoutException e) {
+            pendingRequests.remove(futureResponse);
+            disconnect();
+        }
+    }
 
 
     @Override
