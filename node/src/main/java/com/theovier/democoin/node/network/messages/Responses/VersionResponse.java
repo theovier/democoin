@@ -24,7 +24,7 @@ public class VersionResponse extends Response {
         if (version == NetworkParams.PROTOCOL_VERSION) {
             receiver.sendMessage(new VersionAcceptNotification());
         } else {
-            receiver.sendMessage(new VersionRejectNotification(version));
+            receiver.sendMessage(new VersionRejectNotification(NetworkParams.PROTOCOL_VERSION));
             receiver.disconnect();
         }
     }

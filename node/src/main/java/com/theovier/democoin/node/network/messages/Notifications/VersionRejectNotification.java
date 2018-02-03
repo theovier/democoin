@@ -17,7 +17,7 @@ public class VersionRejectNotification extends Notification {
 
     @Override
     public void handle(Peer receiver) {
-        LOG.warn(String.format("node on version %d rejected connection because we're running on version %d",
+        LOG.warn(String.format("node (running version %d) rejected the connection because we use a different version (%d)",
                 requiredVersion, NetworkParams.PROTOCOL_VERSION));
     }
 
