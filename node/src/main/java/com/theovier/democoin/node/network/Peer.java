@@ -66,15 +66,16 @@ public class Peer implements Runnable {
     /** called by a node after requesting a connection with another node*/
     public void answerHandshake(long timeout, TimeUnit unit) throws HandshakeFailedException {
         LOG.info(String.format("trying to connect to %s. Waiting for handshake...", toString()));
+        ExecutorService handshakeExecutor = Executors.newSingleThreadExecutor();
+        SimpleTimeLimiter timeLimiter = SimpleTimeLimiter.create(handshakeExecutor);
+        Handshake versionHandshake = timeLimiter.newProxy(new VersionHandshake(), Handshake.class, timeout, unit);
         try {
-            VersionRequest versionRequest = (VersionRequest) connection.readMessage();
-            versionRequest.handle(this);
-            VersionNotification response = (VersionNotification) connection.readMessage();
-            response.handle(this);
-        } catch (IOException | ClassCastException e) {
+            versionHandshake.answerHandshake(this);
+        } catch (HandshakeFailedException | UncheckedTimeoutException e) {
             disconnect();
             throw new HandshakeFailedException(e);
         }
+        handshakeExecutor.shutdown();
     }
 
     /** called by the handshake messages */
