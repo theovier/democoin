@@ -11,12 +11,13 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 class TxTransmitter {
 
     static boolean sendTransactionToHost(final Transaction tx, final String host) throws IOException, InterruptedException {
         Peer peer = new Peer(new Socket(host, NetworkParams.PORT), new ObserverMock(), null, true);
-        peer.start();
+        peer.answerHandshake(5, TimeUnit.SECONDS);
         boolean accepted = peer.requestTransactionBroadcast(tx);
         peer.disconnect();
         return accepted;
