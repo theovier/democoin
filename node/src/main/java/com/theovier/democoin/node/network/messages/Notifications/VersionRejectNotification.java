@@ -5,7 +5,7 @@ import com.theovier.democoin.node.network.Peer;
 import org.apache.log4j.Logger;
 
 
-public class VersionRejectNotification extends Notification {
+public class VersionRejectNotification extends VersionNotification {
 
     private static final long serialVersionUID = 6804229203342533283L;
     private static final Logger LOG = Logger.getLogger(VersionRejectNotification.class);
