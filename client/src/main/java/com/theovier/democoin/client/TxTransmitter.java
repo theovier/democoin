@@ -13,11 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static com.theovier.democoin.node.network.NetworkParams.HANDSHAKE_TIMEOUT;
+import static com.theovier.democoin.node.network.NetworkParams.HANDSHAKE_TIMEUNIT;
+
 class TxTransmitter {
 
     static boolean sendTransactionToHost(final Transaction tx, final String host) throws IOException, InterruptedException {
         Peer peer = new Peer(new Socket(host, NetworkParams.PORT), new ObserverMock(), null, true);
-        peer.answerHandshake(5, TimeUnit.SECONDS);
+        peer.answerHandshake(HANDSHAKE_TIMEOUT, HANDSHAKE_TIMEUNIT);
         boolean accepted = peer.requestTransactionBroadcast(tx);
         peer.disconnect();
         return accepted;

@@ -14,6 +14,9 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static com.theovier.democoin.node.network.NetworkParams.HANDSHAKE_TIMEOUT;
+import static com.theovier.democoin.node.network.NetworkParams.HANDSHAKE_TIMEUNIT;
+
 public class DefaultDiscovery implements PeerDiscovery {
 
     private static final Logger LOG = Logger.getLogger(DefaultDiscovery.class);
@@ -80,7 +83,7 @@ public class DefaultDiscovery implements PeerDiscovery {
     private Peer connectToPeer(InetSocketAddress address) throws IOException {
         Socket socket = new Socket(address.getHostName(), address.getPort());
         Peer peer = new Peer(socket, observer, blockchain);
-        peer.answerHandshake(3, TimeUnit.SECONDS);
+        peer.answerHandshake(HANDSHAKE_TIMEOUT, HANDSHAKE_TIMEUNIT);
         return peer;
     }
 }

@@ -7,6 +7,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
+import static com.theovier.democoin.node.network.NetworkParams.HANDSHAKE_TIMEOUT;
+import static com.theovier.democoin.node.network.NetworkParams.HANDSHAKE_TIMEUNIT;
+
 /**
    listens for incoming connections and accepts them if possible.
  */
@@ -54,7 +57,7 @@ public class NetworkListener implements Runnable {
             if (observer.isAcceptingConnections()) {
                 socket.setSoTimeout(0);
                 Peer peer = new Peer(socket, observer, blockchain);
-                peer.startHandshake(5, TimeUnit.SECONDS);
+                peer.startHandshake(HANDSHAKE_TIMEOUT, HANDSHAKE_TIMEUNIT);
             } else {
                 socket.close();
             }
