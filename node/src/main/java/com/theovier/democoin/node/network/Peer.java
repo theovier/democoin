@@ -44,12 +44,6 @@ public class Peer implements Runnable {
         this.isLightweight = isLightweight;
     }
 
-    public void start() {
-        isRunning = true;
-        observer.onPeerConnectionEstablished(this);
-        executor.execute(this);
-    }
-
     /** calley by a node after accepting a connection request */
     public void startHandshake(long timeout, TimeUnit unit) throws HandshakeFailedException {
         LOG.info(String.format("%s wants to connect. Starting handshake.", toString()));
@@ -77,6 +71,13 @@ public class Peer implements Runnable {
             disconnect();
             throw new HandshakeFailedException(e);
         }
+    }
+
+    /** called by the handshake messages */
+    public void start() {
+        isRunning = true;
+        observer.onPeerConnectionEstablished(this);
+        executor.execute(this);
     }
 
     public void disconnect() {
