@@ -52,6 +52,7 @@ public class Peer implements Runnable {
 
     /** calley by a node after accepting a connection request */
     public void startHandshake(long timeout, TimeUnit unit) throws HandshakeFailedException {
+        LOG.info(String.format("%s wants to connect. Starting handshake.", toString()));
         try {
             sendMessage(new VersionRequest());
             VersionResponse response = (VersionResponse) connection.readMessage();
@@ -64,6 +65,7 @@ public class Peer implements Runnable {
 
     /** called by a node after requesting a connection with another node*/
     public void answerHandshake(long timeout, TimeUnit unit) throws HandshakeFailedException {
+        LOG.info(String.format("trying to connect to %s. Waiting for handshake...", toString()));
         try {
             VersionRequest versionRequest = (VersionRequest) connection.readMessage();
             versionRequest.handle(this);
