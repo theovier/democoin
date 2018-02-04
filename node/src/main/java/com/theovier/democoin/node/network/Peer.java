@@ -1,5 +1,7 @@
 package com.theovier.democoin.node.network;
 
+import com.google.common.util.concurrent.SimpleTimeLimiter;
+import com.google.common.util.concurrent.UncheckedTimeoutException;
 import com.theovier.democoin.common.Blockchain;
 import com.theovier.democoin.common.transaction.Transaction;
 import com.theovier.democoin.node.network.messages.*;
@@ -47,16 +49,18 @@ public class Peer implements Runnable {
     /** calley by a node after accepting a connection request */
     public void startHandshake(long timeout, TimeUnit unit) throws HandshakeFailedException {
         LOG.info(String.format("%s wants to connect. Starting handshake.", toString()));
+        ExecutorService handshakeExecutor = Executors.newSingleThreadExecutor();
+        SimpleTimeLimiter timeLimiter = SimpleTimeLimiter.create(handshakeExecutor);
+        Handshake versionHandshake = timeLimiter.newProxy(new VersionHandshake(), Handshake.class, timeout, unit);
         try {
-            sendMessage(new VersionRequest());
-            VersionResponse response = (VersionResponse) connection.readMessage();
-            response.handle(this);
-        } catch (IOException | ClassCastException e) {
+            versionHandshake.initiateHandshake(this);
+        } catch (HandshakeFailedException | UncheckedTimeoutException e) {
             disconnect();
             throw new HandshakeFailedException(
                     String.format("decline connection request for peer %s.", toString())
             );
         }
+        handshakeExecutor.shutdown();
     }
 
     /** called by a node after requesting a connection with another node*/
