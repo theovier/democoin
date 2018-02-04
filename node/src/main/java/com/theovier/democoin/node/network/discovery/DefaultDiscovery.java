@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class DefaultDiscovery implements PeerDiscovery {
@@ -79,7 +80,7 @@ public class DefaultDiscovery implements PeerDiscovery {
     private Peer connectToPeer(InetSocketAddress address) throws IOException {
         Socket socket = new Socket(address.getHostName(), address.getPort());
         Peer peer = new Peer(socket, observer, blockchain);
-        peer.start();
+        peer.answerHandshake(3, TimeUnit.SECONDS);
         return peer;
     }
 }

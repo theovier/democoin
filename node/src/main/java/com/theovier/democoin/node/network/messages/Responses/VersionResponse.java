@@ -23,6 +23,7 @@ public class VersionResponse extends Response {
         super.handle(receiver);
         if (version == NetworkParams.PROTOCOL_VERSION) {
             receiver.sendMessage(new VersionAcceptNotification());
+            receiver.start();
         } else {
             receiver.sendMessage(new VersionRejectNotification(NetworkParams.PROTOCOL_VERSION));
             receiver.disconnect();

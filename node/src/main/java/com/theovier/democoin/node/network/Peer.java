@@ -3,6 +3,7 @@ package com.theovier.democoin.node.network;
 import com.theovier.democoin.common.Blockchain;
 import com.theovier.democoin.common.transaction.Transaction;
 import com.theovier.democoin.node.network.messages.*;
+import com.theovier.democoin.node.network.messages.Notifications.VersionNotification;
 import com.theovier.democoin.node.network.messages.Requests.*;
 import com.theovier.democoin.node.network.messages.Responses.*;
 import org.apache.log4j.Logger;
@@ -47,6 +48,31 @@ public class Peer implements Runnable {
         isRunning = true;
         observer.onPeerConnectionEstablished(this);
         executor.execute(this);
+    }
+
+    /** calley by a node after accepting a connection request */
+    public void startHandshake(long timeout, TimeUnit unit) throws HandshakeFailedException {
+        try {
+            sendMessage(new VersionRequest());
+            VersionResponse response = (VersionResponse) connection.readMessage();
+            response.handle(this);
+        } catch (IOException | ClassCastException e) {
+            disconnect();
+            throw new HandshakeFailedException(e);
+        }
+    }
+
+    /** called by a node after requesting a connection with another node*/
+    public void answerHandshake(long timeout, TimeUnit unit) throws HandshakeFailedException {
+        try {
+            VersionRequest versionRequest = (VersionRequest) connection.readMessage();
+            versionRequest.handle(this);
+            VersionNotification response = (VersionNotification) connection.readMessage();
+            response.handle(this);
+        } catch (IOException | ClassCastException e) {
+            disconnect();
+            throw new HandshakeFailedException(e);
+        }
     }
 
     public void disconnect() {
@@ -181,20 +207,6 @@ public class Peer implements Runnable {
         sendMessage(request);
         TransactionBroadcastResponse response = (TransactionBroadcastResponse) futureResponse.get();
         return response.isValidTx();
-    }
-
-    /** disconnects if the version does not match or the answer takes too long */
-    public void verifyUseOfSameVersion(long timeout, TimeUnit unit) {
-        Request request = new VersionRequest();
-        FutureResponse futureResponse = new FutureResponse(request);
-        pendingRequests.add(futureResponse);
-        try {
-            sendMessage(request);
-            futureResponse.get(timeout, unit);
-        } catch (IOException | InterruptedException | TimeoutException e) {
-            pendingRequests.remove(futureResponse);
-            disconnect();
-        }
     }
 
 

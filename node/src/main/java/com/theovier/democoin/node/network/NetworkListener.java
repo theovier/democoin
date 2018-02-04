@@ -1,7 +1,6 @@
 package com.theovier.democoin.node.network;
 
 import com.theovier.democoin.common.Blockchain;
-import com.theovier.democoin.node.network.messages.Requests.VersionRequest;
 import org.apache.log4j.Logger;
 import java.io.*;
 import java.net.ServerSocket;
@@ -55,8 +54,7 @@ public class NetworkListener implements Runnable {
             if (observer.isAcceptingConnections()) {
                 socket.setSoTimeout(0);
                 Peer peer = new Peer(socket, observer, blockchain);
-                peer.start();
-                peer.verifyUseOfSameVersion(5, TimeUnit.SECONDS);
+                peer.startHandshake(5, TimeUnit.SECONDS);
             } else {
                 socket.close();
             }
