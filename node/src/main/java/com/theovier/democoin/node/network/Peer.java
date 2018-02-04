@@ -95,12 +95,17 @@ public class Peer implements Runnable {
         Thread.currentThread().setName("peer" + connection);
         try {
             while (isRunning) {
-                Message msg = connection.readMessage();
+                Message msg = readMessage();
                 messageHandler.execute(new MessageDispatcher(msg, this));
             }
         } catch (IOException e) {
             disconnect();
         }
+    }
+
+    /** blocking */
+    Message readMessage() throws IOException {
+        return connection.readMessage();
     }
 
     public void onResponseReceived(Response response) {
