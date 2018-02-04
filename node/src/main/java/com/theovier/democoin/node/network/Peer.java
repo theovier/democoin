@@ -59,7 +59,9 @@ public class Peer implements Runnable {
             response.handle(this);
         } catch (IOException | ClassCastException e) {
             disconnect();
-            throw new HandshakeFailedException(e);
+            throw new HandshakeFailedException(
+                    String.format("decline connection request for peer %s.", toString())
+            );
         }
     }
 
