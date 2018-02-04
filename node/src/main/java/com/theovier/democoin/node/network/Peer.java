@@ -54,13 +54,15 @@ public class Peer implements Runnable {
         Handshake versionHandshake = timeLimiter.newProxy(new VersionHandshake(), Handshake.class, timeout, unit);
         try {
             versionHandshake.initiateHandshake(this);
-        } catch (HandshakeFailedException | UncheckedTimeoutException e) {
+        } catch (HandshakeFailedException e) {
             disconnect();
-            throw new HandshakeFailedException(
-                    String.format("decline connection request for peer %s.", toString())
-            );
+            throw new HandshakeFailedException(String.format("decline connection request for peer %s.", toString()));
+        } catch (UncheckedTimeoutException e) {
+            disconnect();
+            throw new HandshakeTimeoutException(toString());
+        } finally {
+            handshakeExecutor.shutdown();
         }
-        handshakeExecutor.shutdown();
     }
 
     /** called by a node after requesting a connection with another node*/
@@ -71,11 +73,15 @@ public class Peer implements Runnable {
         Handshake versionHandshake = timeLimiter.newProxy(new VersionHandshake(), Handshake.class, timeout, unit);
         try {
             versionHandshake.answerHandshake(this);
-        } catch (HandshakeFailedException | UncheckedTimeoutException e) {
+        } catch (HandshakeFailedException e) {
             disconnect();
             throw new HandshakeFailedException(e);
+        } catch (UncheckedTimeoutException e) {
+            disconnect();
+            throw new HandshakeTimeoutException(toString());
+        } finally {
+            handshakeExecutor.shutdown();
         }
-        handshakeExecutor.shutdown();
     }
 
     /** called by the handshake messages */
