@@ -23,7 +23,7 @@ import java.util.concurrent.TimeoutException;
 public class Peer implements Runnable {
 
     private static final Logger LOG = Logger.getLogger(Peer.class);
-    private boolean isRunning;
+    private boolean isRunning = true;
     private final boolean isLightweight;
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private ExecutorService messageHandler = Executors.newCachedThreadPool();
@@ -86,7 +86,6 @@ public class Peer implements Runnable {
 
     /** called by the handshake messages */
     public void start() {
-        isRunning = true;
         observer.onPeerConnectionEstablished(this);
         executor.execute(this);
     }
