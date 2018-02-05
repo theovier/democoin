@@ -13,6 +13,8 @@ public abstract class NetworkParams {
     public static final int MAX_CONNECTIONS = MAX_IN_CONNECTIONS + MAX_OUT_CONNECTIONS;
     public static final String[] DEFAULT_HOSTS = new String[] {
             "192.168.1.48",
-            "192.168.1.47"
+            "192.168.1.47",
+            "192.168.0.144",
+            "192.168.0.145"
     };
 }
