@@ -1,6 +1,8 @@
 package com.theovier.democoin.node;
 
+import com.theovier.democoin.common.Address;
 import com.theovier.democoin.node.network.Node;
+import org.apache.commons.cli.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.io.IOException;
@@ -12,11 +14,58 @@ public class NodeMain {
 
     public static void main(String[] args)  {
         Security.addProvider(new BouncyCastleProvider());
-        Node node = new Node();
+        Options options = createOptions();
+        CommandLineParser parser = new DefaultParser();
+        try {
+            CommandLine cmd = parser.parse(options, args);
+            startNode(cmd);
+        } catch (ParseException e) {
+            LOG.fatal("there is something wrong with the arguments.");
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp("node", options , true);
+        }
+    }
+
+    private static void startNode(CommandLine cmd) {
+        Node node;
+        if (cmd.hasOption("a") && cmd.hasOption("msg")) {
+            String addressArg = cmd.getOptionValue("a");
+            Address payoutAddress = new Address(addressArg);
+            String coinbaseMessage = cmd.getOptionValue("msg");
+            node = new Node(payoutAddress, coinbaseMessage);
+        } else if (cmd.hasOption("a")) {
+            String addressArg = cmd.getOptionValue("a");
+            Address payoutAddress = new Address(addressArg);
+            node = new Node(payoutAddress);
+        }  else if (cmd.hasOption("m")) {
+            String coinbaseMessage = cmd.getOptionValue("msg");
+            node = new Node(coinbaseMessage);
+        }  else {
+            node = new Node();
+        }
         try {
             node.start();
+            LOG.info("node started.");
         } catch (IOException e) {
+            LOG.fatal("shutting down node.", e);
             node.shutdown();
         }
+    }
+
+    private static Options createOptions() {
+        Options options = new Options();
+        options.addOption(Option.builder("a").
+                longOpt("address").
+                hasArg().
+                argName("address").
+                desc("address the coinbase reward is sent to.").
+                build());
+        options.addOption(Option.builder("m").
+                longOpt("msg").
+                hasArg().
+                argName("message").
+                desc("optional message for the coinbase transaction").
+                build());
+        return options;
     }
 }
