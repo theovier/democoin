@@ -37,6 +37,12 @@ public class Node implements PeerObserver, BlockFoundListener {
         this.miner = new Miner(blockchain, payoutAddress);
     }
 
+    public Node(final String optionalCoinbaseMsg) {
+        this.peerDiscovery = new DefaultDiscovery(this, blockchain);
+        this.networkListener = new NetworkListener(this, blockchain);
+        this.miner = new Miner(blockchain, ConsensusParams.GENESIS_ADDRESS, optionalCoinbaseMsg);
+    }
+
     public Node(final Address payoutAddress, final String optionalCoinbaseMsg) {
         this.peerDiscovery = new DefaultDiscovery(this, blockchain);
         this.networkListener = new NetworkListener(this, blockchain);
