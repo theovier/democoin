@@ -1,7 +1,5 @@
 package com.theovier.democoin.node;
 
-import com.theovier.democoin.common.Blockchain;
-import com.theovier.democoin.common.Miner;
 import com.theovier.democoin.node.network.Node;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -14,8 +12,7 @@ public class NodeMain {
 
     public static void main(String[] args)  {
         Security.addProvider(new BouncyCastleProvider());
-        Blockchain blockchain = Blockchain.loadFromDisc();
-        Node node = new Node(blockchain);
+        Node node = new Node();
         try {
             node.start();
         } catch (IOException e) {

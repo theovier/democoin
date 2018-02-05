@@ -22,20 +22,19 @@ public class Node implements PeerObserver, BlockFoundListener {
     private final PeerDiscovery peerDiscovery;
     private final NetworkListener networkListener;
     private final List<Peer> connections = new ArrayList<>(NetworkParams.MAX_CONNECTIONS);
-    private final Blockchain blockchain;
+    private final Blockchain blockchain = Blockchain.loadFromDisc();
     private final Miner miner;
 
-    public Node(final Blockchain blockchain) {
-        this.blockchain = blockchain;
+    public Node() {
         this.peerDiscovery = new DefaultDiscovery(this, blockchain);
         this.networkListener = new NetworkListener(this, blockchain);
         this.miner = new Miner(blockchain, ConsensusParams.GENESIS_ADDRESS);
     }
 
     public void start() throws IOException {
-        connectToOtherPeers();
-        downloadMostRecentBlockchain();
-        startListening();
+        //connectToOtherPeers();
+        //downloadMostRecentBlockchain();
+        //startListening();
         startMining();
     }
 
