@@ -34,8 +34,8 @@ public class MiningSlave implements Runnable {
             Block block = mineBlock();
             if (block != null) {
                 if (blockchain.append(block)) {
-                    blockchain.saveToDisc();
                     minerMaster.onBlockFound(block);
+                    blockchain.saveToDisc();
                 }
             }
         }
