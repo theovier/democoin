@@ -27,22 +27,25 @@ public class NodeMain {
     }
 
     private static void startNode(CommandLine cmd) {
-        Node node;
-        if (cmd.hasOption("a") && cmd.hasOption("msg")) {
-            node = new Node(new Address(cmd.getOptionValue("a")), cmd.getOptionValue("msg"));
-        } else if (cmd.hasOption("a")) {
-            node = new Node(new Address(cmd.getOptionValue("a")));
-        }  else if (cmd.hasOption("m")) {
-            node = new Node(cmd.getOptionValue("msg"));
-        }  else {
-            node = new Node();
-        }
+        Node node = createNode(cmd);
         try {
             node.start();
             LOG.info("node started.");
         } catch (IOException e) {
             LOG.fatal("shutting down node.", e);
             node.shutdown();
+        }
+    }
+
+    private static Node createNode(CommandLine cmd) {
+        if (cmd.hasOption("a") && cmd.hasOption("msg")) {
+            return new Node(new Address(cmd.getOptionValue("a")), cmd.getOptionValue("msg"));
+        } else if (cmd.hasOption("a")) {
+            return new Node(new Address(cmd.getOptionValue("a")));
+        }  else if (cmd.hasOption("m")) {
+            return new Node(cmd.getOptionValue("msg"));
+        }  else {
+            return new Node();
         }
     }
 
