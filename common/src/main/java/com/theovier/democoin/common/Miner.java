@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class Miner implements BlockFinder, BlockFoundListener {
 
     private static final Logger LOG = Logger.getLogger(Miner.class);
-    private static final int SLAVE_POOL_SIZE = 10;
+    private static final int SLAVE_POOL_SIZE = 2;
     private static final int SLAVE_TERMINATION_TIMEOUT = 10;
 
     private List<MiningSlave> slaves = new ArrayList<>(SLAVE_POOL_SIZE);
