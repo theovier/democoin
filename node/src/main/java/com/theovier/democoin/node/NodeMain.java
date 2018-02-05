@@ -29,17 +29,11 @@ public class NodeMain {
     private static void startNode(CommandLine cmd) {
         Node node;
         if (cmd.hasOption("a") && cmd.hasOption("msg")) {
-            String addressArg = cmd.getOptionValue("a");
-            Address payoutAddress = new Address(addressArg);
-            String coinbaseMessage = cmd.getOptionValue("msg");
-            node = new Node(payoutAddress, coinbaseMessage);
+            node = new Node(new Address(cmd.getOptionValue("a")), cmd.getOptionValue("msg"));
         } else if (cmd.hasOption("a")) {
-            String addressArg = cmd.getOptionValue("a");
-            Address payoutAddress = new Address(addressArg);
-            node = new Node(payoutAddress);
+            node = new Node(new Address(cmd.getOptionValue("a")));
         }  else if (cmd.hasOption("m")) {
-            String coinbaseMessage = cmd.getOptionValue("msg");
-            node = new Node(coinbaseMessage);
+            node = new Node(cmd.getOptionValue("msg"));
         }  else {
             node = new Node();
         }
