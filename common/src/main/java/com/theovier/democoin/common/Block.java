@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 public class Block implements Serializable {
 
     private static final long serialVersionUID = 1113799434508676095L;
-
     private final long index;
     private final long timestamp;
     private final long nonce;
@@ -56,11 +55,11 @@ public class Block implements Serializable {
     //GenesisBlock, always the same.
     private Block() {
         this.index = 0;
-        this.timestamp = 1517222262;
+        this.timestamp = 1517855344;
         this.previousBlockHash = Sha256Hash.ZERO_HASH;
-        this.nonce =  5618052822434636751L;
+        this.nonce =  7885920701141480115L;
         this.powTarget = ConsensusParams.MIN_DIFFICULTY;
-        CoinbaseTransaction coinbaseTx = new CoinbaseTransaction(ConsensusParams.GENESIS_ADDRESS, ConsensusParams.COINBASE_REWARD, "GENESIS");
+        CoinbaseTransaction coinbaseTx = new CoinbaseTransaction(ConsensusParams.GENESIS_ADDRESS, ConsensusParams.COINBASE_REWARD, "How the Eagles Won Their First Super Bowl Title, Drive by Drive");
         coinbaseTx.setTimestamp(timestamp);
         this.transactions.add(coinbaseTx);
         this.merkleRoot = computeMerkleRoot();
