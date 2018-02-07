@@ -49,6 +49,6 @@ public final class BlockFoundNotification extends Notification {
 
     @Override
     public String toString() {
-        return String.format("BlockFoundNotification (index: %d)", foundBlock.getIndex());
+        return String.format("BlockFoundNotification (height: %d)", foundBlock.getIndex() + 1);
     }
 }
