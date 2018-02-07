@@ -26,7 +26,7 @@ public class TransactionPool {
     }
 
     public synchronized boolean add(final Transaction transaction) {
-        if (validator.isValid(transaction) && !pendingTransactions.contains(transaction)) {
+        if (validator.isValid(transaction)) {
             pendingTransactions.add(transaction);
             return true;
         }
