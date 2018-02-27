@@ -1,6 +1,6 @@
 *.iml
 *.idea
 target
-/log.out
+/logs/log.out
 /*.key
 /data/blockchain.xml
