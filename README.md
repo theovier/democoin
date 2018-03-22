@@ -36,7 +36,7 @@ java -jar address_generator.jar
 ```
 Generated addresses will always end in .key, for example: ``1AVuQjcnquXEaXgggJx7TsyMBjbatiBtNB.key``. 
 They can be opened with regular text editors and contain the corresponding private key which was used to generated them. 
-Keep this file private or else someone else can spent your coins.
+**Keep this file private or else someone else can spent your coins.**
 
 
 ### Broadcast transactions
