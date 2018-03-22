@@ -3,7 +3,7 @@
 This is a small example cryptocurrency which is based on _Bitcoin_.
 It was written for my bachelor thesis _Implementierung einer eigenen Kryptowährung in Java nach dem Vorbild Bitcoin_ 
 which roughly translates to _implementation of an own java based cryptocurrency in the manner of Bitcoin_.
-It features the blockchain technology and a simple input-output-system.
+It features the blockchain technology and a simple input-output-system. Please refer to the Wiki pages if you are interested in a more detailed explanation.
 
 ## Getting Started
 
@@ -28,14 +28,15 @@ The IPs of those nodes are for the moment hardcoded in the ``NetworkParams.java`
 
 Democoin uses the same base-58 addresses as _Bitcoin_. 
 To generate new addresses with corresponding private keys either use the provided ``address_generator.jar`` directly or compile the client module yourself to obtain this jar.
-Addresses will always end in .key and look like this one ``1AVuQjcnquXEaXgggJx7TsyMBjbatiBtNB.key``. They can be opened with regular text editors. They contain their corresponding private key.
+Addresses will always end in .key and look like this: ``1AVuQjcnquXEaXgggJx7TsyMBjbatiBtNB.key``. 
+They can be opened with regular text editors and contain their corresponding private key.
 
 
 ### Broadcast transactions
 
 To create and broadcast transactions, use the ``spend_tx.jar``.
 You will need to provide inputs, outputs, an optional message and an IP to which the transaction is sent.
-Keep in mind that transactions can only be validated by full-nodes, which means you can create invalid transactions but those are going to be rejected by provided host full-node.
+Keep in mind that transactions can only be validated by full-nodes, which means you can create invalid transactions but those are going to be rejected by honest full-node.
 
 ```
 java -jar spend_tx.jar \
