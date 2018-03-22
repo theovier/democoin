@@ -28,6 +28,8 @@ The IPs of those nodes are for the moment hardcoded in the ``NetworkParams.java`
 
 Democoin uses the same base-58 addresses as _Bitcoin_. 
 To generate new addresses with corresponding private keys either use the provided ``address_generator.jar`` directly or compile the client module yourself to obtain this jar.
+Addresses will always end in .key and look like this one ``1AVuQjcnquXEaXgggJx7TsyMBjbatiBtNB.key``. They can be opened with regular text editors. They contain their corresponding private key.
+
 
 ### Broadcast transactions
 
