@@ -52,14 +52,10 @@ java -jar spend_tx.jar \
 To reference an unspent transaction output (UTXO) from a previous transaction as an input, you need to provide the following
 ``
 -in <transactionID> <outputIndex> <path to the corresponding private key file>
-``.
-
-To specify an output, you'll need to define a target address and the amount you want to spent 
+``. To specify an output, you'll need to define a target address and the amount you want to spent 
 ``
 -out <targetAddress> <amount>
-``.
-
-You may include as many inputs and outputs as you like; there is no limit. 
+``. You may include as many inputs and outputs as you like; there is no limit. 
 
 ## Compile the source yourself
 
