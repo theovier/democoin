@@ -24,7 +24,7 @@ theovier/democoin \
 This command will start a stand-alone full-node which will automatically try to connect with other nodes who are expected to be online 24/7.
 This full-node will manage an own blockchain, mine new blocks and listen for incoming connections.
 The docker independent parameters ``-m <message>`` and ``-a <address>`` are optional. They allow you to specifiy an address to which the mining reward is sent. 
-Additionally you may define a message for the _coinbase transaction_. To enable verbode logging add the parameter ``-v``.
+Additionally you may define a message for the _coinbase transaction_. To enable verbose logging, add the parameter ``-v``.
 The IPs of those nodes are for the moment hardcoded in the ``NetworkParams.java``.
 
 ### Generate new addresses
