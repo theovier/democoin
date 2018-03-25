@@ -26,7 +26,7 @@ public class NetworkConnection {
     public Message readMessage() throws IOException {
         try {
             Message msg =  (Message) in.readObject();
-            LOG.debug(String.format("received msg <%s> by peer %s", msg, toString()));
+            LOG.info(String.format("received msg <%s> by peer %s", msg, toString()));
             return msg;
         } catch (ClassNotFoundException | ClassCastException e) {
             throw new ProtocolException();
@@ -37,7 +37,7 @@ public class NetworkConnection {
         synchronized (out) {
             out.writeObject(message);
             out.flush();
-            LOG.debug(String.format("sent msg <%s> to peer %s", message, toString()));
+            LOG.info(String.format("sent msg <%s> to peer %s", message, toString()));
         }
     }
 
