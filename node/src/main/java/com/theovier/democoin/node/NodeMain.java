@@ -3,6 +3,8 @@ package com.theovier.democoin.node;
 import com.theovier.democoin.common.Address;
 import com.theovier.democoin.node.network.Node;
 import org.apache.commons.cli.*;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.io.IOException;
@@ -18,11 +20,18 @@ public class NodeMain {
         CommandLineParser parser = new DefaultParser();
         try {
             CommandLine cmd = parser.parse(options, args);
+            setLoggingLevel(cmd);
             startNode(cmd);
         } catch (ParseException e) {
             LOG.fatal("there is something wrong with the arguments.");
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("node", options , true);
+        }
+    }
+
+    private static void setLoggingLevel(CommandLine cmd) {
+        if (cmd.hasOption("v")) {
+            LogManager.getRootLogger().setLevel(Level.DEBUG);
         }
     }
 
@@ -62,6 +71,10 @@ public class NodeMain {
                 hasArg().
                 argName("message").
                 desc("optional message for the coinbase transaction").
+                build());
+        options.addOption(Option.builder("v").
+                longOpt("verbose").
+                desc("enables debug logging").
                 build());
         return options;
     }
